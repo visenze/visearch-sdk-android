@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Visenze SDK Demo</string>
+
+    <string name="page">Page</string>
+    <string name="limit">Limit</string>
+    <string name="score">score</string>
+    <string name="url">URL</string>
+    <string name="upload_search">Upload Search</string>
+    <string name="id_search">ID Search</string>
+    <string name="color_search">Color Search</string>
+    <string name="default_color">#5d90f6</string>
+    <string name="base_params">Basic Search Parameters</string>
+    <string name="search_functions">Search Functions</string>
+
+    <string name="search_result">Search Result</string>
+    <string name="empty_list">Empty result list</string>
+    <string name="searching">Searching</string>
+    <string name="error">ERROR: </string>
+</resources>

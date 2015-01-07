@@ -1,0 +1,31 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+        <item name="android:actionBarStyle">@style/AppTheme.ActionBar</item>
+    </style>
+
+    <style name="AppTheme.ActionBar" parent="android:style/Widget.Holo.ActionBar">
+        <item name="android:background">@color/blue</item>
+        <item name="android:titleTextStyle">@style/AppTheme.ActionBar.TextColor</item>
+        <item name="android:icon">@drawable/ic_launcher</item>
+    </style>
+
+    <style name="AppTheme.ActionBar.TextColor" parent = "@android:style/TextAppearance">
+        <item name="android:textColor">@color/light_blue_2</item>
+    </style>
+
+    <style name="AppTheme.Button">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@drawable/button_selector</item>
+    </style>
+
+    <!--shadow text view-->
+    <style name="AppTheme.ShadowTextStyleTheme" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/gray</item>
+        <item name="android:shadowColor">@color/white</item>
+        <item name="android:shadowDx">1</item>
+        <item name="android:shadowDy">1</item>
+        <item name="android:shadowRadius">1</item>
+    </style>
+
+</resources>
