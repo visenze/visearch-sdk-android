@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="2dp"
+    android:orientation="vertical">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <com.visenze.visearch.demo.view.SquareImageView
+            android:id="@+id/result_image_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            android:background="@drawable/empty_image"/>
+        <TextView
+            style="@style/AppTheme.ShadowTextStyleTheme"
+            android:id="@+id/result_score_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="3dp"
+            android:gravity="right"
+            android:maxLength="5"/>
+    </RelativeLayout>
+    <TextView
+        android:id="@+id/image_name_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/light_blue"
+        android:textColor="@color/white"
+        android:padding="3dp"
+        android:maxLines="1"/>
+
+</LinearLayout>
