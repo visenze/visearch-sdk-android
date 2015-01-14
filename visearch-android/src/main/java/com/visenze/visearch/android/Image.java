@@ -110,7 +110,7 @@ public class Image {
 
     public byte[] getByteArray() {
         ByteArrayOutputStream outs = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 10, outs);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outs);
         return outs.toByteArray();
     }
 
@@ -124,7 +124,7 @@ public class Image {
     }
 
     /**
-     * Get the {@link com.visenze.android.searchlib.util.Image.Box Box}
+     * Get the {@link com.visenze.visearch.android.Image.Box Box}
      *
      * @return Region in the image for search
      */
@@ -139,7 +139,6 @@ public class Image {
         if (bitmap != null)
             bitmap.recycle();
     }
-
 
     /*
      * Down sample the bitmap if its size exceeds the limit
