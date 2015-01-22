@@ -2,8 +2,6 @@ package com.visenze.visearch.android.util;
 
 import com.visenze.visearch.android.ViSearchException;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -11,8 +9,15 @@ import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+
 
 public class AuthGenerator {
+    /**
+     * Used to build output as Hex
+     */
+    private static final char[] DIGITS_LOWER = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
     public static Map<String, String> getAuthParam(String accessKey, String secretKey) {
         Map<String, String> parameterMap = new HashMap<String, String>();
@@ -51,10 +56,14 @@ public class AuthGenerator {
     }
 
     public static String encodeHex(byte[] bytes) {
-        StringBuilder builder = new StringBuilder();
-        for (byte b : bytes) {
-            builder.append(Integer.toHexString(Byte.valueOf(b).intValue()));
+        //change the encode method
+        int l = bytes.length;
+        char[] out = new char[l << 1];
+        // two characters form the hex value.
+        for (int i = 0, j = 0; i < l; i++) {
+            out[j++] = DIGITS_LOWER[(0xF0 & bytes[i]) >>> 4];
+            out[j++] = DIGITS_LOWER[0x0F & bytes[i]];
         }
-        return builder.toString();
+        return new String(out);
     }
 }
