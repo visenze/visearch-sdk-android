@@ -1,6 +1,7 @@
 package com.visenze.visearch.android.http;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
 import com.android.volley.Request;
@@ -17,6 +18,7 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.Map;
 
 
@@ -29,7 +31,7 @@ public class MultiPartRequest extends Request<JSONObject> {
 
 
     public MultiPartRequest(int method, String url,
-                            Map<String, String> params, byte[] bytes,
+                            Map<String, List<String>> params, byte[] bytes,
                             Response.Listener<JSONObject> mListener,
                             Response.ErrorListener listener) {
 
@@ -37,13 +39,17 @@ public class MultiPartRequest extends Request<JSONObject> {
         this.mListener = mListener;
 
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-        for (Map.Entry<String, String> entry : params.entrySet()) {
-            builder.addTextBody(entry.getKey(), entry.getValue());
+        for (Map.Entry<String, List<String> > entry : params.entrySet()) {
+            for (String s : entry.getValue())
+                builder.addTextBody(entry.getKey(), s);
         }
 
         ByteArrayBody byteArrayBody = new ByteArrayBody(bytes, FILE_PART_NAME);
         builder.addPart(FILE_PART_NAME, byteArrayBody);
         entity = builder.build();
+
+        //retry policy for upload multipart, set retry number as 1
+        setRetryPolicy(new DefaultRetryPolicy(HttpInstance.TIME_OUT_FOR_UPLOAD, 1, 1));
     }
 
     @Override

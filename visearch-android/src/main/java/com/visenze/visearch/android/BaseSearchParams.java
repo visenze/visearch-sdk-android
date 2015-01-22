@@ -1,5 +1,6 @@
 package com.visenze.visearch.android;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -154,50 +155,46 @@ public class BaseSearchParams {
         return fl;
     }
 
-    public Map<String, String> toMap() {
-        Map<String, String> map = new HashMap<String, String>();
+    public Map<String, List<String> > toMap() {
+        Map<String, List<String> > map = new HashMap<String, List<String> >();
 
         if (limit != null && limit > 0) {
-            map.put("limit", limit.toString());
+            putStringInMap(map, "limit", limit.toString());
         }
 
         if (page != null && page > 0) {
-            map.put("page", page.toString());
+            putStringInMap(map, "page", page.toString());
         }
 
         if (score != null) {
-            map.put("score", String.valueOf(score));
+            putStringInMap(map, "score", String.valueOf(score));
         }
 
         if (queryInfo != null) {
-            map.put("qinfo", String.valueOf(queryInfo));
+            putStringInMap(map, "qinfo", String.valueOf(queryInfo));
         }
 
         if (fq != null && fq.size() > 0) {
-            StringBuilder builder = new StringBuilder();
-            for (Map.Entry<String, String> entry : fq.entrySet()) {
-                builder.append(entry.getKey())
-                        .append(":")
-                        .append(entry.getValue())
-                        .append(",");
-            }
-            //remove the last ','
-            String s = builder.toString().substring(0, builder.length() - 1);
+            List<String> valueList = new ArrayList<>();
 
-            map.put("fq", s);
+            for (Map.Entry<String, String> entry : fq.entrySet()) {
+                valueList.add(entry.getKey() + ":" + entry.getValue());
+            }
+
+            map.put("fq", valueList);
         }
 
         if (fl != null && fl.size() > 0) {
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < fl.size(); i++) {
-                builder.append(fl.get(i));
-                if (i < fl.size() - 1) {
-                    builder.append(',');
-                }
-            }
-            map.put("fl", builder.toString());
+            map.put("fl", fl);
         }
 
         return map;
+    }
+
+    private void putStringInMap(Map<String, List<String> > map, String key, String value) {
+        List<String> stringList = new ArrayList<>();
+        stringList.add(value);
+
+        map.put(key, stringList);
     }
 }

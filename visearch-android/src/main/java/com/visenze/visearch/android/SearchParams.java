@@ -1,5 +1,6 @@
 package com.visenze.visearch.android;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -37,7 +38,7 @@ public abstract class SearchParams {
         return mBaseSearchParams;
     }
 
-    protected Map<String, String> toMap() {
+    protected Map<String, List<String>> toMap() {
 
         return mBaseSearchParams.toMap();
 

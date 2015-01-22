@@ -11,10 +11,10 @@ import android.view.View;
 import com.visenze.visearch.android.BaseSearchParams;
 import com.visenze.visearch.android.ColorSearchParams;
 import com.visenze.visearch.android.IdSearchParams;
+import com.visenze.visearch.android.Image;
 import com.visenze.visearch.android.ResultList;
 import com.visenze.visearch.android.UploadSearchParams;
 import com.visenze.visearch.android.ViSearch;
-import com.visenze.visearch.android.Image;
 import com.visenze.visearch.demo.view.ResultView;
 import com.visenze.visearch.demo.view.SearchView;
 

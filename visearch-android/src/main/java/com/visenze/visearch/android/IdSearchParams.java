@@ -1,5 +1,7 @@
 package com.visenze.visearch.android;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -44,10 +46,16 @@ public class IdSearchParams extends SearchParams {
     }
 
     @Override
-    public Map<String, String> toMap() {
-        Map<String, String> map = super.toMap();
-        map.put("im_name", imName);
+    public Map<String, List<String> > toMap() {
+        Map<String, List<String> > map = super.toMap();
+        putStringInMap(map, "im_name", imName);
         return map;
     }
 
+    private void putStringInMap(Map<String, List<String> > map, String key, String value) {
+        List<String> stringList = new ArrayList<>();
+        stringList.add(value);
+
+        map.put(key, stringList);
+    }
 }
