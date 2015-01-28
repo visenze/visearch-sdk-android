@@ -156,7 +156,6 @@ public class MyActivity extends Activity implements ViSearch.ResultListener{
 
         //init image
         Image image = new Image(this, uri, Image.ResizeSettings.STANDARD);
-//        image.setBox()
         uploadSearchParams.setImage(image);
 
         //call search method
