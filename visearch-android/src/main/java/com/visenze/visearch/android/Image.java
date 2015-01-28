@@ -21,7 +21,8 @@ public class Image {
     public static final int             STANDARD_SIZE = 512;
     public static final int             LARGE_SIZE = 1024;
     private static final int            COMPRESS_QUALITY_CAMERA = 75; //compression quality for raw bytes from camera
-    private static final int            COMPRESS_QUALITY_HIGH = 90; //compression quality for image from path
+    private static final int            COMPRESS_QUALITY_LOW = 85; //compression quality for image from path, with low quality
+    private static final int            COMPRESS_QUALITY_HIGH = 90; //compression quality for image from path, with high quality
 
     /**
      * byte array of image

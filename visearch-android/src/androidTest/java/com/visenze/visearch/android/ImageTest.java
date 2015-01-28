@@ -94,7 +94,6 @@ public class ImageTest {
 
         Image image = new Image(array).setBox(x1, y1, x2, y2);
 
-
         float scaleFactor = (float) Image.STANDARD_SIZE / getImageLongestLength(PATH_TEST_IMAGE_LARGE);
         scaleFactor = scaleFactor > 1.0f ? 1.0f : scaleFactor;
 
