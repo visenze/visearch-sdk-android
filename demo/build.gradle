@@ -45,5 +45,7 @@ android {
 dependencies {
     compile 'com.visenze:visearch-android:1.0.1'
     compile 'com.android.support:appcompat-v7:21.0.3'
+    
+    //image loading and caching library
     compile 'com.squareup.picasso:picasso:2.4.0'
 }
