@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#000000</color>
+    <color name="gray_camera_trans">#dd1c2127</color>
+    <color name="gray_camera">#1c2127</color>
+    <color name="gray_background">#878787</color>
+    <color name="button_red">#ea574d</color>
+    <color name="white">#ffffff</color>
+</resources>

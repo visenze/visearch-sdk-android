@@ -64,7 +64,7 @@ public class ResponseParser {
                 imageResult.setImageName(imageObj.getString("im_name"));
 
                 if (imageObj.has("score")) {
-                    imageResult.setScore(imageObj.getDouble("score"));
+                    imageResult.setScore((float)imageObj.getDouble("score"));
                 }
 
                 if (imageObj.has("value_map")) {

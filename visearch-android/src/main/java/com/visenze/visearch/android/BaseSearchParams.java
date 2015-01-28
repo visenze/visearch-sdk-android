@@ -1,5 +1,6 @@
 package com.visenze.visearch.android;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,10 @@ public class BaseSearchParams {
     private Map<String, String> fq;
 
     private Boolean score;
+
+    private Float scoreMin;
+
+    private Float scoreMax;
 
     private Boolean queryInfo;
 
@@ -137,6 +142,43 @@ public class BaseSearchParams {
     }
 
     /**
+     * get minimum score threshold
+     *
+     * @return minimum score threshold value
+     */
+    public Float getScoreMin() {
+        return scoreMin;
+    }
+
+    /**
+     * set minimum score threshold
+     * @param scoreMin min score threshold value
+     */
+    public void setScoreMin(Float scoreMin) {
+        this.scoreMin = scoreMin;
+    }
+
+    /**
+     * get maximum score threshold
+     *
+     *
+     * @return maximum score threshold value
+     */
+    public Float getScoreMax() {
+        return scoreMax;
+    }
+
+    /**
+     * set maximum score threshold value
+     *
+     * @param scoreMax max score threshold value
+     */
+    public void setScoreMax(Float scoreMax) {
+        this.scoreMax = scoreMax;
+    }
+
+
+    /**
      * Get the filter queries
      *
      * @return filter queries.
@@ -154,50 +196,54 @@ public class BaseSearchParams {
         return fl;
     }
 
-    public Map<String, String> toMap() {
-        Map<String, String> map = new HashMap<String, String>();
+    public Map<String, List<String> > toMap() {
+        Map<String, List<String> > map = new HashMap<String, List<String> >();
 
         if (limit != null && limit > 0) {
-            map.put("limit", limit.toString());
+            putStringInMap(map, "limit", limit.toString());
         }
 
         if (page != null && page > 0) {
-            map.put("page", page.toString());
+            putStringInMap(map, "page", page.toString());
         }
 
         if (score != null) {
-            map.put("score", String.valueOf(score));
+            putStringInMap(map, "score", String.valueOf(score));
+        }
+
+        if (scoreMin != null) {
+            putStringInMap(map, "score_min", String.valueOf(scoreMin));
+        }
+
+        if (scoreMax != null) {
+            putStringInMap(map, "score_max", String.valueOf(scoreMax));
         }
 
         if (queryInfo != null) {
-            map.put("qinfo", String.valueOf(queryInfo));
+            putStringInMap(map, "qinfo", String.valueOf(queryInfo));
         }
 
         if (fq != null && fq.size() > 0) {
-            StringBuilder builder = new StringBuilder();
-            for (Map.Entry<String, String> entry : fq.entrySet()) {
-                builder.append(entry.getKey())
-                        .append(":")
-                        .append(entry.getValue())
-                        .append(",");
-            }
-            //remove the last ','
-            String s = builder.toString().substring(0, builder.length() - 1);
+            List<String> valueList = new ArrayList<>();
 
-            map.put("fq", s);
+            for (Map.Entry<String, String> entry : fq.entrySet()) {
+                valueList.add(entry.getKey() + ":" + entry.getValue());
+            }
+
+            map.put("fq", valueList);
         }
 
         if (fl != null && fl.size() > 0) {
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < fl.size(); i++) {
-                builder.append(fl.get(i));
-                if (i < fl.size() - 1) {
-                    builder.append(',');
-                }
-            }
-            map.put("fl", builder.toString());
+            map.put("fl", fl);
         }
 
         return map;
+    }
+
+    private void putStringInMap(Map<String, List<String> > map, String key, String value) {
+        List<String> stringList = new ArrayList<>();
+        stringList.add(value);
+
+        map.put(key, stringList);
     }
 }

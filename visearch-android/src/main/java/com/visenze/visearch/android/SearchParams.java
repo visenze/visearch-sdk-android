@@ -1,11 +1,13 @@
 package com.visenze.visearch.android;
 
+import java.util.List;
 import java.util.Map;
 
 /**
  * Abstract class. Search parameter settings.
- * This class is extended by {@link IdSearchParams IndexSearchParams}
- * {@link ColorSearchParams ColorSearchParams} and
+ * This class is extended by
+ * {@link IdSearchParams IndexSearchParams}
+ * {@link ColorSearchParams ColorSearchParams}
  * {@link UploadSearchParams UploadSearchParams}.
  */
 public abstract class SearchParams {
@@ -37,7 +39,7 @@ public abstract class SearchParams {
         return mBaseSearchParams;
     }
 
-    protected Map<String, String> toMap() {
+    protected Map<String, List<String>> toMap() {
 
         return mBaseSearchParams.toMap();
 

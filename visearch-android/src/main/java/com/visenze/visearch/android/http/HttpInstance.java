@@ -12,11 +12,18 @@ import com.android.volley.toolbox.Volley;
 import com.visenze.visearch.android.ViSearch;
 import com.visenze.visearch.android.util.AuthGenerator;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
 public class HttpInstance {
+    /**
+     * HTTP CONSTANT for Multipart Entity Uploading
+     */
+    public static final int TIME_OUT_FOR_UPLOAD = 10000;
+
     /**
      * http instance
      */
@@ -30,8 +37,8 @@ public class HttpInstance {
     /**
      * api access key and secret key
      */
-    private String accessKey;
-    private String secretKey;
+    private String                  accessKey;
+    private String                  secretKey;
 
     /**
      * request queue
@@ -69,6 +76,7 @@ public class HttpInstance {
         return mInstance;
     }
 
+
     /**
      * request queue getter
      *
@@ -91,19 +99,20 @@ public class HttpInstance {
      */
     public void addGetRequestToQueue(
             final String url,
-            Map<String, String> params,
+            Map<String, List<String>> params,
             final ViSearch.ResultListener resultListener) {
 
         ResponseListener responseListener = new ResponseListener(resultListener);
 
         if (null == params)
-            params = new HashMap<String, String>();
+            params = new HashMap<String, List<String> >();
 
-        params.putAll(AuthGenerator.getAuthParam(accessKey, secretKey));
+        putValueMapInMap(params, AuthGenerator.getAuthParam(accessKey, secretKey));
 
         Uri.Builder uri = new Uri.Builder();
-        for (Map.Entry<String, String> entry : params.entrySet()) {
-            uri.appendQueryParameter(entry.getKey(), entry.getValue());
+        for (Map.Entry<String, List<String> > entry : params.entrySet()) {
+            for (String s: entry.getValue())
+                uri.appendQueryParameter(entry.getKey(), s);
         }
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url + uri.toString(), null,
@@ -112,6 +121,7 @@ public class HttpInstance {
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
                         volleyError.printStackTrace();
+                        resultListener.onSearchError("Network Error");
                     }
                 });
 
@@ -129,16 +139,16 @@ public class HttpInstance {
      */
     public void addMultipartRequestToQueue(
             final String url,
-            Map<String, String> params,
+            Map<String, List<String> > params,
             byte[] bytes,
             final ViSearch.ResultListener resultListener) {
 
         ResponseListener responseListener = new ResponseListener(resultListener);
 
         if (null == params)
-            params = new HashMap<String, String>();
+            params = new HashMap<String, List<String> >();
 
-        params.putAll(AuthGenerator.getAuthParam(accessKey, secretKey));
+        putValueMapInMap(params, AuthGenerator.getAuthParam(accessKey, secretKey));
 
         MultiPartRequest multipartRequest = new MultiPartRequest(Request.Method.POST, url,
                 params, bytes,
@@ -147,6 +157,7 @@ public class HttpInstance {
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
                         volleyError.printStackTrace();
+                        resultListener.onSearchError("Network Error");
                     }
                 });
 
@@ -167,4 +178,11 @@ public class HttpInstance {
         }
     }
 
+    private void putValueMapInMap(Map<String, List<String> > map, Map<String, String> valueMap) {
+        for (Map.Entry<String, String> set : valueMap.entrySet()) {
+            List<String> stringList = new ArrayList<>();
+            stringList.add(set.getValue());
+            map.put(set.getKey(), stringList);
+        }
+    }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -12,90 +13,194 @@ import java.io.FileNotFoundException;
  * Handles image decoding and optimisation.
  */
 public class Image {
-    private static final int OPT_WIDTH = 800;
-    private static final int OPT_HEIGHT = 800;
-
-    private Bitmap bitmap;
-
-    private BitmapFactory.Options bitmapOptions;
-
-    private int inSampleSize = 1;
-
-    private Box box;
+    private static final String         IMAGE_TAG = "image process";
 
     /**
-     * Construct with file path
+     * byte array of image
+     */
+    private byte[]                      byteArray;
+
+    /**
+     * scaling factors
+     */
+    private float                       scaleFactor; //with respect to original size
+
+    /**
+     * box
+     */
+    private Box                         box;
+
+    /**
+     * Construct with file path,
+     * Image is loaded from the provided file path and re-sized to the optimized size for upload
      *
-     * @param filePath path to a local directory.
+     * @param filePath path to a local directory
      */
     public Image(String filePath) {
-        this(filePath, true);
+        this(filePath, ResizeSettings.STANDARD);
     }
 
     /**
-     * Construct with file path and set optimisation option.
-     * If the optimisation is set as false, the image is load as its original size
-     * otherwise the image is resize to optimise the search process.
+     * Construct with file path.
+     * Image is loaded from the provided file path and re-sized to the optimized size for upload.
+     * The default size is 512, it is allowed to be customized. Use ResizeSettings.LARGE_SIZE to
+     * set the resize limit to 2014.
+     *
+     * For images with finer patterns, it is recommended to use a large size.Noted that to required
+     * a large size image for upload search takes higher network bandwidth and longer response time.
+     *
      *
      * @param filePath path to a local directory.
-     * @param optimize optimisation option.
+     * @param resizeSettings resize setting
      */
-    public Image(String filePath, boolean optimize) {
-        bitmapOptions = new BitmapFactory.Options();
+    public Image(String filePath, ResizeSettings resizeSettings)  {
+
+        //set inJustDecodeBounds true to only get image information, not image bytes
+        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
         bitmapOptions.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(filePath, bitmapOptions);
 
-        if (optimize) {
-            inSampleSize = calculateInSampleSize(bitmapOptions);
-        }
+        //find the optimal inSampleSize, with memory constrain
+        scaleFactor = calculateScaleFactor(bitmapOptions, resizeSettings);
 
+        //use the scale factor to decode the image from file path
         bitmapOptions.inJustDecodeBounds = false;
-        bitmapOptions.inSampleSize = inSampleSize;
+        bitmapOptions.inDensity = 10000;
+        bitmapOptions.inTargetDensity = (int) ((float) bitmapOptions.inDensity * scaleFactor);
 
-        bitmapOptions.inJustDecodeBounds = false;
-        bitmap = BitmapFactory.decodeFile(filePath, bitmapOptions);
+        Bitmap bitmap = BitmapFactory.decodeFile(filePath, bitmapOptions);
+
+        Log.d(IMAGE_TAG, "scale bitmap to fit the size: " + bitmap.getWidth() + " x " + bitmap.getHeight());
+
+        //get image byte array
+        ByteArrayOutputStream outs = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, resizeSettings.getCompressQuality(), outs);
+        byteArray = outs.toByteArray();
+
+        //clear bitmap memory
+        bitmap.recycle();
     }
 
     /**
      * Construct with Uri
+     * Image is loaded from the provided Uri and re-sized to the optimized size for upload.
      *
      * @param context Activity context
-     * @param uri     Uri to link to the image
+     * @param uri Uri to link to the image
      */
     public Image(Context context, Uri uri) {
-        this(context, uri, true);
+        this(context, uri, ResizeSettings.STANDARD);
     }
 
     /**
-     * Construct with Uri and set optimisation option.
-     * If the optimisation is set as false, the image is load as its original size
-     * otherwise the image is resize to optimise the search process.
+     * Construct with Uri
+     * Image is loaded from the provided Uri and re-sized to the optimized size for upload.
+     * The default size is 512, it is allowed to be customized. Use ResizeSettings.LARGE_SIZE to
+     * set the resize limit to 2014.
+     *
+     * For images with finer patterns, it is recommended to use a large size.Noted that to required
+     * a large size image for upload search takes higher network bandwidth and longer response time.
      *
      * @param context  Activity context
      * @param uri      Uri to link to the image
-     * @param optimize optimisation option.
+     * @param resizeSettings resize setting
      */
-    public Image(Context context, Uri uri, boolean optimize) {
-        bitmapOptions = new BitmapFactory.Options();
-        bitmapOptions.inJustDecodeBounds = true;
+    public Image(Context context, Uri uri, ResizeSettings resizeSettings) {
+
         try {
+            BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+            bitmapOptions.inJustDecodeBounds = true;
             BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri), null, bitmapOptions);
 
-            if (optimize) {
-                inSampleSize = calculateInSampleSize(bitmapOptions);
-            }
+            //find the optimal inSampleSize, with memory constrain
+            scaleFactor = calculateScaleFactor(bitmapOptions, resizeSettings);
 
+            //use the scale factor to decode the image from file path
             bitmapOptions.inJustDecodeBounds = false;
-            bitmapOptions.inSampleSize = inSampleSize;
+            bitmapOptions.inDensity = 10000;
+            bitmapOptions.inTargetDensity = (int) ((float) bitmapOptions.inDensity * scaleFactor);
 
-            bitmap = BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri), null, bitmapOptions);
+            Bitmap bitmap = BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri), null, bitmapOptions);
+
+            Log.d(IMAGE_TAG, "scale bitmap to fit the size: " + bitmap.getWidth() + " x " + bitmap.getHeight());
+
+            //get image byte array
+            ByteArrayOutputStream outs = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, resizeSettings.getCompressQuality(), outs);
+            byteArray = outs.toByteArray();
+
+            //clear memory
+            bitmap.recycle();
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }
 
     /**
-     * Set the coordinates of a region in the image for search
+     * Construct with raw byte array from the camera Callback
+     *
+     * This constructor compresses the image with a lower quality value. Try not to
+     * call this constructor when handling images what has been compressed. Only use
+     * this to passed the byte array from camera callback.
+     *
+     * The image is resize to be processed and transferred efficiently.
+     * The default re-size limit is 512
+     *
+     * @param byteArray byte array from camera callback
+     */
+    public Image(byte[] byteArray) {
+        this(byteArray, ResizeSettings.CAMERA_STANDARD);
+    }
+
+    /**
+     * Construct with raw byte array from the camera Callback
+     *
+     * This constructor compresses the image with a lower quality value. Try not to
+     * call this constructor when handling images what has been compressed. Only use
+     * this to passed the byte array from camera callback.
+     *
+     * The default re-size limit is 512, it is allowed to be customized to a larger size of 1024
+     * The default size is 512, it is allowed to be customized. Use ResizeSettings.LARGE_SIZE to
+     * set the resize limit to 2014.
+     *
+     * For images with finer patterns, it is recommended to use a large size.Noted that to required
+     * a large size image for upload search takes higher network bandwidth and longer response time.
+     *
+     * @param byteArray byte array from camera callback
+     * @param resizeSettings resize setting
+     */
+    public Image(byte[] byteArray, ResizeSettings resizeSettings) {
+
+        //get image info from byte array
+        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+        bitmapOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length, bitmapOptions);
+
+         //find the optimal inSampleSize, with memory constrain
+        scaleFactor = calculateScaleFactor(bitmapOptions, resizeSettings);
+
+        //use the scale factor to decode the image from file path
+        bitmapOptions.inJustDecodeBounds = false;
+        bitmapOptions.inDensity = 10000;
+        bitmapOptions.inTargetDensity = (int) ((float) bitmapOptions.inDensity * scaleFactor);
+
+        Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length, bitmapOptions);
+
+        Log.d(IMAGE_TAG, "scale bitmap to fit the size: " + bitmap.getWidth() + " x " + bitmap.getHeight());
+
+
+        //get image byte array, use lower quality for byte array (COMPRESS_QUALITY_CAMERA)
+        ByteArrayOutputStream outs = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, resizeSettings.getCompressQuality(), outs);
+        this.byteArray = outs.toByteArray();
+
+        bitmap.recycle();
+    }
+
+    /**
+     * Set the coordinates of a region in the image for search, the coordinates needs to be
+     * set with respect to the original size of the image
      *
      * @param x1 top-left corner x-coordinate
      * @param y1 top-left corner y-coordinate
@@ -104,27 +209,35 @@ public class Image {
      * @return this instance.
      */
     public Image setBox(Integer x1, Integer y1, Integer x2, Integer y2) {
-        box = new Box(x1, y1, x2, y2, inSampleSize);
+        float scale = getScaleFactor();
+
+        //need to scale the coordinates down to fit the re-sized image
+        box = new Box((int) (x1 * scale), (int) (y1 * scale),  (int) (x2 * scale), (int) (y2 * scale));
+
+        Log.d(IMAGE_TAG, "box size: " + box.getX1() + ", " + box.getY1() + ", " + box.getX2() + ", " + box.getY2());
+
         return this;
     }
 
-    public byte[] getByteArray() {
-        ByteArrayOutputStream outs = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 10, outs);
-        return outs.toByteArray();
-    }
-
     /**
-     * Get the Bitmap of the image decoded for search
-     *
-     * @return Bitmap decoded
+     * return the image byte array after resize and compression
+     * @return image byte array
      */
-    public Bitmap getBitmap() {
-        return bitmap;
+    public byte[] getByteArray() {
+        return byteArray;
     }
 
     /**
-     * Get the {@link com.visenze.android.searchlib.util.Image.Box Box}
+     * get the scale factor
+     *
+     * @return scale factor
+     */
+    public float getScaleFactor() {
+        return scaleFactor;
+    }
+
+    /**
+     * Get the {@link com.visenze.visearch.android.Image.Box Box}
      *
      * @return Region in the image for search
      */
@@ -133,28 +246,89 @@ public class Image {
     }
 
     /**
-     * Call recycle() to free memory taken by the bitmap
-     */
-    public void recycle() {
-        if (bitmap != null)
-            bitmap.recycle();
-    }
-
-
-    /*
      * Down sample the bitmap if its size exceeds the limit
      */
-    private int calculateInSampleSize(BitmapFactory.Options options) {
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
+    private float calculateScaleFactor(BitmapFactory.Options options, ResizeSettings resizeSettings) {
+        int originalHeight = options.outHeight;
+        int originalWidth = options.outWidth;
+        int targetHeight = resizeSettings.getMaxHeight();
+        int targetWidth = resizeSettings.getMaxWidth();
+        float scale;
 
-        while ((height / inSampleSize) > OPT_HEIGHT &&
-                (width / inSampleSize) > OPT_WIDTH) {
-            inSampleSize *= 2;
+        Log.d(IMAGE_TAG, "original image size: " + originalWidth + " x " + originalHeight);
+
+        //get the smaller ratio to fit the resize image to the target space
+        scale = ( targetWidth / (float)originalWidth < targetHeight / (float)originalHeight)
+                ? targetWidth / (float)originalWidth : targetHeight / (float)originalHeight;
+
+        //do not upscale
+        if (scale > 1f)
+            scale = 1f;
+
+        Log.d(IMAGE_TAG, "scale factor: " + scale);
+
+        return scale;
+    }
+
+    /**
+     * resize settings
+     */
+    public static class ResizeSettings {
+        /**
+         * max size for low, medium and high
+         */
+        private static final int            STANDARD_SIZE = 512;
+        private static final int            LARGE_SIZE = 1024;
+
+        private static final int            COMPRESS_QUALITY_CAMERA = 75; //compression quality for raw bytes from camera
+        private static final int            COMPRESS_QUALITY_LOW = 85; //compression quality for image from path, with low quality
+        private static final int            COMPRESS_QUALITY_HIGH = 90; //compression quality for image from path, with high quality
+
+        public static final ResizeSettings  STANDARD = new ResizeSettings(
+                STANDARD_SIZE,
+                STANDARD_SIZE,
+                COMPRESS_QUALITY_LOW);
+        public static final ResizeSettings  HIGH = new ResizeSettings(
+                LARGE_SIZE,
+                LARGE_SIZE,
+                COMPRESS_QUALITY_HIGH);
+        public static final ResizeSettings  CAMERA_STANDARD = new ResizeSettings(
+                STANDARD_SIZE,
+                STANDARD_SIZE,
+                COMPRESS_QUALITY_CAMERA);
+        public static final ResizeSettings  CAMERA_LARGE = new ResizeSettings(
+                LARGE_SIZE,
+                LARGE_SIZE,
+                COMPRESS_QUALITY_CAMERA);
+
+        private int maxWidth;
+        private int maxHeight;
+        private int compressQuality;
+
+        public ResizeSettings(int maxWidth, int maxHeight, int compressQuality) {
+            this.maxWidth = maxWidth < LARGE_SIZE ? maxWidth : LARGE_SIZE;
+            this.maxHeight = maxHeight < LARGE_SIZE ? maxHeight : LARGE_SIZE;
+
+            if (compressQuality < 0)
+                compressQuality = 0;
+
+            if (compressQuality > 100)
+                compressQuality = 100;
+
+            this.compressQuality = compressQuality;
         }
 
-        return inSampleSize;
+        public int getMaxWidth() {
+            return maxWidth;
+        }
+
+        public int getMaxHeight() {
+            return maxHeight;
+        }
+
+        public int getCompressQuality() {
+            return compressQuality;
+        }
     }
 
     /**
@@ -169,12 +343,6 @@ public class Image {
 
         private Integer y2;
 
-        private int inSampleSize;
-
-        public Box(int inSampleSize) {
-            this.inSampleSize = inSampleSize;
-        }
-
         /**
          * Construct with coordinates
          *
@@ -183,7 +351,7 @@ public class Image {
          * @param x2 bottom-right corner x-coordinate.
          * @param y2 bottom-right corner y-coordinate.
          */
-        public Box(Integer x1, Integer y1, Integer x2, Integer y2, int inSampleSize) {
+        public Box(Integer x1, Integer y1, Integer x2, Integer y2) {
             this.x1 = x1;
             this.y1 = y1;
             this.x2 = x2;
@@ -197,7 +365,7 @@ public class Image {
          * @return this instance.
          */
         public Box setX1(Integer x1) {
-            this.x1 = (int) (x1 / (float) inSampleSize);
+            this.x1 = x1;
             return this;
         }
 
@@ -208,7 +376,7 @@ public class Image {
          * @return this instance.
          */
         public Box setY1(Integer y1) {
-            this.y1 = (int) (y1 / (float) inSampleSize);
+            this.y1 = y1;
             return this;
         }
 
@@ -219,7 +387,7 @@ public class Image {
          * @return this instance.
          */
         public Box setX2(Integer x2) {
-            this.x2 = (int) (x2 / (float) inSampleSize);
+            this.x2 = x2;
             return this;
         }
 
@@ -230,7 +398,7 @@ public class Image {
          * @return this instance.
          */
         public Box setY2(Integer y2) {
-            this.y2 = (int) (y2 / (float) inSampleSize);
+            this.y2 = y2;
             return this;
         }
 

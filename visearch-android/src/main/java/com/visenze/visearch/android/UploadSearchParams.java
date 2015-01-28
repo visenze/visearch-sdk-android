@@ -1,6 +1,10 @@
 package com.visenze.visearch.android;
 
 
+import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,9 +49,6 @@ public class UploadSearchParams extends SearchParams {
      */
     public UploadSearchParams setImage(Image image) {
         //free memory
-        if (this.image != null)
-            this.image.recycle();
-
         this.image = image;
 
         return this;
@@ -83,20 +84,28 @@ public class UploadSearchParams extends SearchParams {
     }
 
     @Override
-    public Map<String, String> toMap() {
-        Map<String, String> map = super.toMap();
+    public Map<String, List<String> > toMap() {
+        Map<String, List<String> > map = super.toMap();
 
         if (image.getBox() != null) {
             if (image.getBox().getX1() != null && image.getBox().getX2() != null &&
                     image.getBox().getY1() != null && image.getBox().getY2() != null) {
-                map.put("box", image.getBox().getX1() + "," + image.getBox().getY1() + "," + image.getBox().getX2() + "," + image.getBox().getY2());
+                putStringInMap(map, "box", image.getBox().getX1() + "," + image.getBox().getY1() + "," + image.getBox().getX2() + "," + image.getBox().getY2());
+                Log.d("Upload params", "box size: " + image.getBox().getX1() + ", " + image.getBox().getY1() + ", " + image.getBox().getX2() + ", " + image.getBox().getY2());
             }
         }
 
         if (imageUrl != null) {
-            map.put("im_url", imageUrl);
+            putStringInMap(map, "im_url", imageUrl);
         }
+
         return map;
     }
 
+    private void putStringInMap(Map<String, List<String> > map, String key, String value) {
+        List<String> stringList = new ArrayList<>();
+        stringList.add(value);
+
+        map.put(key, stringList);
+    }
 }

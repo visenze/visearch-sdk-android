@@ -120,7 +120,7 @@ public class ResultList {
 
         private String imageUrl;
 
-        private Double score;
+        private Float score;
 
         private Map<String, String> fieldList;
 
@@ -128,7 +128,7 @@ public class ResultList {
             this.fieldList = new HashMap<String, String>();
         }
 
-        public ImageResult(String imageName, String imageUrl, Double score, Map<String, String> filedList) {
+        public ImageResult(String imageName, String imageUrl, Float score, Map<String, String> filedList) {
             this.imageName = imageName;
             this.imageUrl = imageUrl;
             this.score = score;
@@ -158,7 +158,7 @@ public class ResultList {
          *
          * @return search score.
          */
-        public Double getScore() {
+        public Float getScore() {
             try {
                 return score;
             } catch (Exception e) {
@@ -172,7 +172,7 @@ public class ResultList {
          *
          * @return field list.
          */
-        public Map<String, String> getFieldList() {
+        public Map<String, String> getMetaData() {
 
             return fieldList;
         }
@@ -186,7 +186,7 @@ public class ResultList {
             this.imageUrl = imageUrl;
         }
 
-        public void setScore(Double score) {
+        public void setScore(Float score) {
 
             this.score = score;
 
