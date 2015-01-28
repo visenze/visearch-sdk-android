@@ -1,6 +1,8 @@
 package com.visenze.visearch.android;
 
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -89,6 +91,7 @@ public class UploadSearchParams extends SearchParams {
             if (image.getBox().getX1() != null && image.getBox().getX2() != null &&
                     image.getBox().getY1() != null && image.getBox().getY2() != null) {
                 putStringInMap(map, "box", image.getBox().getX1() + "," + image.getBox().getY1() + "," + image.getBox().getX2() + "," + image.getBox().getY2());
+                Log.d("Upload params", "box size: " + image.getBox().getX1() + ", " + image.getBox().getY1() + ", " + image.getBox().getX2() + ", " + image.getBox().getY2());
             }
         }
 

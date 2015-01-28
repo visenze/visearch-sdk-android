@@ -19,6 +19,10 @@ public class BaseSearchParams {
 
     private Boolean score;
 
+    private Float scoreMin;
+
+    private Float scoreMax;
+
     private Boolean queryInfo;
 
     /**
@@ -138,6 +142,43 @@ public class BaseSearchParams {
     }
 
     /**
+     * get minimum score threshold
+     *
+     * @return minimum score threshold value
+     */
+    public Float getScoreMin() {
+        return scoreMin;
+    }
+
+    /**
+     * set minimum score threshold
+     * @param scoreMin min score threshold value
+     */
+    public void setScoreMin(Float scoreMin) {
+        this.scoreMin = scoreMin;
+    }
+
+    /**
+     * get maximum score threshold
+     *
+     *
+     * @return maximum score threshold value
+     */
+    public Float getScoreMax() {
+        return scoreMax;
+    }
+
+    /**
+     * set maximum score threshold value
+     *
+     * @param scoreMax max score threshold value
+     */
+    public void setScoreMax(Float scoreMax) {
+        this.scoreMax = scoreMax;
+    }
+
+
+    /**
      * Get the filter queries
      *
      * @return filter queries.
@@ -168,6 +209,14 @@ public class BaseSearchParams {
 
         if (score != null) {
             putStringInMap(map, "score", String.valueOf(score));
+        }
+
+        if (scoreMin != null) {
+            putStringInMap(map, "score_min", String.valueOf(scoreMin));
+        }
+
+        if (scoreMax != null) {
+            putStringInMap(map, "score_max", String.valueOf(scoreMax));
         }
 
         if (queryInfo != null) {

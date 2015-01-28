@@ -41,6 +41,8 @@ dependencies {
     compile ('org.apache.httpcomponents:httpmime:4.3.5') {
         exclude module: 'httpclient'
     }
+
+    compile 'org.apache.httpcomponents:httpclient-android:4.3.5'
     compile(group: 'com.mcxiaoke.volley', name: 'library', version: '1.0.10', ext: 'aar')
 
     androidTestCompile 'junit:junit:4.12'
@@ -49,7 +51,7 @@ dependencies {
 }
 
 group = 'com.visenze'
-version = '1.0.0'
+version = '1.0.1-SNAPSHOT'
 
 apply plugin: 'com.jfrog.bintray'
 
@@ -68,9 +70,9 @@ bintray {
         licenses = ['The MIT License']
         labels = ['visenze', 'visearch', 'sdk', 'android']
         version {
-            name = '1.0.0'
+            name = '1.0.1-SNAPSHOT'
             description = 'ViSearch Android SDK'
-            vcsTag = '1.0.0'
+            vcsTag = '1.0.1-SNAPSHOT'
         }
     }
 }

@@ -53,7 +53,6 @@ public class MyActivity extends Activity implements ViSearch.ResultListener{
         viSearch.setListener(this);
 
         //init search params
-        baseSearchParams = new BaseSearchParams();
         idSearchParams = new IdSearchParams();
         colorSearchParams = new ColorSearchParams();
         uploadSearchParams = new UploadSearchParams();
@@ -156,7 +155,8 @@ public class MyActivity extends Activity implements ViSearch.ResultListener{
         uploadSearchParams.setBaseSearchParams(baseSearchParams);
 
         //init image
-        Image image = new Image(this, uri);
+        Image image = new Image(this, uri, Image.ResizeSettings.STANDARD);
+//        image.setBox()
         uploadSearchParams.setImage(image);
 
         //call search method

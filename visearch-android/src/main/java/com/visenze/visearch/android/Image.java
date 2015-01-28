@@ -16,23 +16,9 @@ public class Image {
     private static final String         IMAGE_TAG = "image process";
 
     /**
-     * max size for low, medium and high
-     */
-    public static final int             STANDARD_SIZE = 512;
-    public static final int             LARGE_SIZE = 1024;
-    private static final int            COMPRESS_QUALITY_CAMERA = 75; //compression quality for raw bytes from camera
-    private static final int            COMPRESS_QUALITY_LOW = 85; //compression quality for image from path, with low quality
-    private static final int            COMPRESS_QUALITY_HIGH = 90; //compression quality for image from path, with high quality
-
-    /**
      * byte array of image
      */
     private byte[]                      byteArray;
-
-    /**
-     * max size selected
-     */
-    private int                         maxSize;
 
     /**
      * scaling factors
@@ -45,32 +31,29 @@ public class Image {
     private Box                         box;
 
     /**
-     * Construct with file path.
-     * Image is loaded from the provided file path and re-sized to the optimized size for upload.
-     * The default size is 512
+     * Construct with file path,
+     * Image is loaded from the provided file path and re-sized to the optimized size for upload
      *
-     * @param filePath path to a local directory.
+     * @param filePath path to a local directory
      */
     public Image(String filePath) {
-        this(filePath, STANDARD_SIZE);
+        this(filePath, ResizeSettings.STANDARD);
     }
 
     /**
      * Construct with file path.
      * Image is loaded from the provided file path and re-sized to the optimized size for upload.
-     * The default size is 512, it is allowed to be customized to a larger size of 1024
+     * The default size is 512, it is allowed to be customized. Use ResizeSettings.LARGE_SIZE to
+     * set the resize limit to 2014.
+     *
      * For images with finer patterns, it is recommended to use a large size.Noted that to required
      * a large size image for upload search takes higher network bandwidth and longer response time.
      *
-     * @param maxSize the max length of the image size
+     *
      * @param filePath path to a local directory.
+     * @param resizeSettings resize setting
      */
-    public Image(String filePath, int maxSize)  {
-        //set max size
-        if (maxSize != LARGE_SIZE && maxSize != STANDARD_SIZE)
-            throw new ViSearchException("Invalid size setting, please use either STANDARD_SIZE or LARGE_SIZE");
-
-        this.maxSize = maxSize;
+    public Image(String filePath, ResizeSettings resizeSettings)  {
 
         //set inJustDecodeBounds true to only get image information, not image bytes
         BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
@@ -78,7 +61,7 @@ public class Image {
         BitmapFactory.decodeFile(filePath, bitmapOptions);
 
         //find the optimal inSampleSize, with memory constrain
-        calculateScaleFactor(bitmapOptions);
+        scaleFactor = calculateScaleFactor(bitmapOptions, resizeSettings);
 
         //use the scale factor to decode the image from file path
         bitmapOptions.inJustDecodeBounds = false;
@@ -87,34 +70,42 @@ public class Image {
 
         Bitmap bitmap = BitmapFactory.decodeFile(filePath, bitmapOptions);
 
+        Log.d(IMAGE_TAG, "scale bitmap to fit the size: " + bitmap.getWidth() + " x " + bitmap.getHeight());
+
         //get image byte array
         ByteArrayOutputStream outs = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, COMPRESS_QUALITY_HIGH, outs);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, resizeSettings.getCompressQuality(), outs);
         byteArray = outs.toByteArray();
 
+        //clear bitmap memory
         bitmap.recycle();
-    }
-
-    public Image(Context context, Uri uri) {
-        this(context, uri, STANDARD_SIZE);
     }
 
     /**
      * Construct with Uri
      * Image is loaded from the provided Uri and re-sized to the optimized size for upload.
-     * The default size is 512, it is allowed to be customized to a larger size of 1024
+     *
+     * @param context Activity context
+     * @param uri Uri to link to the image
+     */
+    public Image(Context context, Uri uri) {
+        this(context, uri, ResizeSettings.STANDARD);
+    }
+
+    /**
+     * Construct with Uri
+     * Image is loaded from the provided Uri and re-sized to the optimized size for upload.
+     * The default size is 512, it is allowed to be customized. Use ResizeSettings.LARGE_SIZE to
+     * set the resize limit to 2014.
+     *
      * For images with finer patterns, it is recommended to use a large size.Noted that to required
      * a large size image for upload search takes higher network bandwidth and longer response time.
      *
      * @param context  Activity context
      * @param uri      Uri to link to the image
+     * @param resizeSettings resize setting
      */
-    public Image(Context context, Uri uri, int maxSize) {
-        //set max size
-        if (maxSize != LARGE_SIZE && maxSize != STANDARD_SIZE)
-            throw new ViSearchException("Invalid size setting, please use either STANDARD_SIZE or LARGE_SIZE");
-
-        this.maxSize = maxSize;
+    public Image(Context context, Uri uri, ResizeSettings resizeSettings) {
 
         try {
             BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
@@ -122,7 +113,7 @@ public class Image {
             BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri), null, bitmapOptions);
 
             //find the optimal inSampleSize, with memory constrain
-            calculateScaleFactor(bitmapOptions);
+            scaleFactor = calculateScaleFactor(bitmapOptions, resizeSettings);
 
             //use the scale factor to decode the image from file path
             bitmapOptions.inJustDecodeBounds = false;
@@ -135,9 +126,10 @@ public class Image {
 
             //get image byte array
             ByteArrayOutputStream outs = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, COMPRESS_QUALITY_HIGH, outs);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, resizeSettings.getCompressQuality(), outs);
             byteArray = outs.toByteArray();
 
+            //clear memory
             bitmap.recycle();
 
         } catch (FileNotFoundException e) {
@@ -147,33 +139,38 @@ public class Image {
 
     /**
      * Construct with raw byte array from the camera Callback
+     *
      * This constructor compresses the image with a lower quality value. Try not to
      * call this constructor when handling images what has been compressed. Only use
-     * this by passing in the byte array from camera callback
+     * this to passed the byte array from camera callback.
      *
-     * @param byteArray image byte array
+     * The image is resize to be processed and transferred efficiently.
+     * The default re-size limit is 512
+     *
+     * @param byteArray byte array from camera callback
      */
     public Image(byte[] byteArray) {
-        this(byteArray, STANDARD_SIZE);
+        this(byteArray, ResizeSettings.CAMERA_STANDARD);
     }
 
     /**
      * Construct with raw byte array from the camera Callback
+     *
      * This constructor compresses the image with a lower quality value. Try not to
      * call this constructor when handling images what has been compressed. Only use
-     * this to passed in the byte array from camera callback.
+     * this to passed the byte array from camera callback.
+     *
      * The default re-size limit is 512, it is allowed to be customized to a larger size of 1024
+     * The default size is 512, it is allowed to be customized. Use ResizeSettings.LARGE_SIZE to
+     * set the resize limit to 2014.
+     *
      * For images with finer patterns, it is recommended to use a large size.Noted that to required
      * a large size image for upload search takes higher network bandwidth and longer response time.
      *
-     * @param byteArray byte array
+     * @param byteArray byte array from camera callback
+     * @param resizeSettings resize setting
      */
-    public Image(byte[] byteArray, int maxSize) {
-        //set max size
-        if (maxSize != LARGE_SIZE && maxSize != STANDARD_SIZE)
-            throw new ViSearchException("Invalid size setting, please use either STANDARD_SIZE or LARGE_SIZE");
-
-        this.maxSize = maxSize;
+    public Image(byte[] byteArray, ResizeSettings resizeSettings) {
 
         //get image info from byte array
         BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
@@ -181,7 +178,7 @@ public class Image {
         BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length, bitmapOptions);
 
          //find the optimal inSampleSize, with memory constrain
-        calculateScaleFactor(bitmapOptions);
+        scaleFactor = calculateScaleFactor(bitmapOptions, resizeSettings);
 
         //use the scale factor to decode the image from file path
         bitmapOptions.inJustDecodeBounds = false;
@@ -190,12 +187,13 @@ public class Image {
 
         Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length, bitmapOptions);
 
-        //scale the image to fit the required size
+        Log.d(IMAGE_TAG, "scale bitmap to fit the size: " + bitmap.getWidth() + " x " + bitmap.getHeight());
+
 
         //get image byte array, use lower quality for byte array (COMPRESS_QUALITY_CAMERA)
         ByteArrayOutputStream outs = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, COMPRESS_QUALITY_CAMERA, outs);
-        byteArray = outs.toByteArray();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, resizeSettings.getCompressQuality(), outs);
+        this.byteArray = outs.toByteArray();
 
         bitmap.recycle();
     }
@@ -215,6 +213,8 @@ public class Image {
 
         //need to scale the coordinates down to fit the re-sized image
         box = new Box((int) (x1 * scale), (int) (y1 * scale),  (int) (x2 * scale), (int) (y2 * scale));
+
+        Log.d(IMAGE_TAG, "box size: " + box.getX1() + ", " + box.getY1() + ", " + box.getX2() + ", " + box.getY2());
 
         return this;
     }
@@ -248,19 +248,87 @@ public class Image {
     /**
      * Down sample the bitmap if its size exceeds the limit
      */
-    private void calculateScaleFactor(BitmapFactory.Options options) {
+    private float calculateScaleFactor(BitmapFactory.Options options, ResizeSettings resizeSettings) {
         int originalHeight = options.outHeight;
         int originalWidth = options.outWidth;
+        int targetHeight = resizeSettings.getMaxHeight();
+        int targetWidth = resizeSettings.getMaxWidth();
+        float scale;
 
         Log.d(IMAGE_TAG, "original image size: " + originalWidth + " x " + originalHeight);
 
-        scaleFactor = ( originalWidth > originalHeight) ? maxSize / (float)originalWidth : maxSize / (float)originalHeight;
+        //get the smaller ratio to fit the resize image to the target space
+        scale = ( targetWidth / (float)originalWidth < targetHeight / (float)originalHeight)
+                ? targetWidth / (float)originalWidth : targetHeight / (float)originalHeight;
 
         //do not upscale
-        if (scaleFactor > 1f)
-            scaleFactor = 1f;
+        if (scale > 1f)
+            scale = 1f;
 
-        Log.d(IMAGE_TAG, "scale factor: " + scaleFactor);
+        Log.d(IMAGE_TAG, "scale factor: " + scale);
+
+        return scale;
+    }
+
+    /**
+     * resize settings
+     */
+    public static class ResizeSettings {
+        /**
+         * max size for low, medium and high
+         */
+        private static final int            STANDARD_SIZE = 512;
+        private static final int            LARGE_SIZE = 1024;
+
+        private static final int            COMPRESS_QUALITY_CAMERA = 75; //compression quality for raw bytes from camera
+        private static final int            COMPRESS_QUALITY_LOW = 85; //compression quality for image from path, with low quality
+        private static final int            COMPRESS_QUALITY_HIGH = 90; //compression quality for image from path, with high quality
+
+        public static final ResizeSettings  STANDARD = new ResizeSettings(
+                STANDARD_SIZE,
+                STANDARD_SIZE,
+                COMPRESS_QUALITY_LOW);
+        public static final ResizeSettings  HIGH = new ResizeSettings(
+                LARGE_SIZE,
+                LARGE_SIZE,
+                COMPRESS_QUALITY_HIGH);
+        public static final ResizeSettings  CAMERA_STANDARD = new ResizeSettings(
+                STANDARD_SIZE,
+                STANDARD_SIZE,
+                COMPRESS_QUALITY_CAMERA);
+        public static final ResizeSettings  CAMERA_LARGE = new ResizeSettings(
+                LARGE_SIZE,
+                LARGE_SIZE,
+                COMPRESS_QUALITY_CAMERA);
+
+        private int maxWidth;
+        private int maxHeight;
+        private int compressQuality;
+
+        public ResizeSettings(int maxWidth, int maxHeight, int compressQuality) {
+            this.maxWidth = maxWidth < LARGE_SIZE ? maxWidth : LARGE_SIZE;
+            this.maxHeight = maxHeight < LARGE_SIZE ? maxHeight : LARGE_SIZE;
+
+            if (compressQuality < 0)
+                compressQuality = 0;
+
+            if (compressQuality > 100)
+                compressQuality = 100;
+
+            this.compressQuality = compressQuality;
+        }
+
+        public int getMaxWidth() {
+            return maxWidth;
+        }
+
+        public int getMaxHeight() {
+            return maxHeight;
+        }
+
+        public int getCompressQuality() {
+            return compressQuality;
+        }
     }
 
     /**

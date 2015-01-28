@@ -5,8 +5,9 @@ import java.util.Map;
 
 /**
  * Abstract class. Search parameter settings.
- * This class is extended by {@link IdSearchParams IndexSearchParams}
- * {@link ColorSearchParams ColorSearchParams} and
+ * This class is extended by
+ * {@link IdSearchParams IndexSearchParams}
+ * {@link ColorSearchParams ColorSearchParams}
  * {@link UploadSearchParams UploadSearchParams}.
  */
 public abstract class SearchParams {
