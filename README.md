@@ -1,26 +1,51 @@
-ViSearch Android SDK User Guide
-----
+#ViSearch Android SDK User Guides
 
-[![Build Status](https://api.travis-ci.org/jasonpeng/visearch-sdk-android.svg?branch=develop)](https://travis-ci.org/jasonpeng/visearch-sdk-android)
+<!--build badge here-->
+
+---
+
+##Table of Contents
+ 1. [Overview](#1-overview)
+ 2. [Setup](#2-setup)
+ 	  - 2.1 [Install the SDK](#21-install-the-sdk)
+ 	  - 2.2 [Add User Permissions](#22-add-user-permissions)
+ 3. [Initialization](#3-initialization)
+ 4. [Searching Images](#4-searching-images)
+	  - 4.1 [Pre-indexed Search](#41-pre-indexed-search)
+	  - 4.2 [Color Search](#42-color-search)
+	  - 4.3 [Upload Search](#43-upload-search)
+	    - 4.3.1 [Selection Box](#431-selection-box)
+	    - 4.3.2 [Resizing Settings](#432-resizing-settings)
+ 5. [Search Results](#5-search-results)
+ 6. [Advanced Search Parameters](#6-advanced-search-parameters)
+	  - 6.1 [Retrieving Metadata](#61-retrieving-metadata)
+	  - 6.2 [Filtering Results](#62-filtering-results)
+	  - 6.3 [Result Score](#63-result-score)
+ 7. [Code Samples](#7-code-samples)
+
+---
+
 
 ##1. Overview
-ViSearch is an API that provides accurate, reliable and scalable image search. ViSearch API provides two services ( Data API and Search API) to let the developers prepare image database and perform image searches efficiently. ViSearch API can be easily integrated into your web and mobile applications. More details about ViSearch API can be found in the [documentation](http://www.visenze.com/docs/overview/introduction).
+ViSearch is an API that provides accurate, reliable and scalable image search. ViSearch API provides two services ( Data API and Search API) to let the developers prepare image database and perform image searches efficiently. ViSearch API can be easily integrated into your web and mobile applications. For more details, see [ViSearch API Documentation](http://www.visenze.com/docs/overview/introduction).
 
-The ViSearch Androi SDK is an open source software for easy integartion of ViSearch Search API with your Android mobile applications. It provides three search methods based on the ViSearch Search API - pre-indexed search, color search and upload search. For source code and references, visit the github [repository](https://github.com/visenze/visearch-sdk-android).
+The ViSearch Androi SDK is an open source software to provide easy integration of ViSearch Search API with your Android mobile applications. It provides three search methods based on the ViSearch Search API - pre-indexed search, color search and upload search. For source code and references, please visit the [Github Repository](https://github.com/visenze/visearch-sdk-android).
 
-Current stable version: 1.0.1
+>Current stable version: 1.0.1
+
+>Minimum Android SDK Version: API 9, Android 2.3
+
 
 ##2. Setup
-You can get the soruce code of the SDK and demos from the [github repo](https://github.com/visenze/visearch-sdk-android). You can import it as a new project using Android Studio (Tested environment: Android Studio 1.0.2)
 
-###Install the SDK
-For a quick start, you may include the SDK into your own project using gradle:
+###2.1 Install the SDK
+You can include the dependency in your project using gradle:
 
 ```
 compile 'com.visenze:visearch-android:1.0.1'
 ```
 
-In the build.gradle file under your app module, add the packaging options to ensure a successful compilation:
+In the `build.gradle` file under your app module, add the packaging options to ensure a successful compilation:
 
 ```
 android {
@@ -35,9 +60,8 @@ android {
 ```
 
 
-
-###Add user permissions
-ViSearch Android SDK needs these user permissions to work. Add the following declarations to the `AndroidManifest.xml` file.  Network permission allows the app to connect to network services, while write/read to external storage permissions allow the app to load and save images on the device.
+###2.2 Add User Permissions
+ViSearch Android SDK needs these user permissions to work. Add the following declarations to the `AndroidManifest.xml` file.  Network permission allows the app to connect to network services. Write/read to external storage permissions allow the app to load and save images on the device.
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -59,7 +83,7 @@ ViSearch Android SDK needs these user permissions to work. Add the following dec
 ```
 
 ##3. Initialization
-`ViSearch` must be initialized with an accessKey/secretKey pair before it can be used. In order for it to be notified of the search result, `ViSearch.ResultListener` must be implemented and set using `setListener`.
+`ViSearch` must be initialized with an accessKey/secretKey pair before it can be used. In order for it to be notified of the search result, `ViSearch.ResultListener` must be implemented. Call `viSearch.setListener` to set the listener.
 
 ```java
 
@@ -84,15 +108,15 @@ public class MyActivity extends Activity implements ViSearch.ResultListener{
 
 ##4. Searching Images
 
-###Pre-indexed Search
-Pre-index search is to search similar images based on the your indexed image by its unique identifier (im_name). It  should be a valid ID that is used to index your images in the database.
+###4.1 Pre-indexed Search
+Search similar images based on the your indexed image by its unique identifier (im_name):
 
 ```java
 IdSearchParams idSearchParams = new IdSearchParams("dress_1");
 viSearch.idSearch(idSearchParams);
 ```
 
-###Color Search
+###4.2 Color Search
 Color search is to search images with similar color by providing a color code. The color code should be in Hexadecimal and passed to `ColorSearchParams` as a `String`.
 
 ```java
@@ -100,10 +124,10 @@ ColorSearchParams colorSearchParams = new ColorSearchParams("9b351b");
 viSearch.colorSearch(colorSearchParams);
 ``` 
 
-###Upload Search
+###4.3 Upload Search
 Upload search is used to search similar images by uploading an image or providing an image url. `Image` class is used to perform the image encoding and resizing. You should construct the `Image` object and pass it to `UploadSearchParams` to start a search.
 
-Using an image from a local file path:
+* Using an image from a local file path:
 ```java
 Image image = new Image("/local/path/to/image.jpg");
 UploadSearchParams uploadSearchParams.setImage(image);
@@ -111,7 +135,7 @@ UploadSearchParams uploadSearchParams.setImage(image);
 viSearch.uploadSearch(uploadSearchParams);
 ```
 
-Or using an image by providing the Uri of the image in photo gallery:
+* Using an image by providing the Uri of the image in photo gallery:
 ```java
 Image image = new Image(context, uri);
 UploadSearchParams uploadSearchParams = new UploadSearchParams(image);
@@ -119,7 +143,7 @@ UploadSearchParams uploadSearchParams = new UploadSearchParams(image);
 viSearcher.uploadSearch(uploadSearchParams);
 ```
 
-Or construct the `image` from the byte array return by the camera preview callback:
+* Construct the `image` from the byte array returned by the camera preview callback:
 ```java
 @Override
 public void onPictureTaken(byte[] bytes, Camera camera) {
@@ -130,15 +154,15 @@ public void onPictureTaken(byte[] bytes, Camera camera) {
 }
 ```
 
-Alternatively, you can pass an image url directly to `uploadSearchParams` to start the search. :
+* Alternatively, you can pass an image url directly to `uploadSearchParams` to start the search :
 ```java
 String url = "http://mydomain.com/sample_image.jpg";
 UploadSearchParams uploadSearchParams = new UploadSearchParams(url);
 viSearcher.uploadSearch(uploadSearchParams);
 ```
 
-####Selection Box
-If the object you wish to search for takes up only a small portion of your image, or other irrelevant objects exists in the same image, chances are the search result could become inaccurate. Use the Box parameter to refine the search area of the image to improve accuracy. Noted that the box coordinated is set with respect to the original size of the image passed:
+####4.3.1 Selection Box
+If the object you wish to search for takes up only a small portion of your image, or other irrelevant objects exists in the same image, chances are the search result could become inaccurate. Use the Box parameter to refine the search area of the image to improve accuracy. The box coordinated is set with respect to the original size of the uploading image:
 
 ```java
 Image image = new Image(this, uri);
@@ -148,7 +172,8 @@ Image image = new Image(this, uri);
 // and (x2, y2) is the bottom-right corner of the box.
 image.setBox(0, 0, 400, 400);
 ```
-####Resizing Settings
+
+####4.3.2 Resizing Settings
 When performing upload search, you may notice the increased search latency with increased image file size. This is due to the increased time spent in network transferring your images to the ViSearch server, and the increased time for processing larger image files in ViSearch. 
 
 To reduce upload search latency, by default the uploadSearch method makes a copy of your image file and resizes the copy to 512x512 pixels if both of the original dimensions exceed 512 pixels. This is the optimized size to lower search latency while not sacrificing search accuracy for general use cases:
@@ -171,7 +196,7 @@ Image image = new Image(imagePath, new ResizeSettings(800, 800, 80));
 
 
 ##5. Search Results
-The search result is returned as a list of image names with required additional information. Use `getImageList()` to get the list of images. The basic information returned about the image are image name(use `getImageName()` to obtain). Use`viSearch.cancelSearch()` to cancel a search, and handle the result by implementing the `onSearchCanceled()` callback. If error occurs during the search, an error message will be returned in `viSearch.onSearchError(String error)`. 
+The search results are returned as a list of image names with required additional information. Use `getImageList()` to get the list of images. The basic information returned about the image are image name. Use`viSearch.cancelSearch()` to cancel a search, and handle the result by implementing the `onSearchCanceled()` callback. If error occurs during the search, an error message will be returned and can be handled in `viSearch.onSearchError(String error)` callback method. 
 
 ```java
 @Override
@@ -194,9 +219,12 @@ public void onSearchCanceled() {
 }
 ```
 
-You can tune the search result by configuring the basic search parameters `BaseSearchParams`. As the result is returned in a format of a list of images page by page, use `setLimit` to set the number of results per page, `setPage` to indicate the page number:
+ You can provide pagination parameters to control the paging of the image search results. by configuring the basic search parameters `BaseSearchParams`. As the result is returned in a format of a list of images page by page, use `setLimit` to set the number of results per page, `setPage` to indicate the page number:
 
-
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| page | Integer | Optional parameter to specify the page of results. The first page of result is 1. Defaults to 1. |
+| limit | Integer | Optional parameter to specify the result per page limit. Defaults to 10. |
 
 ```java
 BaseSearchParams baseSearchParams = new BaseSearchParams();
@@ -209,8 +237,8 @@ visearcher.colorSearch(colorSearchParams);
 
 ##6. Advanced Search Parameters
 
-###Configure FL to get the metadata of the data feed
-To retrieve metadata of your search results, provide a list of metadata keys as the `fl` (field list) in the basic search parameters:
+###6.1 Retrieving Metadata
+To retrieve metadata of your search results, provide a list of metadata keys as the `fl` (field list) in the basic search property:
 
 ```java
 BaseSearchParams baseSearchParams = new BaseSearchParams();
@@ -235,16 +263,10 @@ public void onSearchResult(ResultList resultList) {
 }
 ```
 
-Only metadata of type string, int, and float can be retrieved from ViSearch:
-| Type | FL|
--|-
-|String | yes|
-|text|no|
-|int|yes|
-|float|yes|
+>Only metadata of type string, int, and float can be retrieved from ViSearch. Metadata of type text is not available for retrieval.
 
-###Configure FQ to filter the search result based on metadata of the data feed
-To filter search results based on metadata values, provide a map of metadata key to filter value as the `fq` (filter query) parameter:
+###6.2 Filtering Results
+To filter search results based on metadata values, provide a map of metadata key to filter value as the `fq` (filter query) property:
 
 ```java
 // add fq param to specify the filtering criteria
@@ -257,14 +279,16 @@ baseSearchParams.setFq(fq);
 ```
 
 Querying syntax for each metadata type is listed in the following table:
-|Type|FQ|
-|-|-|
-|String|Metadata value must be exactly matched with the query value, e.g. "Vintage Wingtips" would not match "vintage wingtips" or "vintage"|
-|text|Metadata value will be indexed using full-text-search engine and supports fuzzy text matching, e.g. "A pair of high quality leather wingtips" would match any word in the phrase|
-|int|Metadata value can be either: 1) exactly matched with the query value 2) matched with a ranged query minValue,maxValue, e.g. int value 1, 99, and 199 would match ranged query 0,199 but would not match ranged query 200,300|
-|float|Metadata value can be either 1) exactly matched with the query value 2) matched with a ranged query minValue,maxValue, e.g. float value 1.0, 99.99, and 199.99 would match ranged query 0.0,199.99 but would not match ranged query 200.0,300.0|
 
-###Use score parameter as threshold to filter search result
+Type | FQ
+--- | ---
+string | Metadata value must be exactly matched with the query value, e.g. "Vintage Wingtips" would not match "vintage wingtips" or "vintage"
+text | Metadata value will be indexed using full-text-search engine and supports fuzzy text matching, e.g. "A pair of high quality leather wingtips" would match any word in the phrase
+int | Metadata value can be either: <ul><li>exactly matched with the query value</li><li>matched with a ranged query ```minValue,maxValue```, e.g. int value ```1, 99```, and ```199``` would match ranged query ```0,199``` but would not match ranged query ```200,300```</li></ul>
+float | Metadata value can be either <ul><li>exactly matched with the query value</li><li>matched with a ranged query ```minValue,maxValue```, e.g. float value ```1.0, 99.99```, and ```199.99``` would match ranged query ```0.0,199.99``` but would not match ranged query ```200.0,300.0```</li></ul>
+
+
+###6.3 Result Score
 ViSearch image search results are ranked in descending order i.e. from the highest scores to the lowest, ranging from 1.0 to 0.0. By default, the score for each result is not returned. You can turn on the score parameter to retrieve the scores for each image result:
 
 ```java
@@ -300,4 +324,4 @@ visearch.idSearch(idSearchParams);
 
 
 ##7. Code Samples
-Source code of the SDK and Demo samples can be found in this [Github Repo](https://github.com/visenze/visearch-sdk-android)
+Source code of a demo application can be found [here](https://github.com/visenze/visearch-sdk-android/tree/master/demo).
