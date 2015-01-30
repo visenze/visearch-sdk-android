@@ -177,18 +177,21 @@ image.setBox(0, 0, 400, 400);
 When performing upload search, you may notice the increased search latency with increased image file size. This is due to the increased time spent in network transferring your images to the ViSearch server, and the increased time for processing larger image files in ViSearch. 
 
 To reduce upload search latency, by default the uploadSearch method makes a copy of your image file and resizes the copy to 512x512 pixels if both of the original dimensions exceed 512 pixels. This is the optimized size to lower search latency while not sacrificing search accuracy for general use cases:
+
 ```java
-//default resize setting, set the image size to 512 x 512 with jpeg 85 quality
+//default resize setting, set the image size to 512 x 512
 Image image = new Image(imagePath, ResizeSettings.STANDARD);
 ```
 
-If your image contains fine details such as textile patterns and textures, you can use a higer quality image for search to get better search result:
+If your image contains fine details such as textile patterns and textures, you can use an image with larger size for search to get better search result:
+
 ```java
-//for images with fine details, use HIGH resize settings 1024 x 1024 and jpeg 90 quality
+//for images with fine details, use HIGH resize settings 1024 x 1024
 Image image = new Image(imagePath, ResizeSettings.HIGH);
 ```
 
 Or, provide the customized resize settings. To make efficient use the of the memory and network bandwidth of mobile device, the maximum size is set at 1024 x 1024. Any image exceeds the limit will be resized to the limit:
+
 ```java
 //resize the image to 800 by 800 area using jpeg 80 quality
 Image image = new Image(imagePath, new ResizeSettings(800, 800, 80));
