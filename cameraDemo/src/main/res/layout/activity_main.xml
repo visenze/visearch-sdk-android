@@ -33,7 +33,7 @@
         android:background="@color/gray_camera_trans">
         <ImageView
             style="@style/AppTheme.ImageButton"
-            android:id="@+id/camera_light_button"
+            android:id="@+id/camera_flash_button"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"

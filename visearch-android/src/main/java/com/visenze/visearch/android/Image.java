@@ -43,8 +43,8 @@ public class Image {
     /**
      * Construct with file path.
      * Image is loaded from the provided file path and re-sized to the optimized size for upload.
-     * The default size is 512, it is allowed to be customized. Use ResizeSettings.LARGE_SIZE to
-     * set the resize limit to 2014.
+     * The default size is 512, it is allowed to be customized. Use ResizeSettings.HIGH to
+     * set the resize limit to 1024.
      *
      * For images with finer patterns, it is recommended to use a large size.Noted that to required
      * a large size image for upload search takes higher network bandwidth and longer response time.
@@ -95,8 +95,8 @@ public class Image {
     /**
      * Construct with Uri
      * Image is loaded from the provided Uri and re-sized to the optimized size for upload.
-     * The default size is 512, it is allowed to be customized. Use ResizeSettings.LARGE_SIZE to
-     * set the resize limit to 2014.
+     * The default size is 512, it is allowed to be customized. Use ResizeSettings.HIGH to
+     * set the resize limit to 1024.
      *
      * For images with finer patterns, it is recommended to use a large size.Noted that to required
      * a large size image for upload search takes higher network bandwidth and longer response time.
@@ -140,29 +140,20 @@ public class Image {
     /**
      * Construct with raw byte array from the camera Callback
      *
-     * This constructor compresses the image with a lower quality value. Try not to
-     * call this constructor when handling images what has been compressed. Only use
-     * this to passed the byte array from camera callback.
-     *
      * The image is resize to be processed and transferred efficiently.
      * The default re-size limit is 512
      *
      * @param byteArray byte array from camera callback
      */
     public Image(byte[] byteArray) {
-        this(byteArray, ResizeSettings.CAMERA_STANDARD);
+        this(byteArray, ResizeSettings.STANDARD);
     }
 
     /**
      * Construct with raw byte array from the camera Callback
      *
-     * This constructor compresses the image with a lower quality value. Try not to
-     * call this constructor when handling images what has been compressed. Only use
-     * this to passed the byte array from camera callback.
-     *
-     * The default re-size limit is 512, it is allowed to be customized to a larger size of 1024
-     * The default size is 512, it is allowed to be customized. Use ResizeSettings.LARGE_SIZE to
-     * set the resize limit to 2014.
+     * The default size is 512, it is allowed to be customized. Use ResizeSettings.HIGH to
+     * set the resize limit to 1024.
      *
      * For images with finer patterns, it is recommended to use a large size.Noted that to required
      * a large size image for upload search takes higher network bandwidth and longer response time.
@@ -280,26 +271,17 @@ public class Image {
         private static final int            STANDARD_SIZE = 512;
         private static final int            LARGE_SIZE = 1024;
 
-        private static final int            COMPRESS_QUALITY_CAMERA = 75; //compression quality for raw bytes from camera
-        private static final int            COMPRESS_QUALITY_LOW = 85; //compression quality for image from path, with low quality
-        private static final int            COMPRESS_QUALITY_HIGH = 90; //compression quality for image from path, with high quality
+        private static final int            COMPRESS_QUALITY = 75; //compression quality
 
         public static final ResizeSettings  STANDARD = new ResizeSettings(
                 STANDARD_SIZE,
                 STANDARD_SIZE,
-                COMPRESS_QUALITY_LOW);
+                COMPRESS_QUALITY);
         public static final ResizeSettings  HIGH = new ResizeSettings(
                 LARGE_SIZE,
                 LARGE_SIZE,
-                COMPRESS_QUALITY_HIGH);
-        public static final ResizeSettings  CAMERA_STANDARD = new ResizeSettings(
-                STANDARD_SIZE,
-                STANDARD_SIZE,
-                COMPRESS_QUALITY_CAMERA);
-        public static final ResizeSettings  CAMERA_LARGE = new ResizeSettings(
-                LARGE_SIZE,
-                LARGE_SIZE,
-                COMPRESS_QUALITY_CAMERA);
+                COMPRESS_QUALITY);
+
 
         private int maxWidth;
         private int maxHeight;

@@ -14,10 +14,11 @@ import java.util.List;
 import static android.view.SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS;
 
 /**
- * Modified from goodrich camera
+ * CameraPreview Module
  * Created by yulu on 1/28/15.
  */
-public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback, Camera.PictureCallback, Camera.AutoFocusCallback {
+public class CameraPreview extends SurfaceView implements 
+        SurfaceHolder.Callback, Camera.PictureCallback, Camera.AutoFocusCallback {
 
     private static final int CAMERA_FACING_FRONT = 1;
     private static final int CAMERA_FACING_BACK = 0;
@@ -43,9 +44,6 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     private ImageCapturedCallback imageCapturedCallback;
 
     private boolean             takePhotoFlag = false;
-
-    //zoom
-    private int                 currentZoomLevel = 1;
 
     /**
      * Image capture callback
@@ -166,7 +164,6 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             setMeasuredDimension(mSurfaceHeight, mSurfaceWidth);
             Log.d("Camera", "holder resize with respect to camera: " + mSurfaceHeight + ", " + mSurfaceWidth);
         }
-
     }
 
     @Override
@@ -297,7 +294,6 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
                         mCamera.startPreview();
 
                         //focus
-                        //TODO: check hardware support
                         mCamera.autoFocus(this);
                     }
                 } else
@@ -361,7 +357,15 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         public int getHeight(Object obj);
     }
 
-    protected Camera.Size calculateCameraFrameSize(List<?> supportedSizes, ListItemAccessor accessor, int surfaceWidth, int surfaceHeight) {
+    /**
+     * resize the frame or picture for caputre based on a target size 
+     * @param supportedSizes list of supported size of camera hardware
+     * @param accessor accessor object
+     * @param targetWidth target width
+     * @param targetHeight target height
+     * @return camera size
+     */
+    protected Camera.Size calculateCameraFrameSize(List<?> supportedSizes, ListItemAccessor accessor, int targetWidth, int targetHeight) {
         int calcWidth = 0;
         int calcHeight = 0;
 
@@ -369,7 +373,8 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             int width = accessor.getWidth(size);
             int height = accessor.getHeight(size);
 
-            if (width <= surfaceWidth && height <= surfaceHeight) {
+            //find the maxi value below target sizes
+            if (width <= targetWidth && height <= targetHeight) {
                 if (width >= calcWidth && height >= calcHeight) {
                     calcWidth = width;
                     calcHeight = height;
