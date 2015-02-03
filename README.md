@@ -1,6 +1,5 @@
-#ViSearch Android SDK User Guides
-
-<!--build badge here-->
+# ViSearch Android SDK
+[![Build Status](https://api.travis-ci.org/visenze/visearch-sdk-android.svg?branch=master)](https://travis-ci.org/visenze/visearch-sdk-android)
 
 ---
 
