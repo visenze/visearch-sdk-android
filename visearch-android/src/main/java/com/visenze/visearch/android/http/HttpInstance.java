@@ -121,7 +121,8 @@ public class HttpInstance {
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
                         volleyError.printStackTrace();
-                        resultListener.onSearchError("Network Error");
+                        if (null != resultListener)
+                            resultListener.onSearchError("Network Error");
                     }
                 });
 
@@ -157,7 +158,8 @@ public class HttpInstance {
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
                         volleyError.printStackTrace();
-                        resultListener.onSearchError("Network Error");
+                        if (null != resultListener)
+                            resultListener.onSearchError("Network Error");
                     }
                 });
 
