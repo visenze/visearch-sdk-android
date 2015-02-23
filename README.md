@@ -58,6 +58,7 @@ android {
 }
 ```
 
+If you want to use the packaged Jars directly in your project, please find all the dependencies in the directory `/dependency`
 
 ###2.2 Add User Permissions
 ViSearch Android SDK needs these user permissions to work. Add the following declarations to the `AndroidManifest.xml` file.  Network permission allows the app to connect to network services. Write/read to external storage permissions allow the app to load and save images on the device.
