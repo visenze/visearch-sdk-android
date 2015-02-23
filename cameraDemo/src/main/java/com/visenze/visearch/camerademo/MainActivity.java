@@ -70,7 +70,7 @@ public class MainActivity extends Activity implements
      */
     @Override
     public void OnImageCaptured(byte[] bytes) {
-        image = new Image(bytes);
+        image = new Image(bytes, Image.ResizeSettings.STANDARD, 90);
         uploadSearchParams = new UploadSearchParams(image);
 
         viSearch.uploadSearch(uploadSearchParams);

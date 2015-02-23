@@ -3,6 +3,7 @@ package com.visenze.visearch.android;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.util.Log;
 
@@ -158,17 +159,39 @@ public class Image {
      * For images with finer patterns, it is recommended to use a large size.Noted that to required
      * a large size image for upload search takes higher network bandwidth and longer response time.
      *
+     * If rotation angle is not indicated, no rotation is performed. The image might not be in the
+     * correct orientation
+     *
      * @param byteArray byte array from camera callback
      * @param resizeSettings resize setting
      */
     public Image(byte[] byteArray, ResizeSettings resizeSettings) {
+        this(byteArray, resizeSettings, 0);
+    }
 
+    /**
+     * Construct with raw byte array from the camera Callback
+     *
+     * The default size is 512, it is allowed to be customized. Use ResizeSettings.HIGH to
+     * set the resize limit to 1024.
+     *
+     * For images with finer patterns, it is recommended to use a large size.Noted that to required
+     * a large size image for upload search takes higher network bandwidth and longer response time.
+     *
+     * The captured image will be in landscape for most of the hardware, set rotation value to rotate
+     * the image to the correct one
+     *
+     * @param byteArray byte array from camera callback
+     * @param resizeSettings resize setting
+     * @param rotation set rotation angle of the image
+     */
+    public Image(byte[] byteArray, ResizeSettings resizeSettings, float rotation) {
         //get image info from byte array
         BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
         bitmapOptions.inJustDecodeBounds = true;
         BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length, bitmapOptions);
 
-         //find the optimal inSampleSize, with memory constrain
+        //find the optimal inSampleSize, with memory constrain
         scaleFactor = calculateScaleFactor(bitmapOptions, resizeSettings);
 
         //use the scale factor to decode the image from file path
@@ -177,9 +200,14 @@ public class Image {
         bitmapOptions.inTargetDensity = (int) ((float) bitmapOptions.inDensity * scaleFactor);
 
         Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length, bitmapOptions);
-
         Log.d(IMAGE_TAG, "scale bitmap to fit the size: " + bitmap.getWidth() + " x " + bitmap.getHeight());
 
+        //rotate the image if the given angle
+        if (rotation != 0f) {
+            Matrix matrix = new Matrix();
+            matrix.postRotate(rotation);
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        }
 
         //get image byte array, use lower quality for byte array (COMPRESS_QUALITY_CAMERA)
         ByteArrayOutputStream outs = new ByteArrayOutputStream();
