@@ -133,3 +133,16 @@ task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
 artifacts {
     archives androidSourcesJar, androidJavadocsJar
 }
+
+task clearJar(type: Delete) {
+    delete '../release/visearch-android.jar'
+}
+
+task makeJar(type: Copy) {
+    from('build/intermediates/bundles/release/')
+    into('../release/')
+    include('classes.jar')
+    rename ('classes.jar', 'visearch-android.jar')
+}
+
+makeJar.dependsOn(clearJar, build)
