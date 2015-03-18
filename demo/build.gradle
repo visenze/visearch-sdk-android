@@ -43,7 +43,8 @@ android {
 }
 
 dependencies {
-    compile 'com.visenze:visearch-android:1.0.3'
+//    compile 'com.visenze:visearch-android:1.0.3'
+    compile project(':visearch-android')
     compile 'com.android.support:appcompat-v7:21.0.3'
     
     //image loading and caching library

@@ -3,6 +3,8 @@ package com.visenze.visearch.android;
 import android.content.Context;
 import com.visenze.visearch.android.api.impl.SearchOperationsImpl;
 
+import java.net.URL;
+
 /**
  * ViSearch singleton handles all the search methods.
  *
@@ -23,10 +25,10 @@ public class ViSearch {
      */
     private ViSearch(Context context,
                        String accessKey, String secretKey,
-                       String searchApiHost, String searchApiPort) {
+                       String searchApiEndPoint) {
 
         searchOperations = new SearchOperationsImpl(
-                searchApiHost +":"+ searchApiPort,
+                searchApiEndPoint,
                 context,
                 accessKey, secretKey);
     }
@@ -93,23 +95,25 @@ public class ViSearch {
     public static class Builder {
         private String mAccessKey;
         private String mSecretKey;
-        private String searchApiHost;
-        private String searchApiPort;
+        private String searchApiEndPoint;
 
         public Builder(String accessKey, String secretKey) {
             mAccessKey = accessKey;
             mSecretKey = secretKey;
-            searchApiHost = "http://visearch.visenze.com";
-            searchApiPort = "80";
+            searchApiEndPoint = "http://visearch.visenze.com";
         }
 
-        public Builder setApiHost(String host) {
-            searchApiHost = host;
-            return this;
+        public Builder(URL endPoint, String accessKey, String secretKey) {
+            if (endPoint == null)
+                throw new ViSearchException("Endpoint is not specified");
+
+            searchApiEndPoint = endPoint.toString();
+            mAccessKey = accessKey;
+            mSecretKey = secretKey;
         }
 
-        public Builder setApiPort(String port) {
-            searchApiPort = port;
+        public Builder setApiEndPoint(URL endPoint) {
+            searchApiEndPoint = endPoint.toString();
             return this;
         }
 
@@ -117,8 +121,7 @@ public class ViSearch {
             ViSearch viSearch = new ViSearch(context,
                     mAccessKey,
                     mSecretKey,
-                    searchApiHost,
-                    searchApiPort);
+                    searchApiEndPoint);
 
             return viSearch;
         }

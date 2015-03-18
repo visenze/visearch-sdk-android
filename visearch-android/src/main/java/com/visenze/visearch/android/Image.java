@@ -147,7 +147,7 @@ public class Image {
      * @param byteArray byte array from camera callback
      */
     public Image(byte[] byteArray) {
-        this(byteArray, ResizeSettings.STANDARD);
+        this(byteArray, ResizeSettings.CAMERA_STANDARD);
     }
 
     /**
@@ -299,7 +299,8 @@ public class Image {
         private static final int            STANDARD_SIZE = 512;
         private static final int            LARGE_SIZE = 1024;
 
-        private static final int            COMPRESS_QUALITY = 75; //compression quality
+        private static final int            COMPRESS_QUALITY = 90; //compression quality
+        private static final int            COMPRESS_QUALITY_LOW = 75; //compression quality for camera callback
 
         public static final ResizeSettings  STANDARD = new ResizeSettings(
                 STANDARD_SIZE,
@@ -309,6 +310,15 @@ public class Image {
                 LARGE_SIZE,
                 LARGE_SIZE,
                 COMPRESS_QUALITY);
+        public static final ResizeSettings CAMERA_STANDARD = new ResizeSettings(
+                STANDARD_SIZE,
+                STANDARD_SIZE,
+                COMPRESS_QUALITY_LOW);
+
+        public static final ResizeSettings CAMERA_HIGH = new ResizeSettings(
+                LARGE_SIZE,
+                LARGE_SIZE,
+                COMPRESS_QUALITY_LOW);
 
 
         private int maxWidth;
