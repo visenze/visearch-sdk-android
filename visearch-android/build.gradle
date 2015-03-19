@@ -51,7 +51,7 @@ dependencies {
 }
 
 group = 'com.visenze'
-version = '1.0.4'
+version = '1.0.5'
 
 apply plugin: 'com.jfrog.bintray'
 
@@ -70,9 +70,9 @@ bintray {
         licenses = ['The MIT License']
         labels = ['visenze', 'visearch', 'sdk', 'android']
         version {
-            name = '1.0.4'
+            name = '1.0.5'
             description = 'ViSearch Android SDK'
-            vcsTag = '1.0.4'
+            vcsTag = '1.0.5'
         }
     }
 }
@@ -142,7 +142,7 @@ task makeJar(type: Copy) {
     from('build/intermediates/bundles/release/')
     into('../dependency/')
     include('classes.jar')
-    rename ('classes.jar', "visearch-android-1.0.4.jar")
+    rename ('classes.jar', "visearch-android-1.0.5.jar")
 }
 
 makeJar.dependsOn(clearJar, build)

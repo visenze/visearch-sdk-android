@@ -2,7 +2,9 @@ package com.visenze.visearch.android.http;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Base64;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -107,8 +109,6 @@ public class HttpInstance {
         if (null == params)
             params = new HashMap<String, List<String> >();
 
-        putValueMapInMap(params, AuthGenerator.getAuthParam(accessKey, secretKey));
-
         Uri.Builder uri = new Uri.Builder();
         for (Map.Entry<String, List<String> > entry : params.entrySet()) {
             for (String s: entry.getValue())
@@ -124,7 +124,14 @@ public class HttpInstance {
                         if (null != resultListener)
                             resultListener.onSearchError("Network Error");
                     }
-                });
+                })
+            {
+                //set auth information in header
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError{
+                    return getAuthHeader(accessKey, secretKey);
+                }
+            };
 
         jsonObjectRequest.setTag(mContext);
         getRequestQueue().add(jsonObjectRequest);
@@ -149,10 +156,9 @@ public class HttpInstance {
         if (null == params)
             params = new HashMap<String, List<String> >();
 
-        putValueMapInMap(params, AuthGenerator.getAuthParam(accessKey, secretKey));
-
         MultiPartRequest multipartRequest = new MultiPartRequest(Request.Method.POST, url,
                 params, bytes,
+                accessKey, secretKey,
                 responseListener,
                 new Response.ErrorListener() {
                     @Override
@@ -180,11 +186,12 @@ public class HttpInstance {
         }
     }
 
-    private void putValueMapInMap(Map<String, List<String> > map, Map<String, String> valueMap) {
-        for (Map.Entry<String, String> set : valueMap.entrySet()) {
-            List<String> stringList = new ArrayList<>();
-            stringList.add(set.getValue());
-            map.put(set.getKey(), stringList);
-        }
+    private Map<String, String> getAuthHeader(String accessKey, String secretKey) {
+        Map<String, String> params = new HashMap<>();
+        String creds = String.format("%s:%s", accessKey, secretKey);
+        String auth = "Basic " + Base64.encodeToString(creds.getBytes(), Base64.NO_WRAP);
+        params.put("Authorization", auth);
+
+        return params;
     }
 }

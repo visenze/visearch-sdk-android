@@ -1,5 +1,7 @@
 package com.visenze.visearch.android.http;
 
+import android.util.Base64;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
@@ -18,6 +20,7 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,15 +31,20 @@ public class MultiPartRequest extends Request<JSONObject> {
 
     private final Response.Listener<JSONObject> mListener;
     private HttpEntity                          entity;
+    private String                              accessKey;
+    private String                              secretKey;
 
 
     public MultiPartRequest(int method, String url,
                             Map<String, List<String>> params, byte[] bytes,
+                            String accessKey, String secretKey,
                             Response.Listener<JSONObject> mListener,
                             Response.ErrorListener listener) {
 
         super(method, url, listener);
         this.mListener = mListener;
+        this.accessKey = accessKey;
+        this.secretKey = secretKey;
 
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
         for (Map.Entry<String, List<String> > entry : params.entrySet()) {
@@ -67,6 +75,16 @@ public class MultiPartRequest extends Request<JSONObject> {
         }
 
         return bos.toByteArray();
+    }
+
+    @Override
+    public Map<String, String> getHeaders() throws AuthFailureError {
+        Map<String, String> params = new HashMap<>();
+        String creds = String.format("%s:%s", accessKey, secretKey);
+        String auth = "Basic " + Base64.encodeToString(creds.getBytes(), Base64.NO_WRAP);
+        params.put("Authorization", auth);
+
+        return params;
     }
 
     @Override
