@@ -25,7 +25,7 @@ public class MyActivity extends Activity implements ViSearch.ResultListener{
     //Activity Code
     private static final int RESULT_LOAD_IMAGE = 0x00;
 
-    //Please change to your access key / secret Key pair
+    //TODO: Please change to your access key / secret key pair
     private static final String ACCESS_KEY = "your_access_key";
     private static final String SECRET_KEY = "your_secret_key";
 

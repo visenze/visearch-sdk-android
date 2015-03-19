@@ -1,23 +1,59 @@
+/**
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2015 ViSenze Pte. Ltd.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
 package com.visenze.visearch.camerademo;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.ImageFormat;
 import android.hardware.Camera;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.SparseIntArray;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+
+import com.visenze.visearch.android.Image;
 
 import java.util.List;
 
 import static android.view.SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS;
 
 /**
- * CameraPreview Module
  * Created by yulu on 1/28/15.
+ *
+ * CameraPreview module, can be initialized in layout XML file
+ *
  */
-public class CameraPreview extends SurfaceView implements 
+public class CameraPreview extends SurfaceView implements
         SurfaceHolder.Callback, Camera.PictureCallback, Camera.AutoFocusCallback {
 
     private static final int CAMERA_FACING_FRONT = 1;
@@ -25,31 +61,74 @@ public class CameraPreview extends SurfaceView implements
 
     private static final int PHOTO_TAKEN_SIZE = 1024;
 
+    /**
+     * Screen orientation
+     */
+    private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
+    static {
+        ORIENTATIONS.append(Surface.ROTATION_0, 90);
+        ORIENTATIONS.append(Surface.ROTATION_90, 0);
+        ORIENTATIONS.append(Surface.ROTATION_180, 270);
+        ORIENTATIONS.append(Surface.ROTATION_270, 180);
+    }
+
+    /**
+     * Focus mode 
+     */
     private static final String FOCUS_MODE = Camera.Parameters.FOCUS_MODE_MACRO;
 
+    /**
+     * Flag to control flash on and off
+     */
     private static boolean      LightOn = false;
 
-    //surface holder size (need to be matched with camera preview size
+    /**
+     * Flag to control configuration 
+     */
+    private static boolean      configured = false;
+
+
+    /**
+     * surface holder size (need to be matched with camera preview size
+     */
     private int                 mSurfaceWidth;
     private int                 mSurfaceHeight;
 
-    //camera preview size, depend on system and hardware
+    /**
+     * camera preview size, depend on system and hardware
+     */
     private Camera.Size         frameSize;
+
+    /**
+     * photo size when taken picture 
+     */
     private Camera.Size         pictureSize;
 
+    /**
+     * surface holder 
+     */
     private SurfaceHolder       mHolder;
 
+    /**
+     * Camera hardware interface 
+     */
     private Camera              mCamera;
 
-    private ImageCapturedCallback imageCapturedCallback;
+    /**
+     * image save and processing runnable 
+     */
+    private ImageRunnable       imageRunnable;
 
-    private boolean             takePhotoFlag = false;
+    /**
+     * image captured callback interface
+     */
+    private ImageCapturedCallback imageCapturedCallback;
 
     /**
      * Image capture callback
      */
     public static interface ImageCapturedCallback {
-        public void OnImageCaptured(byte[] bytes);
+        public void OnImageCaptured(Image image);
     }
 
     /**
@@ -78,6 +157,16 @@ public class CameraPreview extends SurfaceView implements
         mHolder = getHolder();
         mHolder.addCallback(this);
         mHolder.setType(SURFACE_TYPE_PUSH_BUFFERS);
+
+        //set click to focus
+        setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mCamera != null) {
+                    setAutoFocus();
+                }
+            }
+        });
     }
 
     /**
@@ -92,6 +181,13 @@ public class CameraPreview extends SurfaceView implements
         }
     }
 
+    /**
+     * stop camera preview
+     *
+     * call this method only stop the camera preview, but only release 
+     * the camera module. The preview will be frozen in this case instead
+     * of destroyed. 
+     */
     public void stopPreview() {
         if (mCamera != null)
             mCamera.stopPreview();
@@ -99,21 +195,25 @@ public class CameraPreview extends SurfaceView implements
 
     /**
      * Start preview with back camera and the previous setting of flash light
+     *
+     * call this method to start the preview if it has been stopped
      */
     public void startCameraPreview() {
-        initializeCamera(CAMERA_FACING_BACK);
+        configureCamera(CAMERA_FACING_BACK);
+        initializeCamera();
     }
 
     /**
      * Turn on or off the flash light
+     *
      * @return flash light turn ON/OFF
      */
     public boolean turnOnTorch() {
 
         if (LightOn) {
             LightOn = false;
+
             //set flash off
-            Log.d("Camera", "flash torch off");
             Camera.Parameters parameters = mCamera.getParameters();
             List<String> FlashModes = parameters.getSupportedFlashModes();
             if(FlashModes != null && FlashModes.contains(Camera.Parameters.FLASH_MODE_OFF))
@@ -126,7 +226,6 @@ public class CameraPreview extends SurfaceView implements
             LightOn = true;
 
             //set flash on
-            Log.d("Camera", "flash torch on");
             Camera.Parameters parameters = mCamera.getParameters();
             List<String> FlashModes = parameters.getSupportedFlashModes();
             if(FlashModes != null && FlashModes.contains(Camera.Parameters.FLASH_MODE_TORCH))
@@ -148,120 +247,182 @@ public class CameraPreview extends SurfaceView implements
     public void surfaceChanged(SurfaceHolder surfaceHolder, int format, int w, int h) {
         //surface size is always in landscape mode, need to inter-change w and h
         //check aspect ratio
-        mSurfaceWidth = h;
-        mSurfaceHeight = w;
+        if ((getContext()).getResources().getConfiguration().orientation ==
+                Configuration.ORIENTATION_LANDSCAPE) {
+            mSurfaceHeight = h;
+            mSurfaceWidth = w;
+        } else {
+            mSurfaceWidth = h;
+            mSurfaceHeight = w;
+        }
 
         Log.d("Camera", "holder resize: " + mSurfaceWidth +", " + mSurfaceHeight);
-        initializeCamera(CAMERA_FACING_BACK);
+
+        if (!configured) {
+            configured = configureCamera(CAMERA_FACING_BACK);
+            initializeCamera();
+        }
+        else
+            initializeCamera();
     }
 
     @Override
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         if (frameSize != null) {
             //keep aspect ratio and scale holder size
             scaleHolderSize();
-            setMeasuredDimension(mSurfaceHeight, mSurfaceWidth);
-            Log.d("Camera", "holder resize with respect to camera: " + mSurfaceHeight + ", " + mSurfaceWidth);
+            if ((getContext()).getResources().getConfiguration().orientation ==
+                    Configuration.ORIENTATION_LANDSCAPE) {
+                setMeasuredDimension(mSurfaceWidth, mSurfaceHeight);
+            } else {
+                setMeasuredDimension(mSurfaceHeight, mSurfaceWidth);
+            }
+            Log.d("Camera", "holder resize with respect to camera: " + mSurfaceWidth + ", " + mSurfaceHeight);
+        } else {
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+            Log.d("Camera", "holder without resize: " + mSurfaceWidth + ", " + mSurfaceHeight);
         }
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
         releaseCamera();
+
+        //set configuration to false;
+        configured = false;
+
+        //stop image processing thread if it is running
+        if (imageRunnable != null)
+            try {
+                imageRunnable.stop();
+                imageRunnable = null;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
     }
 
     @Override
     public void onPictureTaken(byte[] bytes, Camera camera) {
         releaseCamera();
 
-        if (imageCapturedCallback != null) {
-            imageCapturedCallback.OnImageCaptured(bytes);
-        }
+        //start image process in another thread
+        imageRunnable = new ImageRunnable(bytes);
+        imageRunnable.start();
     }
 
     @Override
     public void onAutoFocus(boolean b, Camera camera) {
         Log.d("Camera", "auto focus");
-        if (takePhotoFlag) {
-            camera.takePicture(null, null, null, this);
-            takePhotoFlag = false;
+    }
+
+    /**
+     * Image process in a worker thread
+     */
+    private class ImageRunnable implements Runnable {
+        private Thread thread;
+        private byte[] _bytes;
+
+        public ImageRunnable(byte[] bytes) {
+            _bytes = bytes;
+        }
+
+        @Override
+        public void run() {
+            if (imageCapturedCallback != null) {
+                //save to image, rotate the image as the image taken is in landscape mode
+                int rotation = ((Activity)getContext()).getWindowManager().getDefaultDisplay().getRotation();
+                final Image image = new Image(_bytes, Image.ResizeSettings.CAMERA_STANDARD, ORIENTATIONS.get(rotation));
+
+                //run method that to be implemented in main UI thread
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        imageCapturedCallback.OnImageCaptured(image);
+                    }
+                });
+            }
+        }
+
+        public void start() {
+            if (thread == null) {
+                thread = new Thread(this, "byte array process in worker thread");
+                thread.start();
+            }
+        }
+
+        public void stop() throws InterruptedException {
+            if (thread != null && thread.isAlive()) {
+                thread.join();
+            }
         }
     }
 
-    /*
-     * init and start the camera
+    /**
+     * configure camera parameters
+     * @param facing back or front facing
+     * @return setting successful or not
      */
-    private boolean initializeCamera(int facing) {
-        Log.d("Camera", "Initialize camera");
-        boolean result = true;
-        synchronized(this){
+    private boolean configureCamera(int facing) {
+        Log.d("Camera", "Configure camera information");
+        synchronized (this) {
             if(mCamera != null) {
                 mCamera.stopPreview();
                 mCamera.setPreviewCallback(null);
-
                 mCamera.release();
                 mCamera = null;
             }
-            /*
-             * Open Camera--------------------------
-             */
-            Log.i("Camera", "Trying to open camera");
-            int localCameraIndex = -1;
 
+            //open back or front camera
+            int localCameraIndex = -1;
             Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
             int localCameraFacingIdx;
-            if(facing == CAMERA_FACING_FRONT)
+            if (facing == CAMERA_FACING_FRONT)
                 localCameraFacingIdx = Camera.CameraInfo.CAMERA_FACING_FRONT;
             else
                 localCameraFacingIdx = Camera.CameraInfo.CAMERA_FACING_BACK;
 
-            for(int camIdx = 0; camIdx < Camera.getNumberOfCameras(); ++camIdx) {
+            for (int camIdx = 0; camIdx < Camera.getNumberOfCameras(); ++camIdx) {
                 Camera.getCameraInfo(camIdx, cameraInfo);
 
-                if(cameraInfo.facing == localCameraFacingIdx){
+                if (cameraInfo.facing == localCameraFacingIdx) {
                     localCameraIndex = camIdx;
                     break;
                 }
             }
-            if(localCameraIndex != -1) {
-                try{
+            if (localCameraIndex != -1) {
+                try {
                     mCamera = Camera.open(localCameraIndex);
                     Log.d("Camera", "Camera #" + localCameraIndex + " open this camera");
-                }catch(RuntimeException e){
+                } catch (RuntimeException e) {
                     Log.e("Camera", "Camera #" + localCameraIndex + " failed to open: " +
                             e.getLocalizedMessage());
                 }
-            }else{
+            } else {
                 Log.e("Camera", "Back camera not found!");
+                return false;
             }
 
-            if(mCamera == null)
-                return false;
-
-            /*
-             * set camera parameters------------------------------
-             */
-            try{
+            try {
                 //get optimal size
                 Camera.Parameters params = mCamera.getParameters();
                 Log.d("Camera", "getSupportedPreviewSizes()");
                 List<Camera.Size> previewSizes = params.getSupportedPreviewSizes();
                 List<Camera.Size> picSizes = params.getSupportedPictureSizes();
 
-                if(previewSizes != null && picSizes != null){
+                if (previewSizes != null && picSizes != null) {
                     // Select the size that fits surface considering maximum size allowed
                     frameSize = calculateCameraFrameSize(previewSizes, new CameraSizeAccessor(),
                             mSurfaceWidth, mSurfaceHeight);
+
                     params.setPreviewFormat(ImageFormat.NV21);
-                    Log.d("Camera", "Set preview size to "+ frameSize.width + "x" + frameSize.height);
+                    Log.d("Camera", "Set preview size to " + frameSize.width + "x" + frameSize.height);
 
                     // Select the size of picture taken that optimized for upload
                     pictureSize = calculateCameraFrameSize(picSizes, new CameraSizeAccessor(),
                             PHOTO_TAKEN_SIZE, PHOTO_TAKEN_SIZE);
 
-                    if(frameSize.width != 0 && frameSize.height != 0 &&
-                            pictureSize.width != 0 && pictureSize.height != 0){
+                    if (frameSize.width != 0 && frameSize.height != 0 &&
+                            pictureSize.width != 0 && pictureSize.height != 0) {
 
                         //set the params to optimal size, and photo quality
                         params.setPreviewSize(frameSize.width, frameSize.height);
@@ -277,43 +438,47 @@ public class CameraPreview extends SurfaceView implements
 
                         //focus mode
                         List<String> FocusModes = params.getSupportedFocusModes();
-                        if(FocusModes != null && FocusModes.contains(FOCUS_MODE)) {
+                        if (FocusModes != null && FocusModes.contains(FOCUS_MODE)) {
                             params.setFocusMode(FOCUS_MODE);
                         }
-
                         mCamera.setParameters(params);
 
                         //rotate display
-                        mCamera.setDisplayOrientation((cameraInfo.orientation + 360) % 360);
+                        int rotation = ((Activity) getContext()).getWindowManager().getDefaultDisplay().getRotation();
+                        mCamera.setDisplayOrientation(ORIENTATIONS.get(rotation));
 
-                        //set display holder
-                        mCamera.setPreviewDisplay(mHolder);
-
-                        //ready to start the preview
-                        Log.d("Camera", "startPreview");
-                        mCamera.startPreview();
-
-                        //focus
-                        mCamera.autoFocus(this);
+                        return true;
                     }
-                } else
-                    result = false;
-
-            } catch(Exception e) {
-                result = false;
+                }
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-
-            return result;
         }
+        return false;
     }
 
-    /*
+    /**
+     * init and start the camera
+     */
+    private boolean initializeCamera() {
+        Log.d("Camera", "Initialize camera");
+        try {
+            //set display holder
+            mCamera.setPreviewDisplay(mHolder);
+
+            //start preview
+            mCamera.startPreview();
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * stop and release camera
      */
     private void releaseCamera() {
         synchronized(this){
-
             if(mCamera != null) {
                 mCamera.stopPreview();
                 mCamera.setPreviewCallback(null);
@@ -326,17 +491,33 @@ public class CameraPreview extends SurfaceView implements
         }
     }
 
-    /*
+    /**
+     * auto focus 
+     */
+    private void setAutoFocus() {
+        //check if auto focus support
+        PackageManager pm = getContext().getPackageManager();
+        if (pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_AUTOFOCUS)) {
+
+            try {
+                mCamera.autoFocus(this);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
      * scale holder with respect to camera frame size
      */
     private void scaleHolderSize() {
-        float frameRatio = (float)frameSize.width / frameSize.height;
+        float frameRatio = (float) frameSize.width / frameSize.height;
 
-        //keep the width of the holder
-        mSurfaceWidth = (int)(mSurfaceHeight * frameRatio);
+        //portrait mode: keep the width of the holder
+        mSurfaceWidth = (int) (mSurfaceHeight * frameRatio);
     }
 
-    /*
+    /**
      * find optimal size
      */
     private static class CameraSizeAccessor implements ListItemAccessor {
@@ -358,14 +539,15 @@ public class CameraPreview extends SurfaceView implements
     }
 
     /**
-     * resize the frame or picture for caputre based on a target size 
+     * find best frame size from the list of available sizes for display based on a target size 
      * @param supportedSizes list of supported size of camera hardware
      * @param accessor accessor object
      * @param targetWidth target width
      * @param targetHeight target height
      * @return camera size
      */
-    protected Camera.Size calculateCameraFrameSize(List<?> supportedSizes, ListItemAccessor accessor, int targetWidth, int targetHeight) {
+    private Camera.Size calculateCameraFrameSize(List<?> supportedSizes, ListItemAccessor accessor,
+                                                 int targetWidth, int targetHeight) {
         int calcWidth = 0;
         int calcHeight = 0;
 

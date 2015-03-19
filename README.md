@@ -178,6 +178,8 @@ When performing upload search, you may notice the increased search latency with 
 
 To reduce upload search latency, by default the uploadSearch method makes a copy of your image file and resizes the copy to 512x512 pixels if both of the original dimensions exceed 512 pixels. This is the optimized size to lower search latency while not sacrificing search accuracy for general use cases:
 
+* Image from local path or photo gallery
+
 ```java
 //default resize setting, set the image size to 512 x 512
 Image image = new Image(imagePath, ResizeSettings.STANDARD);
@@ -197,6 +199,21 @@ Or, provide the customized resize settings. To make efficient use the of the mem
 Image image = new Image(imagePath, new ResizeSettings(800, 800, 80));
 ```
 
+* Image from camera callback
+
+ViSearch Android SDK provides an interface to handle byte array returned from [`Camera.PictureCallback`](http://developer.android.com/reference/android/hardware/Camera.PictureCallback.html). Use `ResizeSettings.CAMERA_STANDARD` and `ResizeSettings.CAMERA_HIGH` to configure the resize settings. The image taken from the camera might not be in the desired orientaiton, a rotation parameter can be set to rotate the image to the correct orientation:
+
+```java
+@Override
+public void onPictureTaken(byte[] bytes, Camera camera) {
+    Image image = new Image(bytes, ResizeSettings.CAMERA_HIGH, 90);
+    UploadSearchParams uploadSearchParams = new UploadSearchParams(image);
+    
+    viSearcher.uploadSearch(uploadSearchParams);
+}
+```
+
+Please refer to the source code of [camera demo app](https://github.com/visenze/visearch-sdk-android/tree/master/cameraDemo) for the usage.
 
 ##5. Search Results
 The search results are returned as a list of image names with required additional information. Use `getImageList()` to get the list of images. The basic information returned about the image are image name. Use`viSearch.cancelSearch()` to cancel a search, and handle the result by implementing the `onSearchCanceled()` callback. If error occurs during the search, an error message will be returned and can be handled in `viSearch.onSearchError(String error)` callback method. 

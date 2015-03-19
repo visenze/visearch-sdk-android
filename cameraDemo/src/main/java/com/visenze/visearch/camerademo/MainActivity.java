@@ -1,3 +1,27 @@
+/**
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2015 ViSenze Pte. Ltd.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
 package com.visenze.visearch.camerademo;
 
 import android.app.Activity;
@@ -5,6 +29,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -48,8 +73,10 @@ public class MainActivity extends Activity implements
     
     //ViSearch and Search parameters
     private ViSearch                    viSearch;
-    private Image                       image;
     private UploadSearchParams          uploadSearchParams;
+
+    //photo loading and process runnable
+    private ImageProcessRunnable        imageProcessRunnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,14 +90,21 @@ public class MainActivity extends Activity implements
         viSearch.setListener(this);
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        cameraPreview.stopPreview();
+    }
+
     /**
      * Camera preview captured callback:
      * 
      * Pass the byte array to upload search params and start search 
      */
     @Override
-    public void OnImageCaptured(byte[] bytes) {
-        image = new Image(bytes, Image.ResizeSettings.STANDARD, 90);
+    public void OnImageCaptured(Image image) {
+        changeUploadUI();
         uploadSearchParams = new UploadSearchParams(image);
 
         viSearch.uploadSearch(uploadSearchParams);
@@ -93,12 +127,8 @@ public class MainActivity extends Activity implements
             imagePreview.setVisibility(View.VISIBLE);
             imagePreview.setImageURI(uri);
 
-            image = new Image(this, uri);
-
-            uploadSearchParams = new UploadSearchParams(image);
-
-            viSearch.uploadSearch(uploadSearchParams);
-
+            imageProcessRunnable = new ImageProcessRunnable(uri);
+            imageProcessRunnable.start();
         }
     }
 
@@ -135,8 +165,76 @@ public class MainActivity extends Activity implements
     public void onSearchCanceled() {
         changeUploadUIBack();
     }
-    
-    
+
+    private class ImageProcessRunnable implements Runnable {
+        private Thread thread;
+        private Uri _uri;
+
+        public ImageProcessRunnable(Uri uri) {
+            this._uri = uri;
+        }
+
+        @Override
+        public void run() {
+            Image image = new Image(MainActivity.this, _uri, Image.ResizeSettings.STANDARD);
+
+            uploadSearchParams = new UploadSearchParams(image);
+            viSearch.uploadSearch(uploadSearchParams);
+        }
+
+        public void start() {
+            if (thread == null) {
+                thread = new Thread(this, "photo load from gallery in worker thread");
+                thread.start();
+            }
+        }
+
+        public void stop() throws InterruptedException {
+            if (thread != null && thread.isAlive())
+                thread.join();
+        }
+    }
+
+    /**
+     * UI action: enable a group of UIs---------------------------------------------------------
+     */
+    static final ButterKnife.Action<View> ENABLE = new ButterKnife.Action<View>() {
+        @Override
+        public void apply(View view, int index) {
+            view.setEnabled(true);
+        }
+    };
+
+    /**
+     * UI action: disable a group of UIs
+     */
+    static final ButterKnife.Action<View> DISABLE = new ButterKnife.Action<View>() {
+        @Override
+        public void apply(View view, int index) {
+            view.setEnabled(false);
+        }
+    };
+
+    /**
+     * UI action: show a group of UIs
+     */
+    static final ButterKnife.Action<View> SHOW = new ButterKnife.Action<View>() {
+        @Override
+        public void apply(View view, int index) {
+            view.setVisibility(View.VISIBLE);
+        }
+    };
+
+    /**
+     * UI action: hide a group of UIs
+     */
+    static final ButterKnife.Action<View> HIDE = new ButterKnife.Action<View>() {
+        @Override
+        public void apply(View view, int index) {
+            view.setVisibility(View.GONE);
+        }
+    };
+
     /**
      * Belows are button click action implementations and UI change handling-----------------------
      */
@@ -154,28 +252,30 @@ public class MainActivity extends Activity implements
 
     @OnClick(R.id.camera_shutter_button)
     public void shutterClicked() {
-        changeUploadUI();
+        disableUploadUI();
         cameraPreview.takePhoto(this);
     }
 
     @OnClick(R.id.camera_cancel_button)
     public void cancelSearch() {
+        if (imageProcessRunnable != null) {
+            try {
+                imageProcessRunnable.stop();
+                Log.d("Camera Fragment: ", "stop photo loading and processing thread");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
         viSearch.cancelSearch();
     }
 
-    static final ButterKnife.Action<View> SHOW = new ButterKnife.Action<View>() {
-        @Override
-        public void apply(View view, int index) {
-            view.setVisibility(View.VISIBLE);
-        }
-    };
+    //change UI when uploading starts
+    private void disableUploadUI() {
+        //disable
+        ButterKnife.apply(cameraUIs, DISABLE);
 
-    static final ButterKnife.Action<View> HIDE = new ButterKnife.Action<View>() {
-        @Override
-        public void apply(View view, int index) {
-            view.setVisibility(View.GONE);
-        }
-    };
+    }
 
     //change UI when uploading starts
     private void changeUploadUI() {
@@ -193,6 +293,7 @@ public class MainActivity extends Activity implements
     //When cancel button is clicked, bring UI back
     private void changeUploadUIBack() {
         ButterKnife.apply(cameraUIs, SHOW);
+        ButterKnife.apply(cameraUIs, ENABLE);
 
         //set light to turn off state
         lightButton.setSelected(false);
