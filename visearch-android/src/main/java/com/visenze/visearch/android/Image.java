@@ -299,8 +299,8 @@ public class Image {
         private static final int            STANDARD_SIZE = 512;
         private static final int            LARGE_SIZE = 1024;
 
-        private static final int            COMPRESS_QUALITY = 90; //compression quality
-        private static final int            COMPRESS_QUALITY_LOW = 75; //compression quality for camera callback
+        private static final int            COMPRESS_QUALITY = 97; //compression quality
+        private static final int            COMPRESS_QUALITY_LOW = 97; //compression quality for camera callback
 
         public static final ResizeSettings  STANDARD = new ResizeSettings(
                 STANDARD_SIZE,
