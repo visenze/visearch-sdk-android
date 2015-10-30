@@ -25,6 +25,8 @@ public class BaseSearchParams {
 
     private Boolean queryInfo;
 
+    private Map<String, String> custom;
+
     /**
      * The default sets limit at 10 and page at 1, other basic parameters are set as null
      */
@@ -223,6 +225,12 @@ public class BaseSearchParams {
             putStringInMap(map, "qinfo", String.valueOf(queryInfo));
         }
 
+        if (custom != null && custom.size() > 0) {
+            for (String key : custom.keySet()) {
+                putStringInMap(map, key, custom.get(key));
+            }
+        }
+
         if (fq != null && fq.size() > 0) {
             List<String> valueList = new ArrayList<>();
 
@@ -245,5 +253,13 @@ public class BaseSearchParams {
         stringList.add(value);
 
         map.put(key, stringList);
+    }
+
+    public Map<String, String> getCustom() {
+        return custom;
+    }
+
+    public void setCustom(Map<String, String> custom) {
+        this.custom = custom;
     }
 }

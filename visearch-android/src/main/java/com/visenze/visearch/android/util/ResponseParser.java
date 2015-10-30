@@ -2,6 +2,10 @@ package com.visenze.visearch.android.util;
 
 import com.visenze.visearch.android.ResultList;
 import com.visenze.visearch.android.ViSearchException;
+import com.visenze.visearch.android.model.Box;
+import com.visenze.visearch.android.model.ImageResult;
+import com.visenze.visearch.android.model.ProductType;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,6 +36,11 @@ public class ResponseParser {
             JSONArray resultArray = resultObj.getJSONArray("result");
             resultList.setImageList(parseImageResultList(resultArray));
 
+            if (resultObj.has("product_types")) {
+                JSONArray productTypeArray = resultObj.getJSONArray("product_types");
+                resultList.setProductTypes(parseProductTypeList(productTypeArray));
+            }
+
             return resultList;
         } catch (JSONException e) {
             throw new ViSearchException("Error parsing response " + e.getMessage(), e);
@@ -53,14 +62,14 @@ public class ResponseParser {
         return queryInfo;
     }
 
-    private static List<ResultList.ImageResult> parseImageResultList(JSONArray resultArray) throws ViSearchException {
-        List<ResultList.ImageResult> resultList = new ArrayList<ResultList.ImageResult>();
+    private static List<ImageResult> parseImageResultList(JSONArray resultArray) throws ViSearchException {
+        List<ImageResult> resultList = new ArrayList<ImageResult>();
         int size = resultArray.length();
 
         try {
             for (int i = 0; i < size; i++) {
                 JSONObject imageObj = resultArray.getJSONObject(i);
-                ResultList.ImageResult imageResult = new ResultList.ImageResult();
+                ImageResult imageResult = new ImageResult();
                 imageResult.setImageName(imageObj.getString("im_name"));
 
                 if (imageObj.has("score")) {
@@ -91,6 +100,32 @@ public class ResponseParser {
         return resultList;
     }
 
+    private static List<ProductType> parseProductTypeList(JSONArray resultArray) throws ViSearchException {
+        List<ProductType> resultList = new ArrayList<ProductType>();
+        int size = resultArray.length();
+
+        try {
+            for (int i = 0; i < size; i++) {
+                JSONObject typeObj = resultArray.getJSONObject(i);
+                ProductType productType = new ProductType();
+                productType.setType(typeObj.getString("type"));
+                productType.setScore(typeObj.getDouble("score"));
+                JSONArray boxCoordinate = typeObj.getJSONArray("box");
+                Box box = new Box(boxCoordinate.getInt(0),
+                                  boxCoordinate.getInt(1),
+                                  boxCoordinate.getInt(2),
+                                  boxCoordinate.getInt(3));
+                productType.setBox(box);
+
+                resultList.add(productType);
+            }
+        } catch (JSONException e) {
+            throw new ViSearchException("Error parsing response result " + e.getMessage(),e);
+        }
+
+        return resultList;
+    }
+
     private static String parseResponseError(JSONObject jsonObj) {
         try {
             String status = jsonObj.getString("status");
@@ -111,5 +146,4 @@ public class ResponseParser {
             throw new ViSearchException("Error parsing response " + e.getMessage(), e);
         }
     }
-
 }

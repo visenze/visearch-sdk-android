@@ -34,7 +34,7 @@ public class ViSearch {
     }
 
     /**
-     * Sets the {@link com.visenze.visearch.android.ViSearch ResultListener} to be notified of the search result
+     * Sets the {@link ViSearch ResultListener} to be notified of the search result
      *
      * @param listener the ViSearcher.ResultListener to notify.
      */
@@ -90,7 +90,7 @@ public class ViSearch {
     }
 
     /**
-     * Builder class for {@link com.visenze.visearch.android.ViSearch}
+     * Builder class for {@link ViSearch}
      */
     public static class Builder {
         private String mAccessKey;

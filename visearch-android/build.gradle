@@ -51,7 +51,7 @@ dependencies {
 }
 
 group = 'com.visenze'
-version = '1.0.6'
+version = '1.0.7'
 
 apply plugin: 'com.jfrog.bintray'
 
@@ -70,9 +70,9 @@ bintray {
         licenses = ['The MIT License']
         labels = ['visenze', 'visearch', 'sdk', 'android']
         version {
-            name = '1.0.6'
+            name = '1.0.7'
             description = 'ViSearch Android SDK'
-            vcsTag = '1.0.6'
+            vcsTag = '1.0.7'
         }
     }
 }

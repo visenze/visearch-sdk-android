@@ -3,6 +3,8 @@ package com.visenze.visearch.android;
 
 import android.util.Log;
 
+import com.visenze.visearch.android.model.Image;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
