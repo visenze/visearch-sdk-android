@@ -25,6 +25,8 @@ public class BaseSearchParams {
 
     private Boolean queryInfo;
 
+    private Boolean getAllFl;
+
     private Map<String, String> custom;
 
     /**
@@ -37,6 +39,7 @@ public class BaseSearchParams {
         this.fl = null;
         this.fq = null;
         this.queryInfo = null;
+        this.getAllFl = null;
     }
 
     /**
@@ -80,6 +83,17 @@ public class BaseSearchParams {
      */
     public BaseSearchParams setQueryInfo(Boolean queryInfo) {
         this.queryInfo = queryInfo;
+        return this;
+    }
+
+    /**
+     * Set the requirement for get all fl
+     *
+     * @param getAllFl set true for false for the requirement, true - all metadata should be returned
+     * @return this instance.
+     */
+    public BaseSearchParams setGetAllFl(Boolean getAllFl) {
+        this.getAllFl = getAllFl;
         return this;
     }
 
@@ -132,6 +146,15 @@ public class BaseSearchParams {
      */
     public Boolean isQueryInfo() {
         return queryInfo;
+    }
+
+    /**
+     * Get all fl requirement
+     *
+     * @return all fl requirement, true - all metadata should be returned (except text type field)
+     */
+    public Boolean isGetAllFl() {
+        return getAllFl;
     }
 
     /**
@@ -223,6 +246,10 @@ public class BaseSearchParams {
 
         if (queryInfo != null) {
             putStringInMap(map, "qinfo", String.valueOf(queryInfo));
+        }
+
+        if (getAllFl != null) {
+            putStringInMap(map, "get_all_fl", String.valueOf(getAllFl));
         }
 
         if (custom != null && custom.size() > 0) {
