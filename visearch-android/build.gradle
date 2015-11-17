@@ -51,7 +51,7 @@ dependencies {
 }
 
 group = 'com.visenze'
-version = '1.0.7'
+version = '1.0.8'
 
 apply plugin: 'com.jfrog.bintray'
 

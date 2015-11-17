@@ -14,7 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-import com.visenze.visearch.android.ResultList;
+import com.visenze.visearch.android.model.ImageResult;
 import com.visenze.visearch.demo.R;
 
 import java.util.List;
@@ -66,7 +66,7 @@ public class ResultView extends LinearLayout {
         resultText.setText(errorDisplay + errorMessage);
     }
 
-    public void updateResult(Activity context, List<ResultList.ImageResult> resultList) {
+    public void updateResult(Activity context, List<ImageResult> resultList) {
         progressBar.setVisibility(View.GONE);
         resultText.setText(getContext().getResources().getString(R.string.search_result));
         gridView.setVisibility(View.VISIBLE);
@@ -79,11 +79,11 @@ public class ResultView extends LinearLayout {
     /**
      * Image adapter for gridview
      */
-    private class ImageAdapter extends ArrayAdapter<ResultList.ImageResult> {
+    private class ImageAdapter extends ArrayAdapter<ImageResult> {
         private Activity mContext;
-        private List<ResultList.ImageResult> imageList;
+        private List<ImageResult> imageList;
 
-        public ImageAdapter(Activity c, List<ResultList.ImageResult> imageList) {
+        public ImageAdapter(Activity c, List<ImageResult> imageList) {
             super(c, R.layout.result_layout, imageList);
             this.mContext = c;
             this.imageList = imageList;

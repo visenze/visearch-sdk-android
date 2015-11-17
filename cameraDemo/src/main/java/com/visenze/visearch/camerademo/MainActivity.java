@@ -37,10 +37,10 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.visenze.visearch.android.Image;
 import com.visenze.visearch.android.ResultList;
 import com.visenze.visearch.android.UploadSearchParams;
 import com.visenze.visearch.android.ViSearch;
+import com.visenze.visearch.android.model.Image;
 
 import java.util.List;
 

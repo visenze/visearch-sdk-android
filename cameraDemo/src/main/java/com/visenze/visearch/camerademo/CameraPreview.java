@@ -41,7 +41,8 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 
-import com.visenze.visearch.android.Image;
+
+import com.visenze.visearch.android.model.Image;
 
 import java.util.List;
 

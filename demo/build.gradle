@@ -43,7 +43,7 @@ android {
 }
 
 dependencies {
-    compile 'com.visenze:visearch-android:1.0.5'
+    compile 'com.visenze:visearch-android:1.0.7'
     compile 'com.android.support:appcompat-v7:21.0.3'
 //    compile project(":visearch-android")
 
