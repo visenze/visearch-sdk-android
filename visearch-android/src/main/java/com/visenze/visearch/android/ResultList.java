@@ -30,6 +30,8 @@ public class ResultList {
 
     private List<ProductType> productTypes;
 
+    private List<ProductType> supportedProductTypeList;
+
     public ResultList() {
         imageResult = new ArrayList<ImageResult>();
         queryInfo = new HashMap<String, String>();
@@ -94,6 +96,16 @@ public class ResultList {
         return productTypes;
     }
 
+
+    /**
+     * Get the list of Supported Product Type (supported categories) {@link ProductType}
+     *
+     * @return product type list
+     */
+    public List<ProductType> getSupportedProductTypeList() {
+        return supportedProductTypeList;
+    }
+
     /**
      * Get the query information of the search
      *
@@ -129,5 +141,9 @@ public class ResultList {
 
     public void setProductTypes(List<ProductType> productTypes) {
         this.productTypes = productTypes;
+    }
+
+    public void setSupportedProductTypeList(List<ProductType> supportedProductTypeList) {
+        this.supportedProductTypeList = supportedProductTypeList;
     }
 }

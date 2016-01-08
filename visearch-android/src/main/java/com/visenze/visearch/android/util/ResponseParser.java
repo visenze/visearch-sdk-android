@@ -41,6 +41,11 @@ public class ResponseParser {
                 resultList.setProductTypes(parseProductTypeList(productTypeArray));
             }
 
+            if (resultObj.has("product_types_list")) {
+                JSONArray productTypeListArray = resultObj.getJSONArray("product_types_list");
+                resultList.setSupportedProductTypeList(parseSupportedProductTypeList(productTypeListArray));
+            }
+
             return resultList;
         } catch (JSONException e) {
             throw new ViSearchException("Error parsing response " + e.getMessage(), e);
@@ -112,10 +117,25 @@ public class ResponseParser {
                 productType.setScore(typeObj.getDouble("score"));
                 JSONArray boxCoordinate = typeObj.getJSONArray("box");
                 Box box = new Box(boxCoordinate.getInt(0),
-                                  boxCoordinate.getInt(1),
-                                  boxCoordinate.getInt(2),
-                                  boxCoordinate.getInt(3));
+                        boxCoordinate.getInt(1),
+                        boxCoordinate.getInt(2),
+                        boxCoordinate.getInt(3));
                 productType.setBox(box);
+
+                if (typeObj.has("attributes")) {
+                    JSONObject attrsArray = typeObj.getJSONObject("attributes");
+                    JSONArray attrsNames = attrsArray.names();
+                    Map attrsMapList = new HashMap<>();
+                    for (int j = 0; attrsNames != null && j < attrsNames.length(); j++) {
+                        JSONArray attrsItems = (JSONArray) attrsArray.get((String)attrsNames.get(j));
+                        List<String> attrs = new ArrayList<>();
+                        for (int k = 0; k < attrsItems.length(); k++) {
+                            attrs.add((String) attrsItems.get(k));
+                        }
+                        attrsMapList.put(attrsNames.get(j), attrs);
+                    }
+                    productType.setAttributeList(attrsMapList);
+                }
 
                 resultList.add(productType);
             }
@@ -124,6 +144,40 @@ public class ResponseParser {
         }
 
         return resultList;
+    }
+
+    private static List<ProductType> parseSupportedProductTypeList(JSONArray resultArray) {
+        int size = resultArray.length();
+        List<ProductType> supportedTypeList = new ArrayList<>();
+
+        try {
+            for (int i = 0; i < size; i++) {
+                JSONObject typeObj = resultArray.getJSONObject(i);
+                ProductType productType = new ProductType();
+                productType.setType(typeObj.getString("type"));
+
+                if (typeObj.has("attributes_list")) {
+                    JSONObject attrsArray = typeObj.getJSONObject("attributes_list");
+                    JSONArray attrsNames = attrsArray.names();
+                    Map attrsMapList = new HashMap<>();
+                    for (int j = 0; attrsNames != null && j < attrsNames.length(); j++) {
+                        JSONArray attrsItems = (JSONArray) attrsArray.get((String)attrsNames.get(j));
+                        List<String> attrs = new ArrayList<>();
+                        for (int k = 0; k < attrsItems.length(); k++) {
+                            attrs.add((String) attrsItems.get(k));
+                        }
+                        attrsMapList.put(attrsNames.get(j), attrs);
+                    }
+                    productType.setAttributeList(attrsMapList);
+                }
+
+                supportedTypeList.add(productType);
+            }
+        } catch (JSONException e) {
+            throw new ViSearchException("Error parsing response result " + e.getMessage(), e);
+        }
+
+        return supportedTypeList;
     }
 
     private static String parseResponseError(JSONObject jsonObj) {

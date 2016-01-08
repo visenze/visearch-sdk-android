@@ -51,33 +51,31 @@ public class HttpInstance {
      * private constructor
      *
      * @param context application context
-     * @param accessKey access key
-     * @param secretKey secret key
      */
-    private HttpInstance(Context context, String accessKey, String secretKey) {
+    private HttpInstance(Context context) {
         mContext = context;
         mRequestQueue = getRequestQueue();
-        this.accessKey = accessKey;
-        this.secretKey = secretKey;
     }
 
     /**
      * singleton constructor
      *
      * @param context application context
-     * @param accessKey access key
-     * @param secretKey secret key
      *
      * @return singleton instance
      */
-    public static synchronized HttpInstance getInstance(Context context, String accessKey, String secretKey) {
+    public static synchronized HttpInstance getInstance(Context context) {
         if (mInstance == null) {
-            mInstance = new HttpInstance(context, accessKey, secretKey);
+            mInstance = new HttpInstance(context);
         }
 
         return mInstance;
     }
 
+    public void setKeys(String accessKey, String secretKey) {
+        this.accessKey = accessKey;
+        this.secretKey = secretKey;
+    }
 
     /**
      * request queue getter

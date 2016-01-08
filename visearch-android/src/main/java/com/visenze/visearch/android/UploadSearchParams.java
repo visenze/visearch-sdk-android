@@ -19,6 +19,10 @@ public class UploadSearchParams extends SearchParams {
 
     private String imageUrl;
 
+    private Map<String, String> attributes;
+
+    private String detection;
+
     public UploadSearchParams() {
         super();
     }
@@ -67,6 +71,22 @@ public class UploadSearchParams extends SearchParams {
         return this;
     }
 
+    public UploadSearchParams setDetection(String detection) {
+        this.detection = detection;
+        return this;
+    }
+
+    /**
+     * Set image url
+     *
+     * @param attributes product type attributes.
+     * @return this instance.
+     */
+    public UploadSearchParams setAttributes(Map<String, String> attributes) {
+        this.attributes = attributes;
+        return this;
+    }
+
     /**
      * Get {@link Image Image} that is set to search
      *
@@ -85,6 +105,15 @@ public class UploadSearchParams extends SearchParams {
         return imageUrl;
     }
 
+    /**
+     * Get detection type
+     *
+     * @return detection type.
+     */
+    public String getDetection() {
+        return detection;
+    }
+
     @Override
     public Map<String, List<String> > toMap() {
         Map<String, List<String> > map = super.toMap();
@@ -99,6 +128,18 @@ public class UploadSearchParams extends SearchParams {
 
         if (imageUrl != null) {
             putStringInMap(map, "im_url", imageUrl);
+        }
+
+        if (detection != null) {
+            putStringInMap(map,"detection", detection);
+        }
+
+        if (attributes != null && !attributes.isEmpty()) {
+            for (String key : attributes.keySet()) {
+                String keyName = "detection_attribute[" + key + "]";
+                String value = attributes.get(key);
+                putStringInMap(map, keyName, value);
+            }
         }
 
         return map;

@@ -37,7 +37,8 @@ public class SearchOperationsImpl implements SearchOperations {
      */
     public SearchOperationsImpl(String apiUrl, Context context, String accessKey, String secretKey) {
         apiBase = apiUrl;
-        httpInstance = HttpInstance.getInstance(context.getApplicationContext(), accessKey, secretKey);
+        httpInstance = HttpInstance.getInstance(context.getApplicationContext());
+        httpInstance.setKeys(accessKey, secretKey);
     }
 
     /**
