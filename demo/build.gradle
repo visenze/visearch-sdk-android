@@ -3,7 +3,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.0.0'
+        classpath 'com.android.tools.build:gradle:2.0.0-alpha3'
     }
 }
 
@@ -43,7 +43,7 @@ android {
 }
 
 dependencies {
-    compile 'com.visenze:visearch-android:1.0.8'
+    compile 'com.visenze:visearch-android:1.0.9'
     compile 'com.android.support:appcompat-v7:21.0.3'
 //    compile project(":visearch-android")
 

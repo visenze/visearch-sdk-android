@@ -16,6 +16,11 @@ repositories {
     jcenter()
 }
 
+def versionMajor = 1
+def versionMinor = 0
+def versionPatch = 9
+version = '1.0.9'
+
 android {
     compileSdkVersion 21
     buildToolsVersion "21.1.2"
@@ -23,8 +28,8 @@ android {
     defaultConfig {
         minSdkVersion 9
         targetSdkVersion 21
-        versionCode 1
-        versionName "1.0.0"
+        versionCode versionMajor * 10000 + versionMinor * 100 + versionPatch
+        versionName "v${versionMajor}.${versionMinor}.${versionPatch}"
     }
 
     buildTypes {
@@ -49,7 +54,7 @@ dependencies {
 }
 
 group = 'com.visenze'
-version = '1.0.8'
+
 
 apply plugin: 'com.jfrog.bintray'
 
@@ -68,9 +73,9 @@ bintray {
         licenses = ['The MIT License']
         labels = ['visenze', 'visearch', 'sdk', 'android']
         version {
-            name = '1.0.7'
+            name = '1.0.9'
             description = 'ViSearch Android SDK'
-            vcsTag = '1.0.7'
+            vcsTag = '1.0.9'
         }
     }
 }

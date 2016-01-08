@@ -38,9 +38,8 @@ android {
 }
 
 dependencies {
-    compile (project(":visearch-android"))
     compile 'com.android.support:appcompat-v7:23.1.1'
-//    compile 'com.visenze:visearch-android:1.0.8'
+    compile 'com.visenze:visearch-android:1.0.9'
 
     //ui dependency injection
     compile 'com.jakewharton:butterknife:6.0.0'
