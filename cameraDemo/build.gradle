@@ -10,15 +10,15 @@ buildscript {
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    compileSdkVersion 21
+    buildToolsVersion "21.1.2"
 
     defaultConfig {
-        applicationId "com.visenze.visearch.camerademo"
-        minSdkVersion 14
-        targetSdkVersion 23
+        applicationId "com.visenze.visearch.android.demo"
+        minSdkVersion 15
+        targetSdkVersion 21
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0"
     }
     buildTypes {
         release {
@@ -38,7 +38,7 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.visenze:visearch-android:1.0.9'
 
     //ui dependency injection
