@@ -20,7 +20,7 @@
 	  - 6.1 [Retrieving Metadata](#61-retrieving-metadata)
 	  - 6.2 [Filtering Results](#62-filtering-results)
 	  - 6.3 [Result Score](#63-result-score)
-      - 6.4 [6.4 Automatic Object Recognition Beta](#64-automatic-object-recognition-beta)
+      - 6.4 [Automatic Object Recognition Beta](#64-automatic-object-recognition-beta)
  7. [Code Samples](#7-code-samples)
 
 ---
