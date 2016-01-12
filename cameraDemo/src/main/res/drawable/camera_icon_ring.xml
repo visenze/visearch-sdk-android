@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:innerRadius="@dimen/ring_button_inner"
+    android:shape="ring"
+    android:thickness="@dimen/ring_button_ring"
+    android:useLevel="false" >
+    <solid android:color="@color/red" />
+    <size
+        android:width="@dimen/ring_button_outter"
+        android:height="@dimen/ring_button_outter"/>
+</shape>

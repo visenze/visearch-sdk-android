@@ -10,13 +10,13 @@ buildscript {
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1.2"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
 
     defaultConfig {
-        applicationId "com.visenze.visearch.android.demo"
-        minSdkVersion 15
-        targetSdkVersion 21
+        applicationId "com.visenze.visearch.android.example"
+        minSdkVersion 14
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0.0"
     }
@@ -35,13 +35,38 @@ android {
     lintOptions {
         abortOnError false
     }
+
+    sourceSets {
+        main {
+            manifest.srcFile 'src/main/AndroidManifest.xml'
+            java.srcDirs = ['src/main/java','.apt_generated']
+            aidl.srcDirs = ['src/main/aidl','.apt_generated']
+            assets.srcDirs = ['src/main/assets']
+            res.srcDirs =
+                    [
+                            'src/main/res/layouts/main',
+                            'src/main/res/layouts/camera',
+                            'src/main/res/layouts/result',
+                            'src/main/res/layouts/detail',
+                            'src/main/res'
+                    ]
+        }
+    }
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:21.0.3'
-    compile 'com.visenze:visearch-android:1.0.9'
-
-    //ui dependency injection
+    compile project(":visearch-android")
+    compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'me.littlecheesecake:waterfalllayoutview:1.0.0'
+    compile 'me.littlecheesecake:croplayout:1.0.5'
+    compile 'com.sothree.slidinguppanel:library:3.2.0'
+    compile 'in.srain.cube:grid-view-with-header-footer:1.0.8'
+    compile 'it.sephiroth.android.library.horizontallistview:hlistview:1.2.2'
     compile 'com.jakewharton:butterknife:6.0.0'
+    compile 'com.squareup.picasso:picasso:2.4.0'
+    compile 'com.mcxiaoke.volley:library:1.0.10@aar'
 
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-core:1.10.19'
+    testCompile 'org.robolectric:robolectric:3.0'
 }

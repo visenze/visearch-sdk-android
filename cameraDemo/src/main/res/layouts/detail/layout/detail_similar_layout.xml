@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray_background">
+
+    <!--action bar-->
+    <RelativeLayout
+        android:id="@+id/detail_drag_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/top_margin"
+        android:gravity="center_vertical"
+        android:background="@color/gray_action_bar">
+        <TextView
+            android:id="@+id/message"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_centerInParent="true"
+            android:textSize="18dp"
+            android:text="@string/detail_similar_title"
+            android:textColor="@color/white"/>
+    </RelativeLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/top_margin">
+
+        <com.visenze.visearch.camerademo.Views.ScrollAwareGridView
+            android:id="@+id/detail_grid_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:numColumns="3"/>
+
+        <TextView
+            android:id="@+id/no_result_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:text="@string/no_result_message"
+            android:layout_gravity="center"
+            android:textStyle="bold"
+            android:color="@color/white"/>
+
+        <!--Animation picture-->
+        <ImageView
+            android:id="@+id/result_loading"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="20dp"
+            android:visibility="gone"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/loading"/>
+    </FrameLayout>
+
+    <include layout="@layout/bottom_layout"/>
+
+</FrameLayout>
