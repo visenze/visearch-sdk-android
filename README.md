@@ -1,4 +1,4 @@
-# ViSearch Android SDK
+# ViSearch Android SDK and Demo Source Code
 [![Build Status](https://api.travis-ci.org/visenze/visearch-sdk-android.svg?branch=master)](https://travis-ci.org/visenze/visearch-sdk-android)
 
 ---
@@ -21,7 +21,7 @@
 	  - 6.2 [Filtering Results](#62-filtering-results)
 	  - 6.3 [Result Score](#63-result-score)
       - 6.4 [Automatic Object Recognition Beta](#64-automatic-object-recognition-beta)
- 7. [Code Samples](#7-code-samples)
+ 7. [Demo Source Code](#7-demo-source-code)
 
 ---
 
@@ -129,6 +129,7 @@ viSearch.colorSearch(colorSearchParams);
 Upload search is used to search similar images by uploading an image or providing an image url. `Image` class is used to perform the image encoding and resizing. You should construct the `Image` object and pass it to `UploadSearchParams` to start a search.
 
 * Using an image from a local file path:
+
 ```java
 Image image = new Image("/local/path/to/image.jpg");
 UploadSearchParams uploadSearchParams.setImage(image);
@@ -137,6 +138,7 @@ viSearch.uploadSearch(uploadSearchParams);
 ```
 
 * Using an image by providing the Uri of the image in photo gallery:
+
 ```java
 Image image = new Image(context, uri);
 UploadSearchParams uploadSearchParams = new UploadSearchParams(image);
@@ -145,6 +147,7 @@ viSearcher.uploadSearch(uploadSearchParams);
 ```
 
 * Construct the `image` from the byte array returned by the camera preview callback:
+
 ```java
 @Override
 public void onPictureTaken(byte[] bytes, Camera camera) {
@@ -156,6 +159,7 @@ public void onPictureTaken(byte[] bytes, Camera camera) {
 ```
 
 * Alternatively, you can pass an image url directly to `uploadSearchParams` to start the search :
+
 ```java
 String url = "http://mydomain.com/sample_image.jpg";
 UploadSearchParams uploadSearchParams = new UploadSearchParams(url);
@@ -377,5 +381,5 @@ The detected product types are listed in `product_types` together with the match
 
 
 
-##7. Code Samples
-Source code of a demo application can be found [here](https://github.com/visenze/visearch-sdk-android/tree/master/demo).
+##7. Demo Source Code 
+Source code of a demo application can be found [here](https://github.com/yulu/visearch-sdk-android/tree/master/cameraDemo).

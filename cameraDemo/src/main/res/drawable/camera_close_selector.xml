@@ -2,16 +2,16 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:state_enabled="false"
-        android:drawable="@drawable/camera_icon_close_tap" />
+        android:drawable="@drawable/back_button" />
     <item
         android:state_pressed="true"
         android:state_enabled="true"
-        android:drawable="@drawable/camera_icon_close_tap" />
+        android:drawable="@drawable/back_button" />
     <item
         android:state_focused="true"
         android:state_enabled="true"
-        android:drawable="@drawable/camera_icon_close_tap" />
+        android:drawable="@drawable/back_button" />
     <item
         android:state_enabled="true"
-        android:drawable="@drawable/camera_icon_close" />
+        android:drawable="@drawable/back_button" />
 </selector>
