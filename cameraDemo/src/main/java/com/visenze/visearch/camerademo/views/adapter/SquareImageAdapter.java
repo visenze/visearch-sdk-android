@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.visenze.visearch.camerademo.Views.adapter;
+package com.visenze.visearch.camerademo.views.adapter;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -34,7 +34,6 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.visenze.visearch.android.model.ImageResult;
 import com.visenze.visearch.camerademo.R;
-import com.visenze.visearch.camerademo.util.Config;
 
 import java.util.List;
 

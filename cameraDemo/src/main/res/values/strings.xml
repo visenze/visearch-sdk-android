@@ -11,4 +11,6 @@
 
     <string name="detail_similar_title">Similar Items</string>
     <string name="no_result_message">No Result Found</string>
+    <string name="grant">Grant Now</string>
+    <string name="dont_grant">Deny</string>
 </resources>

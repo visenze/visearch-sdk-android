@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.visenze.visearch.camerademo.Views.adapter;
+package com.visenze.visearch.camerademo.views.adapter;
 
 import android.app.Activity;
 import android.view.LayoutInflater;

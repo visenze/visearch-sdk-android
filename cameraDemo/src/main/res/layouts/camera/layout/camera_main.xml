@@ -7,7 +7,7 @@
     tools:context=".MainActivity">
 
     <!--Camera preview-->
-    <com.visenze.visearch.camerademo.Views.CameraPreview
+    <com.visenze.visearch.camerademo.views.CameraPreview
         android:id="@+id/camera_preview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
@@ -17,8 +17,8 @@
         android:id="@+id/camera_image_preview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/top_margin"
         android:layout_marginBottom="@dimen/camera_bottom_margin"
+        android:layout_marginTop="@dimen/top_margin"
         android:visibility="gone"/>
 
     <!--Animation picture-->
@@ -26,10 +26,10 @@
         android:id="@+id/camera_loading_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
+        android:background="@color/black_trans_40"
         android:gravity="center"
-        android:visibility="gone"
-        android:background="@color/black_trans_40">
+        android:orientation="vertical"
+        android:visibility="gone">
         <ImageView
             android:id="@+id/camera_loading"
             android:layout_width="wrap_content"
@@ -39,37 +39,37 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:text="Analysing..."
             android:textColor="@color/white"
-            android:textSize="18dp"
-            android:text="Analysing..."/>
+            android:textSize="18dp" />
     </LinearLayout>
 
     <!--action bar-->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingRight="20dp"
+        android:orientation="horizontal"
         android:paddingLeft="10dp"
-        android:paddingTop="10dp"
-        android:orientation="horizontal">
+        android:paddingRight="20dp"
+        android:paddingTop="10dp">
         <ImageView
-            style="@style/AppTheme.ImageButton"
             android:id="@+id/camera_close_button"
+            style="@style/AppTheme.ImageButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/camera_close_selector"/>
         <ImageView
-            style="@style/AppTheme.CameraButton"
             android:id="@+id/camera_flash_button"
+            style="@style/AppTheme.CameraButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:clickable="true"
             android:layout_marginRight="70dp"
+            android:clickable="true"
             android:src="@drawable/camera_light_selector"/>
         <ImageView
-            style="@style/AppTheme.CameraButton"
             android:id="@+id/camera_switch_button"
+            style="@style/AppTheme.CameraButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -87,12 +87,12 @@
         android:orientation="vertical">
 
         <ImageView
-            style="@style/AppTheme.CameraButton"
             android:id="@+id/camera_album_button"
+            style="@style/AppTheme.CameraButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:clickable="true"
             android:layout_marginRight="20dp"
+            android:clickable="true"
             android:src="@drawable/camera_album_selector"/>
     </LinearLayout>
 
@@ -100,31 +100,31 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/logo_margin"
         android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/logo_margin"
         android:background="@drawable/powered_by_app"/>
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true">
+        android:layout_marginBottom="10dp">
         <ImageView
             android:id="@+id/camera_shutter_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:background="@drawable/camera_button_selector"
             android:clickable="true"
-            android:background="@drawable/camera_button_selector"/>
+            android:gravity="center" />
         <!--cancel button, gone as default-->
         <TextView
             android:id="@+id/camera_cancel_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:background="@drawable/camera_cancel_selector"
             android:clickable="true"
+            android:gravity="center"
             android:textColor="@color/red"
-            android:visibility="gone"
-            android:background="@drawable/camera_cancel_selector"/>
+            android:visibility="gone" />
     </FrameLayout>
 </RelativeLayout>

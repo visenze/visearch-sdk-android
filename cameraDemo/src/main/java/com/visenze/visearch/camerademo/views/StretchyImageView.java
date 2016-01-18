@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.visenze.visearch.camerademo.Views;
+package com.visenze.visearch.camerademo.views;
 
 import android.content.Context;
 import android.util.AttributeSet;

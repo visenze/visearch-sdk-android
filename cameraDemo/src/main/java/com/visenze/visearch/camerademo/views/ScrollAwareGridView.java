@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.visenze.visearch.camerademo.Views;
+package com.visenze.visearch.camerademo.views;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -39,28 +39,15 @@ import in.srain.cube.views.GridViewWithHeaderAndFooter;
 
 public class ScrollAwareGridView extends GridViewWithHeaderAndFooter {
     private static final String SCROLL_AWARE_GRID_VIEW = "scroll aware grid view";
-
+    private static int BUFFER = 10;
     private OnScrollListener onScrollListener;
     private OnDetectScrollListener onDetectScrollListener;
-    private static int BUFFER = 10;
-
-    public interface OnDetectScrollListener {
-
-        void onUpScrolling();
-
-        void onDownScrolling();
-
-        void onTopReached();
-
-        void onBottomReached();
-
-    }
-
 
     public ScrollAwareGridView(Context context) {
         super(context);
         initView();
     }
+
 
     public ScrollAwareGridView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -140,6 +127,18 @@ public class ScrollAwareGridView extends GridViewWithHeaderAndFooter {
 
     public void setOnDetectScrollListener(OnDetectScrollListener onDetectScrollListener) {
         this.onDetectScrollListener = onDetectScrollListener;
+    }
+
+    public interface OnDetectScrollListener {
+
+        void onUpScrolling();
+
+        void onDownScrolling();
+
+        void onTopReached();
+
+        void onBottomReached();
+
     }
 
 }

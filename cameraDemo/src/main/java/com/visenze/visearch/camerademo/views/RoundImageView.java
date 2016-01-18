@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.visenze.visearch.camerademo.Views;
+package com.visenze.visearch.camerademo.views;
 
 /**
  * Created by visenze on 15/9/15.

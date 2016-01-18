@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.visenze.visearch.camerademo.Views;
+package com.visenze.visearch.camerademo.views;
 
 import android.app.Activity;
 import android.content.Context;
@@ -66,33 +66,29 @@ public class CameraPreview extends SurfaceView implements
      * Screen orientation
      */
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
+    /**
+     * Focus mode
+     */
+    private static final String FOCUS_MODE = Camera.Parameters.FOCUS_MODE_MACRO;
+    /**
+     * Flag to control flash on and off
+     */
+    private static boolean      LightOn = false;
+    /**
+     * Flag to control back and front camera
+     */
+    private static int          Facing = CAMERA_FACING_BACK;
+    /**
+     * Flag to control configuration
+     */
+    private static boolean      configured = false;
+
     static {
         ORIENTATIONS.append(Surface.ROTATION_0, 90);
         ORIENTATIONS.append(Surface.ROTATION_90, 0);
         ORIENTATIONS.append(Surface.ROTATION_180, 270);
         ORIENTATIONS.append(Surface.ROTATION_270, 180);
     }
-
-    /**
-     * Focus mode 
-     */
-    private static final String FOCUS_MODE = Camera.Parameters.FOCUS_MODE_MACRO;
-
-    /**
-     * Flag to control flash on and off
-     */
-    private static boolean      LightOn = false;
-
-    /**
-     * Flag to control back and front camera
-     */
-    private static int          Facing = CAMERA_FACING_BACK;
-
-    /**
-     * Flag to control configuration 
-     */
-    private static boolean      configured = false;
-
 
     /**
      * surface holder size (need to be matched with camera preview size
@@ -133,13 +129,6 @@ public class CameraPreview extends SurfaceView implements
     private Context context;
 
     /**
-     * Image capture callback
-     */
-    public interface ImageCapturedCallback {
-        void OnImageCaptured(Image image, String imagePath);
-    }
-
-    /**
      * Constructor
      * @param context activity context
      */
@@ -168,7 +157,7 @@ public class CameraPreview extends SurfaceView implements
         mHolder = getHolder();
         mHolder.addCallback(this);
         mHolder.setType(SURFACE_TYPE_PUSH_BUFFERS);
-        
+
         //set click to focus
         setOnClickListener(new OnClickListener() {
             @Override
@@ -194,10 +183,10 @@ public class CameraPreview extends SurfaceView implements
 
     /**
      * stop camera preview
-     * 
-     * call this method only stop the camera preview, but only release 
+     *
+     * call this method only stop the camera preview, but only release
      * the camera module. The preview will be frozen in this case instead
-     * of destroyed. 
+     * of destroyed.
      */
     public void stopPreview() {
         if (mCamera != null)
@@ -206,7 +195,7 @@ public class CameraPreview extends SurfaceView implements
 
     /**
      * Start preview with back camera and the previous setting of flash light
-     * 
+     *
      * call this method to start the preview if it has been stopped
      */
     public void startCameraPreview() {
@@ -314,7 +303,7 @@ public class CameraPreview extends SurfaceView implements
     @Override
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
         releaseCamera();
-        
+
         //set configuration to false;
         configured = false;
 
@@ -331,7 +320,7 @@ public class CameraPreview extends SurfaceView implements
     @Override
     public void onPictureTaken(byte[] bytes, Camera camera) {
         releaseCamera();
-        
+
         //start image process in another thread
         imageRunnable = new ImageRunnable(context, bytes);
         imageRunnable.start();
@@ -340,53 +329,6 @@ public class CameraPreview extends SurfaceView implements
     @Override
     public void onAutoFocus(boolean b, Camera camera) {
         Log.d("Camera", "auto focus");
-    }
-
-    /**
-     * Image process in a worker thread
-     */
-    private class ImageRunnable implements Runnable {
-        private Thread thread;
-        private byte[] _bytes;
-        private Context context;
-        
-        public ImageRunnable(Context context, byte[] bytes) {
-            _bytes = bytes;
-            this.context = context;
-        }
-
-        @Override
-        public void run() {
-            if (imageCapturedCallback != null) {
-                //save to image, rotate the image as the image taken is in landscape mode
-                int rotation = ((Activity)getContext()).getWindowManager().getDefaultDisplay().getRotation();
-                final Image image = new Image(_bytes, Config.CAMERA_IMAGE_QUALITY, ORIENTATIONS.get(rotation));
-                
-                //save to local path
-                final String path = ImageHelper.saveImageByte(context, image.getByteArray());
-
-                //run method that to be implemented in main UI thread
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    @Override
-                    public void run() {
-                        imageCapturedCallback.OnImageCaptured(image, path);
-                    }
-                });
-            }
-        }
-
-        public void start() {
-            if (thread == null) {
-                thread = new Thread(this, "byte array process in worker thread");
-                thread.start();
-            }
-        }
-
-        public void stop() throws InterruptedException {
-            if (thread != null && thread.isAlive()) {
-                thread.join();
-            }
-        }
     }
 
     /**
@@ -403,7 +345,7 @@ public class CameraPreview extends SurfaceView implements
                 mCamera.release();
                 mCamera = null;
             }
-            
+
             //open back or front camera
             int localCameraIndex = -1;
             Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
@@ -445,7 +387,7 @@ public class CameraPreview extends SurfaceView implements
                     // Select the size that fits surface considering maximum size allowed
                     frameSize = calculateCameraFrameSize(previewSizes, new CameraSizeAccessor(),
                             mSurfaceWidth, mSurfaceHeight);
-                    
+
                     params.setPreviewFormat(ImageFormat.NV21);
                     Log.d("Camera", "Set preview size to " + frameSize.width + "x" + frameSize.height);
 
@@ -481,7 +423,7 @@ public class CameraPreview extends SurfaceView implements
 
                         return true;
                     }
-                } 
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -497,7 +439,7 @@ public class CameraPreview extends SurfaceView implements
         try {
             //set display holder
             mCamera.setPreviewDisplay(mHolder);
-            
+
             //start preview
             mCamera.startPreview();
         } catch (Exception e) {
@@ -525,7 +467,7 @@ public class CameraPreview extends SurfaceView implements
     }
 
     /**
-     * auto focus 
+     * auto focus
      */
     private void setAutoFocus() {
         //check if auto focus support
@@ -552,36 +494,15 @@ public class CameraPreview extends SurfaceView implements
     }
 
     /**
-     * find optimal size
-     */
-    private static class CameraSizeAccessor implements ListItemAccessor {
-
-        public int getWidth(Object obj) {
-            Camera.Size size = (Camera.Size) obj;
-            return size.width;
-        }
-
-        public int getHeight(Object obj) {
-            Camera.Size size = (Camera.Size) obj;
-            return size.height;
-        }
-    }
-
-    private interface ListItemAccessor {
-        int getWidth(Object obj);
-        int getHeight(Object obj);
-    }
-
-    /**
-     * find best frame size from the list of available sizes for display based on a target size 
+     * find best frame size from the list of available sizes for display based on a target size
      * @param supportedSizes list of supported size of camera hardware
      * @param accessor accessor object
      * @param targetWidth target width
      * @param targetHeight target height
      * @return camera size
      */
-    private Camera.Size calculateCameraFrameSize(List<?> supportedSizes, ListItemAccessor accessor, 
-                                                   int targetWidth, int targetHeight) {
+    private Camera.Size calculateCameraFrameSize(List<?> supportedSizes, ListItemAccessor accessor,
+                                                 int targetWidth, int targetHeight) {
         int calcWidth = 0;
         int calcHeight = 0;
 
@@ -598,5 +519,81 @@ public class CameraPreview extends SurfaceView implements
             }
         }
         return mCamera.new Size(calcWidth, calcHeight);
+    }
+
+    /**
+     * Image capture callback
+     */
+    public interface ImageCapturedCallback {
+        void OnImageCaptured(Image image, String imagePath);
+    }
+
+    private interface ListItemAccessor {
+        int getWidth(Object obj);
+
+        int getHeight(Object obj);
+    }
+
+    /**
+     * find optimal size
+     */
+    private static class CameraSizeAccessor implements ListItemAccessor {
+
+        public int getWidth(Object obj) {
+            Camera.Size size = (Camera.Size) obj;
+            return size.width;
+        }
+
+        public int getHeight(Object obj) {
+            Camera.Size size = (Camera.Size) obj;
+            return size.height;
+        }
+    }
+
+    /**
+     * Image process in a worker thread
+     */
+    private class ImageRunnable implements Runnable {
+        private Thread thread;
+        private byte[] _bytes;
+        private Context context;
+
+        public ImageRunnable(Context context, byte[] bytes) {
+            _bytes = bytes;
+            this.context = context;
+        }
+
+        @Override
+        public void run() {
+            if (imageCapturedCallback != null) {
+                //save to image, rotate the image as the image taken is in landscape mode
+                int rotation = ((Activity) getContext()).getWindowManager().getDefaultDisplay().getRotation();
+                final Image image = new Image(_bytes, Config.CAMERA_IMAGE_QUALITY, ORIENTATIONS.get(rotation));
+
+                //save to local path
+                final String path = ImageHelper.saveImageByte(context, image.getByteArray());
+
+                //run method that to be implemented in main UI thread
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        imageCapturedCallback.OnImageCaptured(image, path);
+                    }
+                });
+            }
+        }
+
+        public void start() {
+            if (thread == null) {
+                thread = new Thread(this, "byte array process in worker thread");
+                thread.start();
+            }
+        }
+
+        public void stop() throws InterruptedException {
+            if (thread != null && thread.isAlive()) {
+                thread.join();
+            }
+        }
     }
 }
