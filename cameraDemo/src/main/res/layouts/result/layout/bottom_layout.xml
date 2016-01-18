@@ -7,30 +7,30 @@
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/edit_crop_padding_bottom"
-        android:layout_marginBottom="5dp"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true">
+        android:layout_marginBottom="5dp"
+        android:paddingBottom="@dimen/edit_crop_padding_bottom">
         <!--cancel button, gone as default-->
-        <com.visenze.visearch.camerademo.Views.RoundImageView
+        <com.visenze.visearch.camerademo.views.RoundImageView
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/result_query_image"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:layout_gravity="center"
             android:clickable="true"
             android:scaleType="centerCrop"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
             app:maskDrawable="@drawable/circle_mask" />
         <TextView
             android:id="@+id/edit_query_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:layout_gravity="center"
+            android:background="@drawable/recrop_button_selector"
+            android:gravity="center"
             android:text="@string/search_crop"
-            android:textStyle="bold"
             android:textColor="@color/white"
-            android:background="@drawable/recrop_button_selector"/>
+            android:textStyle="bold" />
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
