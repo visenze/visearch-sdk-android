@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.visenze.visearch.camerademo.Views.adapter;
+package com.visenze.visearch.camerademo.views.adapter;
 
 import android.annotation.TargetApi;
 import android.app.Activity;

@@ -44,10 +44,10 @@ import com.visenze.visearch.android.model.ImageResult;
 import com.visenze.visearch.camerademo.DetailActivity;
 import com.visenze.visearch.camerademo.MainActivity;
 import com.visenze.visearch.camerademo.R;
-import com.visenze.visearch.camerademo.Views.ScrollAwareGridView;
-import com.visenze.visearch.camerademo.Views.adapter.SquareImageAdapter;
 import com.visenze.visearch.camerademo.http.SearchAPI;
 import com.visenze.visearch.camerademo.util.DataHelper;
+import com.visenze.visearch.camerademo.views.ScrollAwareGridView;
+import com.visenze.visearch.camerademo.views.adapter.SquareImageAdapter;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;

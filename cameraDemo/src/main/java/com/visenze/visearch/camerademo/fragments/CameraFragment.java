@@ -49,7 +49,7 @@ import com.visenze.visearch.camerademo.util.Config;
 import com.visenze.visearch.camerademo.util.DataHelper;
 import com.visenze.visearch.camerademo.util.ImageHelper;
 import com.visenze.visearch.camerademo.util.IntentHelper;
-import com.visenze.visearch.camerademo.Views.CameraPreview;
+import com.visenze.visearch.camerademo.views.CameraPreview;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -68,14 +68,48 @@ import butterknife.OnClick;
 public class CameraFragment extends Fragment implements
         ViSearch.ResultListener, CameraPreview.ImageCapturedCallback {
 
+    /**
+     * UI action: enable a group of UIs---------------------------------------------------------
+     */
+    static final ButterKnife.Action<View> ENABLE = new ButterKnife.Action<View>() {
+        @Override
+        public void apply(View view, int index) {
+            view.setEnabled(true);
+        }
+    };
+    /**
+     * UI action: disable a group of UIs
+     */
+    static final ButterKnife.Action<View> DISABLE = new ButterKnife.Action<View>() {
+        @Override
+        public void apply(View view, int index) {
+            view.setEnabled(false);
+        }
+    };
+    /**
+     * UI action: show a group of UIs
+     */
+    static final ButterKnife.Action<View> SHOW = new ButterKnife.Action<View>() {
+        @Override
+        public void apply(View view, int index) {
+            view.setVisibility(View.VISIBLE);
+        }
+    };
+    /**
+     * UI action: hide a group of UIs
+     */
+    static final ButterKnife.Action<View> HIDE = new ButterKnife.Action<View>() {
+        @Override
+        public void apply(View view, int index) {
+            view.setVisibility(View.GONE);
+        }
+    };
     private static final int RESULT_LOAD_IMAGE_FROM_GALLERY = 0x00;
-    
     //Inject UIs
     @InjectView(R.id.camera_preview)            CameraPreview       cameraPreview;
     @InjectView(R.id.camera_image_preview)      ImageView           imagePreview;
     @InjectView(R.id.camera_loading)            ImageView           loadingImage;
     @InjectView(R.id.camera_flash_button)       ImageView           lightButton;
-
     @InjectViews( { R.id.camera_cancel_button,
                     R.id.camera_loading_background,
                     R.id.camera_loading})       List<View>          searchUIs;
@@ -84,16 +118,13 @@ public class CameraFragment extends Fragment implements
                     R.id.camera_switch_button,
                     R.id.camera_shutter_button,
                     R.id.camera_close_button})  List<ImageView>     cameraUIs;
-    
     //ViSearch and Search parameters
     private ViSearch viSearch;
     private String                      imagePath;
     private UploadSearchParams uploadSearchParams;
-    
     //photo loading and process runnable
     private ImageProcessRunnable        imageProcessRunnable;
-
-
+    
     /**
      * Constructor
      *
@@ -102,11 +133,11 @@ public class CameraFragment extends Fragment implements
     public static CameraFragment newInstance() {
         CameraFragment fragment = new CameraFragment();
         //can set some properties for the fragment
-        return fragment;        
+        return fragment;
     }
-   
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, 
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.camera_main, container, false);
         ButterKnife.inject(this, view);
@@ -120,18 +151,17 @@ public class CameraFragment extends Fragment implements
         return view;
     }
 
-
     @Override
     public void onStop() {
         super.onStop();
         cameraPreview.stopPreview();
         Log.i("CAMERA", "camera fragment stop");
     }
-
+    
     /**
      * Image selection activity callback:
-     * 
-     * get the image Uri from intent and pass to upload search params to start search 
+     *
+     * get the image Uri from intent and pass to upload search params to start search
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -155,7 +185,7 @@ public class CameraFragment extends Fragment implements
     
     /**
      * Camera preview captured callback:
-     * 
+     *
      * Pass the byte array to upload search params and start search
      */
     @Override
@@ -176,7 +206,7 @@ public class CameraFragment extends Fragment implements
      * get the list of result image and do something
      * check if the result if from camera or photo gallery by checking
      * imagePath and uri are null or not
-     * 
+     *
      * Change the UI back to searching mode
      */
     @Override
@@ -192,10 +222,10 @@ public class CameraFragment extends Fragment implements
         getActivity().setResult(Activity.RESULT_OK, thisIntent);
         getActivity().finish();
     }
-
+    
     /**
      * search error callback:
-     * 
+     *
      * called when there is an error after upload search
      * display the error and change the UI to camera mode
      */
@@ -206,11 +236,11 @@ public class CameraFragment extends Fragment implements
             Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_SHORT).show();
         }
     }
-    
+
     /**
      * search cancel callback:
-     * 
-     * change the UI to camera mode when search is canceled 
+     *
+     * change the UI to camera mode when search is canceled
      */
     @Override
     public void onSearchCanceled() {
@@ -218,86 +248,7 @@ public class CameraFragment extends Fragment implements
             changeUploadUIBack();
         }
     }
-    
-    private class ImageProcessRunnable implements Runnable {
-        private Thread thread;
-        private Uri _uri;
-        
-        public ImageProcessRunnable(Uri uri) {
-            this._uri = uri;
-        }
-        
-        @Override
-        public void run() {
-            try {
-                byte[] bytes = ImageHelper.readBytes(_uri, getActivity(), Config.IMAGE_QUALITY);
-                CameraFragment.this.imagePath = ImageHelper.saveImageByteTmp(getActivity(), bytes);
-                Image image = new Image(bytes, Config.IMAGE_QUALITY);
 
-                uploadSearchParams = new UploadSearchParams(image);
-                DataHelper.setSearchParams(uploadSearchParams, "all");
-
-                viSearch.uploadSearch(uploadSearchParams);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        
-        public void start() {
-            if (thread == null) {
-                thread = new Thread(this, "photo load from gallery in worker thread");
-                thread.start();
-            }
-        }
-        
-        public void stop() throws InterruptedException {
-            if (thread != null && thread.isAlive())
-                thread.join();
-        }
-    }
-
-    /**
-     * UI action: enable a group of UIs---------------------------------------------------------
-     */
-    static final ButterKnife.Action<View> ENABLE = new ButterKnife.Action<View>() {
-        @Override
-        public void apply(View view, int index) {
-            view.setEnabled(true);
-        }
-    };
-    
-    /**
-     * UI action: disable a group of UIs
-     */
-    static final ButterKnife.Action<View> DISABLE = new ButterKnife.Action<View>() {
-        @Override
-        public void apply(View view, int index) {
-            view.setEnabled(false);
-        }
-    };
-
-    /**
-     * UI action: show a group of UIs 
-     */
-    static final ButterKnife.Action<View> SHOW = new ButterKnife.Action<View>() {
-        @Override
-        public void apply(View view, int index) {
-            view.setVisibility(View.VISIBLE);
-        }
-    };
-
-    /**
-     * UI action: hide a group of UIs 
-     */
-    static final ButterKnife.Action<View> HIDE = new ButterKnife.Action<View>() {
-        @Override
-        public void apply(View view, int index) {
-            view.setVisibility(View.GONE);
-        }
-    };
-        
     /**
      * Belows are button click action implementations and UI change handling-----------------------
      */
@@ -351,13 +302,13 @@ public class CameraFragment extends Fragment implements
                 Log.d("Interruption exception ", e.getMessage());
             }
         }
-        
+
         viSearch.cancelSearch();
     }
-    
+
     //change UI when uploading starts
     private void disableUploadUI() {
-        //disable 
+        //disable
         ButterKnife.apply(cameraUIs, DISABLE);
     }
 
@@ -369,7 +320,7 @@ public class CameraFragment extends Fragment implements
         AnimationDrawable anim = (AnimationDrawable) loadingImage.getDrawable();
         anim.start();
     }
-    
+
     //When cancel button is clicked, bring UI back and enable
     private void changeUploadUIBack() {
         ButterKnife.apply(cameraUIs, SHOW);
@@ -389,5 +340,44 @@ public class CameraFragment extends Fragment implements
         cameraPreview.setVisibility(View.VISIBLE);
 
         cameraPreview.startCameraPreview();
+    }
+
+    private class ImageProcessRunnable implements Runnable {
+        private Thread thread;
+        private Uri _uri;
+
+        public ImageProcessRunnable(Uri uri) {
+            this._uri = uri;
+        }
+
+        @Override
+        public void run() {
+            try {
+                byte[] bytes = ImageHelper.readBytes(_uri, getActivity(), Config.IMAGE_QUALITY);
+                CameraFragment.this.imagePath = ImageHelper.saveImageByteTmp(getActivity(), bytes);
+                Image image = new Image(bytes, Config.IMAGE_QUALITY);
+
+                uploadSearchParams = new UploadSearchParams(image);
+                DataHelper.setSearchParams(uploadSearchParams, "all");
+
+                viSearch.uploadSearch(uploadSearchParams);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void start() {
+            if (thread == null) {
+                thread = new Thread(this, "photo load from gallery in worker thread");
+                thread.start();
+            }
+        }
+
+        public void stop() throws InterruptedException {
+            if (thread != null && thread.isAlive())
+                thread.join();
+        }
     }
 }

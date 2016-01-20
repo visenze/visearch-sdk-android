@@ -51,15 +51,15 @@ import com.visenze.visearch.camerademo.DetailActivity;
 import com.visenze.visearch.camerademo.EditPhotoActivity;
 import com.visenze.visearch.camerademo.MainActivity;
 import com.visenze.visearch.camerademo.R;
-import com.visenze.visearch.camerademo.Views.ScrollAwareGridView;
-import com.visenze.visearch.camerademo.Views.adapter.HorizontalProductTypeArrayAdapter;
-import com.visenze.visearch.camerademo.Views.adapter.SquareImageAdapter;
-import com.visenze.visearch.camerademo.Views.adapter.StrechImageAdapter;
 import com.visenze.visearch.camerademo.http.SearchAPI;
 import com.visenze.visearch.camerademo.util.Config;
 import com.visenze.visearch.camerademo.util.DataHelper;
 import com.visenze.visearch.camerademo.util.ImageHelper;
 import com.visenze.visearch.camerademo.util.IntentHelper;
+import com.visenze.visearch.camerademo.views.ScrollAwareGridView;
+import com.visenze.visearch.camerademo.views.adapter.HorizontalProductTypeArrayAdapter;
+import com.visenze.visearch.camerademo.views.adapter.SquareImageAdapter;
+import com.visenze.visearch.camerademo.views.adapter.StrechImageAdapter;
 
 import java.util.List;
 
@@ -81,12 +81,19 @@ import me.littlecheesecake.waterfalllayoutview.WFAdapterView;
  * PhotoEditFragment 
  */
 public class PhotoEditFragment extends Fragment implements ViSearch.ResultListener{
-    private static final String PHOTO_EDIT_ACTIVITY = "PhotoEditActivity";
-
-    private enum VIEW_LAYOUT {
-        GRID, WATERFALL
+    final static ButterKnife.Action<View> SHOW = new ButterKnife.Action<View>() {
+        @Override
+        public void apply(View view, int index) {
+            view.setVisibility(View.VISIBLE);
+        }
     };
-
+    final static ButterKnife.Action<View> HIDE = new ButterKnife.Action<View>() {
+        @Override
+        public void apply(View view, int index) {
+            view.setVisibility(View.GONE);
+        }
+    };
+    private static final String PHOTO_EDIT_ACTIVITY = "PhotoEditActivity";
     //UI element
     @InjectView(R.id.result_loading)            ImageView               loadingImage;
     @InjectView(R.id.result_query_image)        ImageView               queryImage;
@@ -97,27 +104,24 @@ public class PhotoEditFragment extends Fragment implements ViSearch.ResultListen
     @InjectView(R.id.category_list_view)        HListView               categoryListView;
     @InjectView(R.id.sliding_layout)            SlidingUpPanelLayout    slidingUpPanelLayout;
     @InjectView(R.id.result_switch_button)      ImageView               switchButtonView;
-
     //Dynamic UI elements
     private HorizontalProductTypeArrayAdapter   horizontalAdapter;
     private MultiColumnListView                 waterfallViewLayout;
     private ScrollAwareGridView                 gridViewLayout;
     private VIEW_LAYOUT                         currentLayout;
-
     //parameters passed in from camera activity
     private String                      imagePath;
     private String                      selectedType;
     private Bitmap                      bitmap;
     private List<String>                productList;
     private ResultList                  resultList;
-
     //ViSearch and Search parameters
     private ViSearch                    viSearch;
     private EditableImage               editableImage;
 
     /**
      * Constructor: get new instance of PhotoEditFragment
-     *  
+     *
      * @return new instance of PhotoEditFragment
      */
     public static PhotoEditFragment newInstance() {
@@ -349,20 +353,6 @@ public class PhotoEditFragment extends Fragment implements ViSearch.ResultListen
         }
     }
 
-    final static ButterKnife.Action<View> SHOW = new ButterKnife.Action<View>() {
-        @Override
-        public void apply(View view, int index) {
-            view.setVisibility(View.VISIBLE);
-        }
-    };
-
-    final static ButterKnife.Action<View> HIDE = new ButterKnife.Action<View>() {
-        @Override
-        public void apply(View view, int index) {
-            view.setVisibility(View.GONE);
-        }
-    };
-
     private void startDetailActivity(ImageResult imageResult) {
         IntentHelper.addObjectForKey(imageResult.getImageName(), IntentHelper.SEARCH_RESULT_EXTRA);
         IntentHelper.addObjectForKey(imageResult.getImageUrl(), IntentHelper.SEARCH_IMAGE_PATH_EXTRA);
@@ -399,5 +389,9 @@ public class PhotoEditFragment extends Fragment implements ViSearch.ResultListen
         }
 
         return searchBox;
+    }
+
+    private enum VIEW_LAYOUT {
+        GRID, WATERFALL
     }
 }
