@@ -42,7 +42,7 @@ The ViSearch Androi SDK is an open source software to provide easy integration o
 ##2. Setup
 
 ###2.1 Run the Demo
-The source code of a demo application is provided together with the SDK ([demo](https://github.com/visenze/visearch-sdk-android/tree/master/demo)). You can simply open **visearch-sdk-android** project in Android Studio and run the **cameraDemo** project. 
+The source code of a demo application is provided together with the SDK ([demo](https://github.com/visenze/visearch-sdk-android/tree/master/cameraDemo)). You can simply open **visearch-sdk-android** project in Android Studio and run the **cameraDemo** project. 
 
 ![screenshot](./doc/android_studio_1.png)
 
