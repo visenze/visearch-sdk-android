@@ -5,9 +5,11 @@
 
 ##Table of Contents
  1. [Overview](#1-overview)
+      - 1.1 [About ViSearch Android SDK](#11-about-visearch-android-sdk)
  2. [Setup](#2-setup)
- 	  - 2.1 [Install the SDK](#21-install-the-sdk)
- 	  - 2.2 [Add User Permissions](#22-add-user-permissions)
+      - 2.1 [Run the Demo](#21-run-the-demo)
+      - 2.2 [Install the SDK](#22-install-the-sdk)
+      - 2.3 [Add User Permissions](#23-add-user-permissions)
  3. [Initialization](#3-initialization)
  4. [Searching Images](#4-searching-images)
 	  - 4.1 [Pre-indexed Search](#41-pre-indexed-search)
@@ -21,12 +23,13 @@
 	  - 6.2 [Filtering Results](#62-filtering-results)
 	  - 6.3 [Result Score](#63-result-score)
       - 6.4 [Automatic Object Recognition Beta](#64-automatic-object-recognition-beta)
- 7. [Demo Source Code](#7-demo-source-code)
 
 ---
 
 
 ##1. Overview
+
+###1.1 About ViSearch Android SDK
 ViSearch is an API that provides accurate, reliable and scalable image search. ViSearch API provides two services ( Data API and Search API) to let the developers prepare image database and perform image searches efficiently. ViSearch API can be easily integrated into your web and mobile applications. For more details, see [ViSearch API Documentation](http://www.visenze.com/docs/overview/introduction).
 
 The ViSearch Androi SDK is an open source software to provide easy integration of ViSearch Search API with your Android mobile applications. It provides three search methods based on the ViSearch Search API - pre-indexed search, color search and upload search. For source code and references, please visit the [Github Repository](https://github.com/visenze/visearch-sdk-android).
@@ -38,7 +41,33 @@ The ViSearch Androi SDK is an open source software to provide easy integration o
 
 ##2. Setup
 
-###2.1 Install the SDK
+###2.1 Run the Demo
+The source code of a demo application is provided together with the SDK ([demo](https://github.com/visenze/visearch-sdk-android/tree/master/cameraDemo)). You can simply open **visearch-sdk-android** project in Android Studio and run the **cameraDemo** project. 
+
+![screenshot](./doc/android_studio_1.png)
+
+![screenshot](./doc/android_studio_2.png)
+
+You should change the access key and secret key to your own key pair before running. 
+
+```java
+public class MainActivity extends FragmentActivity {
+    //TODO: init visearch key here
+    private static final String accessKey = "your_access_key ";
+    private static final String secretKey = "your_secret_key ";
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+    
+    ...
+```
+
+You can play around with our demo app to see how we build up the cool image search feature using ViSearch SDK.
+
+![screenshot](./doc/android_demo.png)
+
+
+###2.2 Install the SDK
 You can include the dependency in your project using gradle:
 
 ```
@@ -61,7 +90,7 @@ android {
 
 If you want to use the packaged Jars directly in your project, please find all the dependencies in the directory `/dependency`
 
-###2.2 Add User Permissions
+###2.3 Add User Permissions
 ViSearch Android SDK needs these user permissions to work. Add the following declarations to the `AndroidManifest.xml` file.  Network permission allows the app to connect to network services. Write/read to external storage permissions allow the app to load and save images on the device.
 
 ```xml
@@ -378,8 +407,3 @@ uploadSearchParams.setDetection("bag");
 ```
 
 The detected product types are listed in `product_types` together with the match score and box area of the detected object. Multiple objects can be detected from the query image and they are ranked from the highest score to lowest. The full list of supported product types by our API will also be returned in `product_types_list`. 
-
-
-
-##7. Demo Source Code 
-Source code of a demo application can be found [here](https://github.com/yulu/visearch-sdk-android/tree/master/cameraDemo).
