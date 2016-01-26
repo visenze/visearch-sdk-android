@@ -44,9 +44,9 @@ The ViSearch Androi SDK is an open source software to provide easy integration o
 ###2.1 Run the Demo
 The source code of a demo application is provided together with the SDK ([demo](https://github.com/visenze/visearch-sdk-android/tree/master/demo)). You can simply open **visearch-sdk-android** project in Android Studio and run the **cameraDemo** project. 
 
-![screenshot](https://developers.visenze.com/guides/android/android_studio_1.png)
+![screenshot](./doc/android_studio_1.png)
 
-![screenshot](https://developers.visenze.com/guides/android/android_studio_2.png)
+![screenshot](./doc/android_studio_2.png)
 
 You should change the access key and secret key to your own key pair before running. 
 
@@ -64,7 +64,7 @@ public class MainActivity extends FragmentActivity {
 
 You can play around with our demo app to see how we build up the cool image search feature using ViSearch SDK.
 
-![screenshot](https://developers.visenze.com/guides/android/android_demo.png)
+![screenshot](./doc/android_demo.png)
 
 
 ###2.2 Install the SDK
