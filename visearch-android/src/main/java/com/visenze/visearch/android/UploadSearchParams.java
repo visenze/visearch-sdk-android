@@ -118,7 +118,7 @@ public class UploadSearchParams extends SearchParams {
     public Map<String, List<String> > toMap() {
         Map<String, List<String> > map = super.toMap();
 
-        if (image.getBox() != null) {
+        if (image != null && image.getBox() != null) {
             if (image.getBox().getX1() != null && image.getBox().getX2() != null &&
                     image.getBox().getY1() != null && image.getBox().getY2() != null) {
                 putStringInMap(map, "box", image.getBox().getX1() + "," + image.getBox().getY1() + "," + image.getBox().getX2() + "," + image.getBox().getY2());
