@@ -85,7 +85,10 @@ public class SearchOperationsImpl implements SearchOperations {
      */
     @Override
     public void uploadSearch(UploadSearchParams uploadSearchParams, final ViSearch.ResultListener resultListener) {
-        byte[] imageBytes = uploadSearchParams.getImage().getByteArray();
+        byte[] imageBytes = null;
+        if (uploadSearchParams.getImage() != null) {
+            imageBytes = uploadSearchParams.getImage().getByteArray();
+        }
         String imageUrl = uploadSearchParams.getImageUrl();
 
         String response;
