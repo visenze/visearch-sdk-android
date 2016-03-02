@@ -1,5 +1,8 @@
 package com.visenze.visearch.android;
 
+import android.os.Build;
+
+import com.visenze.visearch.android.api.impl.TrackOperationsImpl;
 import com.visenze.visearch.android.http.ResponseListener;
 
 import org.json.JSONObject;
@@ -7,14 +10,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertEquals;
 
-@Config(emulateSdk = 18)
+/**
+ * Created by visenze on 30/11/15.
+ */
+@Config(constants = BuildConfig.class, sdk = Build.VERSION_CODES.LOLLIPOP)
 @RunWith(RobolectricGradleTestRunner.class)
 public class ViSearchTest {
-
     @Test
     public void testErrorResponse() throws Exception {
         String errorSearchResponse = "{\n" +
@@ -32,7 +38,8 @@ public class ViSearchTest {
                 "}";
 
         ViSearch.ResultListener resultListener = Mockito.mock(ViSearch.ResultListener.class);
-        ResponseListener responseListener = new ResponseListener(resultListener);
+        TrackOperationsImpl trackOperations = Mockito.mock(TrackOperationsImpl.class);
+        ResponseListener responseListener = new ResponseListener(resultListener, trackOperations, "search");
 
         responseListener.onResponse(new JSONObject(errorSearchResponse));
 
@@ -60,8 +67,9 @@ public class ViSearchTest {
                 "}";
 
         ViSearch.ResultListener resultListener = Mockito.mock(ViSearch.ResultListener.class);
+        TrackOperationsImpl trackOperations = Mockito.mock(TrackOperationsImpl.class);
         ArgumentCaptor<ResultList> argument = ArgumentCaptor.forClass(ResultList.class);
-        ResponseListener responseListener = new ResponseListener(resultListener);
+        ResponseListener responseListener = new ResponseListener(resultListener, trackOperations, "uploadsearch");
 
         responseListener.onResponse(new JSONObject(searchResponse));
 
@@ -120,8 +128,9 @@ public class ViSearchTest {
                 "}";
 
         ViSearch.ResultListener resultListener = Mockito.mock(ViSearch.ResultListener.class);
+        TrackOperationsImpl trackOperations = Mockito.mock(TrackOperationsImpl.class);
         ArgumentCaptor<ResultList> argument = ArgumentCaptor.forClass(ResultList.class);
-        ResponseListener responseListener = new ResponseListener(resultListener);
+        ResponseListener responseListener = new ResponseListener(resultListener, trackOperations, "uploadsearch");
 
         responseListener.onResponse(new JSONObject(searchWithDetectionResponse));
 

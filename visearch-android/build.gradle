@@ -18,8 +18,8 @@ repositories {
 
 def versionMajor = 1
 def versionMinor = 0
-def versionPatch = 10
-version = '1.0.10'
+def versionPatch = 11
+version = '1.0.11'
 
 android {
     compileSdkVersion 21
@@ -46,11 +46,12 @@ dependencies {
     }
 
     compile 'org.apache.httpcomponents:httpclient-android:4.3.5'
+    compile 'com.google.android.gms:play-services-ads:8.4.0'
     compile(group: 'com.mcxiaoke.volley', name: 'library', version: '1.0.10', ext: 'aar')
 
-    androidTestCompile 'junit:junit:4.12'
-    androidTestCompile 'org.mockito:mockito-core:1.10.19'
-    androidTestCompile 'org.robolectric:robolectric:2.4'
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-core:1.10.19'
+    testCompile 'org.robolectric:robolectric:3.0'
 }
 
 group = 'com.visenze'
@@ -73,9 +74,9 @@ bintray {
         licenses = ['The MIT License']
         labels = ['visenze', 'visearch', 'sdk', 'android']
         version {
-            name = '1.0.10'
+            name = '1.0.11'
             description = 'ViSearch Android SDK'
-            vcsTag = '1.0.10'
+            vcsTag = '1.0.11'
         }
     }
 }

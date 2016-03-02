@@ -55,7 +55,7 @@ public class SearchOperationsImpl implements SearchOperations {
             throw new ViSearchException("Missing parameter, image name is empty");
         }
 
-        httpInstance.addGetRequestToQueue(apiBase + ID_SEARCH, idSearchParams.toMap(), resultListener);
+        httpInstance.addGetRequestToQueue(apiBase + ID_SEARCH, idSearchParams.toMap(), "search", resultListener);
     }
 
     /**
@@ -74,7 +74,7 @@ public class SearchOperationsImpl implements SearchOperations {
             throw new ViSearchException("Invalid parameter, only accept hex color code");
         }
 
-        httpInstance.addGetRequestToQueue(apiBase + COLOR_SEARCH, colorSearchParams.toMap(), resultListener);
+        httpInstance.addGetRequestToQueue(apiBase + COLOR_SEARCH, colorSearchParams.toMap(), "colorsearch", resultListener);
     }
 
     /**
@@ -98,7 +98,7 @@ public class SearchOperationsImpl implements SearchOperations {
         } else if (imageBytes != null) {
             httpInstance.addMultipartRequestToQueue(apiBase + UPLOAD_SEARCH, uploadSearchParams.toMap(), imageBytes, resultListener);
         } else {
-            httpInstance.addGetRequestToQueue(apiBase+UPLOAD_SEARCH, uploadSearchParams.toMap(), resultListener);
+            httpInstance.addGetRequestToQueue(apiBase + UPLOAD_SEARCH, uploadSearchParams.toMap(), "uploadsearch", resultListener);
         }
     }
 

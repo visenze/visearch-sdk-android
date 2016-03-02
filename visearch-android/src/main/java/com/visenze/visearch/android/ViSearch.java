@@ -1,7 +1,11 @@
 package com.visenze.visearch.android;
 
 import android.content.Context;
+import android.util.Log;
+
 import com.visenze.visearch.android.api.impl.SearchOperationsImpl;
+import com.visenze.visearch.android.api.impl.TrackOperationsImpl;
+import com.visenze.visearch.android.util.ViSearchUIDManager;
 
 import java.net.URL;
 
@@ -12,9 +16,15 @@ import java.net.URL;
  */
 public class ViSearch {
 
+    private static final String SEARCH_URL = "http://visearch.visenze.com";
+
     private SearchOperationsImpl searchOperations;
 
+    private TrackOperationsImpl trackOperations;
+
     private ResultListener mListener;
+
+    private String uid;
 
     /**
      * Initialise the ViSearcher with a valid access/secret key pair
@@ -27,10 +37,12 @@ public class ViSearch {
                        String accessKey, String secretKey,
                        String searchApiEndPoint) {
 
+        initTracking(context.getApplicationContext());
         searchOperations = new SearchOperationsImpl(
                 searchApiEndPoint,
                 context,
                 accessKey, secretKey);
+        trackOperations = new TrackOperationsImpl(context, accessKey);
     }
 
     /**
@@ -59,7 +71,7 @@ public class ViSearch {
         try {
             searchOperations.search(idSearchParams, mListener);
         } catch (ViSearchException e) {
-            e.printStackTrace();
+            Log.e("ViSearch SDK", e.getMessage());
         }
     }
 
@@ -72,7 +84,7 @@ public class ViSearch {
         try {
             searchOperations.colorSearch(colorSearchParams, mListener);
         } catch (ViSearchException e) {
-            e.printStackTrace();
+            Log.e("ViSearch SDK", e.getMessage());
         }
     }
 
@@ -85,8 +97,20 @@ public class ViSearch {
         try {
             searchOperations.uploadSearch(uploadSearchParams, mListener);
         } catch (ViSearchException e) {
-            e.printStackTrace();
+            Log.e("ViSearch SDK", e.getMessage());
         }
+    }
+
+    public void track(final TrackParams trackParams) {
+        try {
+            trackOperations.track(trackParams);
+        } catch (ViSearchException e) {
+            Log.e("ViSearch SDK", e.getMessage());
+        }
+    }
+
+    private void initTracking(final Context context) {
+        ViSearchUIDManager.getAdvertisingId(context);
     }
 
     /**
@@ -100,7 +124,7 @@ public class ViSearch {
         public Builder(String accessKey, String secretKey) {
             mAccessKey = accessKey;
             mSecretKey = secretKey;
-            searchApiEndPoint = "http://visearch.visenze.com";
+            searchApiEndPoint = SEARCH_URL;
         }
 
         public Builder(URL endPoint, String accessKey, String secretKey) {

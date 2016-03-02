@@ -2,8 +2,10 @@ package com.visenze.visearch.android.http;
 
 import com.android.volley.Response;
 import com.visenze.visearch.android.ResultList;
+import com.visenze.visearch.android.TrackParams;
 import com.visenze.visearch.android.ViSearch;
 import com.visenze.visearch.android.ViSearchException;
+import com.visenze.visearch.android.api.impl.TrackOperationsImpl;
 import com.visenze.visearch.android.util.ResponseParser;
 
 import org.json.JSONObject;
@@ -13,9 +15,15 @@ import org.json.JSONObject;
  */
 public class ResponseListener implements Response.Listener<JSONObject> {
     private ViSearch.ResultListener resultListener;
+    private TrackOperationsImpl trackOperations;
+    private String type;
 
-    public ResponseListener(ViSearch.ResultListener resultListener) {
+    public ResponseListener(ViSearch.ResultListener resultListener,
+                            TrackOperationsImpl trackOperations,
+                            String type) {
         this.resultListener = resultListener;
+        this.trackOperations = trackOperations;
+        this.type = type;
     }
 
     @Override
@@ -25,8 +33,11 @@ public class ResponseListener implements Response.Listener<JSONObject> {
                 ResultList resultList = getResult(jsonObject.toString());
                 if (resultList.getErrorMessage() != null)
                     resultListener.onSearchError(resultList.getErrorMessage());
-                else
+                else {
+                    trackOperations.track(new TrackParams().setAction("search")
+                            .setReqid(resultList.getTransId()).setReqType(type));
                     resultListener.onSearchResult(getResult(jsonObject.toString()));
+                }
             } catch (ViSearchException e) {
                 e.printStackTrace();
             }
