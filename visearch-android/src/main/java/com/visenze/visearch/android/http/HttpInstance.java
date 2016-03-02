@@ -12,9 +12,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.visenze.visearch.android.ViSearch;
-import com.visenze.visearch.android.util.AuthGenerator;
+import com.visenze.visearch.android.api.impl.TrackOperationsImpl;
+import com.visenze.visearch.android.util.ViSearchUIDManager;
 
-import java.util.ArrayList;
+import java.net.CookieHandler;
+import java.net.CookieManager;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +27,7 @@ public class HttpInstance {
      * HTTP CONSTANT for Multipart Entity Uploading
      */
     public static final int TIME_OUT_FOR_UPLOAD = 10000;
+    public static final int TIME_OUT_FOR_ID = 5000;
 
     /**
      * http instance
@@ -53,6 +56,8 @@ public class HttpInstance {
      * @param context application context
      */
     private HttpInstance(Context context) {
+        CookieManager manager = new CookieManager();
+        CookieHandler.setDefault(manager);
         mContext = context;
         mRequestQueue = getRequestQueue();
     }
@@ -90,19 +95,57 @@ public class HttpInstance {
         return mRequestQueue;
     }
 
+    public void addGetRequestToQueueWithoutResponse(
+            final String url,
+            Map<String, String> params) {
+        if (null == params) {
+            params = new HashMap<>();
+        }
+
+        Uri.Builder uri = new Uri.Builder();
+        for (String s : params.keySet()) {
+            uri.appendQueryParameter(s, params.get(s));
+        }
+
+        JsonWithHeaderRequest jsonObjectRequest = new JsonWithHeaderRequest(Request.Method.GET, url + uri.toString(),
+                null,
+                null,
+                null)
+        {
+            //set auth information in header
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> header = new HashMap<>();
+                String uid = ViSearchUIDManager.getUid();
+                if (uid != null) {
+                    header.put("Cookie", "uid=" + uid);
+                }
+
+                return header;
+            }
+        };
+
+        jsonObjectRequest.setTag(mContext);
+        getRequestQueue().add(jsonObjectRequest);
+
+    }
+
     /**
      * start a new request by passing the url, params and result listener
      *
      * @param url url to call
      * @param params parameters
+     * @param type search type
      * @param resultListener result listener
      */
     public void addGetRequestToQueue(
             final String url,
             Map<String, List<String>> params,
+            String type,
             final ViSearch.ResultListener resultListener) {
 
-        ResponseListener responseListener = new ResponseListener(resultListener);
+        ResponseListener responseListener = new ResponseListener(resultListener,
+                new TrackOperationsImpl(mContext.getApplicationContext(), accessKey ), type);
 
         if (null == params)
             params = new HashMap<String, List<String> >();
@@ -126,7 +169,7 @@ public class HttpInstance {
             {
                 //set auth information in header
                 @Override
-                public Map<String, String> getHeaders() throws AuthFailureError{
+                public Map<String, String> getHeaders() throws AuthFailureError {
                     return getAuthHeader(accessKey, secretKey);
                 }
             };
@@ -143,13 +186,14 @@ public class HttpInstance {
      * @param bytes byte array
      * @param resultListener result listener
      */
-    public void addMultipartRequestToQueue(
+    public void addMultipartRequestToQueue (
             final String url,
             Map<String, List<String> > params,
             byte[] bytes,
             final ViSearch.ResultListener resultListener) {
 
-        ResponseListener responseListener = new ResponseListener(resultListener);
+        ResponseListener responseListener = new ResponseListener(resultListener,
+                new TrackOperationsImpl(mContext.getApplicationContext(), accessKey), "uploadsearch");
 
         if (null == params)
             params = new HashMap<String, List<String> >();

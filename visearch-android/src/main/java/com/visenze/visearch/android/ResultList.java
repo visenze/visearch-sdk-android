@@ -24,6 +24,8 @@ public class ResultList {
 
     private String errorMessage;
 
+    private String transId;
+
     private List<ImageResult> imageResult;
 
     private Map<String, String> queryInfo;
@@ -115,6 +117,14 @@ public class ResultList {
         return queryInfo;
     }
 
+    /**
+     * Get the trans id of the search
+     * @return trans id
+     */
+    public String getTransId() {
+        return transId;
+    }
+
     public void setPage(Integer page) {
         this.page = page;
     }
@@ -145,5 +155,9 @@ public class ResultList {
 
     public void setSupportedProductTypeList(List<ProductType> supportedProductTypeList) {
         this.supportedProductTypeList = supportedProductTypeList;
+    }
+
+    public void setTransId(String transId) {
+        this.transId = transId;
     }
 }

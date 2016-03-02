@@ -28,6 +28,10 @@ public class ResponseParser {
             resultList.setPage(resultObj.getInt("page"));
             resultList.setLimit(resultObj.getInt("limit"));
 
+            if (resultObj.has("transId")) {
+                resultList.setTransId(resultObj.getString("transId"));
+            }
+
             if (resultObj.has("qinfo")) {
                 JSONObject qinfoObj = resultObj.getJSONObject("qinfo");
                 resultList.setQueryInfo(parseQueryInfo(qinfoObj));

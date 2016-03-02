@@ -30,7 +30,7 @@ public class MultiPartRequest extends Request<JSONObject> {
     private static final String FILE_PART_NAME = "image";
 
     private final Response.Listener<JSONObject> mListener;
-    private HttpEntity                          entity;
+    private HttpEntity entity;
     private String                              accessKey;
     private String                              secretKey;
 
@@ -92,7 +92,15 @@ public class MultiPartRequest extends Request<JSONObject> {
         try {
             String jsonString =
                     new String(response.data, HttpHeaderParser.parseCharset(response.headers));
-            return Response.success(new JSONObject(jsonString),
+            JSONObject result = new JSONObject(jsonString);
+
+            Map headers = response.headers;
+            if (headers.containsKey("X-Log-ID")) {
+                String transId = (String)headers.get("X-Log-ID");
+                result.put("transId", transId);
+            }
+
+            return Response.success(result,
                     HttpHeaderParser.parseCacheHeaders(response));
         } catch (UnsupportedEncodingException e) {
             return Response.error(new ParseError(e));

@@ -23,7 +23,10 @@
 	  - 6.2 [Filtering Results](#62-filtering-results)
 	  - 6.3 [Result Score](#63-result-score)
       - 6.4 [Automatic Object Recognition Beta](#64-automatic-object-recognition-beta)
-
+ 7. [Event Tracking](#7-event-tracking)
+      - 7.1 [Setup Tracking](#71-setup-tracking)
+      - 7.2 [Send Action for Tracking](#72-send-action-for-tracking)
+      
 ---
 
 
@@ -34,7 +37,7 @@ ViSearch is an API that provides accurate, reliable and scalable image search. V
 
 The ViSearch Androi SDK is an open source software to provide easy integration of ViSearch Search API with your Android mobile applications. It provides three search methods based on the ViSearch Search API - pre-indexed search, color search and upload search. For source code and references, please visit the [Github Repository](https://github.com/visenze/visearch-sdk-android).
 
->Current stable version: 1.0.10
+>Current stable version: 1.0.11
 
 >Minimum Android SDK Version: API 9, Android 2.3
 
@@ -71,7 +74,7 @@ You can play around with our demo app to see how we build up the cool image sear
 You can include the dependency in your project using gradle:
 
 ```
-compile 'com.visenze:visearch-android:1.0.10'
+compile 'com.visenze:visearch-android:1.0.11'
 ```
 
 In the `build.gradle` file under your app module, add the packaging options to ensure a successful compilation:
@@ -98,13 +101,9 @@ ViSearch Android SDK needs these user permissions to work. Add the following dec
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.visenze.android.visenze_demo_test">
 
-	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+	<uses-permission android:name="android.permission.CAMERA"/>
 	<uses-permission android:name="android.permission.INTERNET"/>
-	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-	<uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
-	<uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
 	<application>
 	...
@@ -407,3 +406,33 @@ uploadSearchParams.setDetection("bag");
 ```
 
 The detected product types are listed in `product_types` together with the match score and box area of the detected object. Multiple objects can be detected from the query image and they are ranked from the highest score to lowest. The full list of supported product types by our API will also be returned in `product_types_list`. 
+
+##7. Event Tracking
+
+ViSearch Android SDK provides methods to understand how your customer interact with the search results. 
+
+In addition, to improve subsequent search quality, it is recommended to send user actions when they interact with the results. 
+
+###7.1 Setup Tracking
+
+It is important that a unique device ID is provided for user action tracking. ViSearch Android SDK uses [Google Adervertising ID](https://support.google.com/googleplay/android-developer/answer/6048248?hl=en) as the default unique id. Add this tag to your `<application>` in the `AndroidManifest.xml` to use Google Play Service:
+
+```xml
+<meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version">
+```
+
+In the case where Google Adervertising ID is not available, a server-generated UID will be returned. This UID is automatically stored with your app that integates with ViSearch Android SDK and will be refreshed only when the user uninstall your app.  
+
+###7.2  Send Action for Tracking
+
+User action can be sent in this way:
+
+```java
+viSearch.track(new TrackParams().setAction(action).setImName(im_name).setReqid(reqid));
+```
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+|`action`|String| The the action type of this event. We are currently able to support "click". More actions will be supported in the future.|
+|`im_name`|String| The imname of the image which the user has clicked on. im_name is the unique identifier of the indexed image.|
+|`reqid`|String| The request id of the search request. This reqid can be obtained from all the search result:```resultList.getTransId();```|
