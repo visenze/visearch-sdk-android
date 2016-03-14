@@ -3,6 +3,7 @@ package com.visenze.visearch.android;
 
 import android.util.Log;
 
+import com.visenze.visearch.android.model.Box;
 import com.visenze.visearch.android.model.Image;
 
 import java.util.ArrayList;
@@ -19,9 +20,13 @@ public class UploadSearchParams extends SearchParams {
 
     private String imageUrl;
 
+    private String imId;
+
     private Map<String, String> attributes;
 
     private String detection;
+
+    private Box uploadBox;
 
     public UploadSearchParams() {
         super();
@@ -71,8 +76,31 @@ public class UploadSearchParams extends SearchParams {
         return this;
     }
 
+    /**
+     * Set image id
+     *
+     * @param imId im id
+     * @return this instance.
+     */
+    public UploadSearchParams setImId(String imId) {
+        this.imId = imId;
+        return this;
+    }
+
     public UploadSearchParams setDetection(String detection) {
         this.detection = detection;
+        return this;
+    }
+
+    /**
+     * set cropping box for im_url or im_id. Use box in {@link Image} if upload
+     * an image instead
+     *
+     * @param uploadBox box
+     * @return this instance
+     */
+    public UploadSearchParams setBox(Box uploadBox) {
+        this.uploadBox = uploadBox;
         return this;
     }
 
@@ -106,6 +134,15 @@ public class UploadSearchParams extends SearchParams {
     }
 
     /**
+     * Get image id that is set to search
+     *
+     * @return imId.
+     */
+    public String getImId() {
+        return imId;
+    }
+
+    /**
      * Get detection type
      *
      * @return detection type.
@@ -128,6 +165,24 @@ public class UploadSearchParams extends SearchParams {
 
         if (imageUrl != null) {
             putStringInMap(map, "im_url", imageUrl);
+            if (uploadBox != null) {
+                if (uploadBox.getX1() != null && uploadBox.getX2() != null &&
+                        uploadBox.getY1() != null && uploadBox.getY2() != null) {
+                    putStringInMap(map, "box", uploadBox.getX1() + "," + uploadBox.getY1()
+                            + "," + uploadBox.getX2() + "," + uploadBox.getY2());
+                }
+            }
+        }
+
+        if (imId != null) {
+            putStringInMap(map, "im_id", imId);
+            if (uploadBox != null) {
+                if (uploadBox.getX1() != null && uploadBox.getX2() != null &&
+                        uploadBox.getY1() != null && uploadBox.getY2() != null) {
+                    putStringInMap(map, "box", uploadBox.getX1() + "," + uploadBox.getY1()
+                            + "," + uploadBox.getX2() + "," + uploadBox.getY2());
+                }
+            }
         }
 
         if (detection != null) {

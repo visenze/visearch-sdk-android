@@ -41,7 +41,7 @@ public class EditPhotoActivity extends FragmentActivity {
     //parameters passed in from result activity
     private String                      imagePath;
     private String                      thumbnailPath;
-    private ResultList resultList;
+    private ResultList                  resultList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

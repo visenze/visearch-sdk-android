@@ -90,9 +90,10 @@ public class SearchOperationsImpl implements SearchOperations {
             imageBytes = uploadSearchParams.getImage().getByteArray();
         }
         String imageUrl = uploadSearchParams.getImageUrl();
+        String imId = uploadSearchParams.getImId();
 
         String response;
-        if (imageBytes == null && (imageUrl == null || imageUrl.isEmpty())) {
+        if (imageBytes == null && (imageUrl == null || imageUrl.isEmpty()) && (imId == null || imId.isEmpty())) {
             throw new ViSearchException("Missing parameter, image empty");
 
         } else if (imageBytes != null) {
