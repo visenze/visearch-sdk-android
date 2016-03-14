@@ -165,7 +165,6 @@ public class PhotoEditFragment extends Fragment implements ViSearch.ResultListen
             public void onItemClick(it.sephiroth.android.library.widget.AdapterView<?> adapterView, View view, int i, long l) {
                 horizontalAdapter.setSelected(i);
 
-//                Image image = new Image(imagePath, Config.IMAGE_QUALITY);
                 ScalableBox b = editableImage.getBox();
 
                 //set search parameters
@@ -189,9 +188,6 @@ public class PhotoEditFragment extends Fragment implements ViSearch.ResultListen
         editPhotoView.setOnBoxChangedListener(new OnBoxChangedListener() {
             @Override
             public void onChanged(int x1, int y1, int x2, int y2) {
-//                Image image = new Image(imagePath, Config.IMAGE_QUALITY);
-//                image.setBox(x1, y1, x2, y2);
-
                 //set search parameters
                 UploadSearchParams uploadSearchParams = new UploadSearchParams();
                 uploadSearchParams.setImId(imId);
