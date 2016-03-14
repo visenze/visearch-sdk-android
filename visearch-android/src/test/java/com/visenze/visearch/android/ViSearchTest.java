@@ -59,6 +59,7 @@ public class ViSearchTest {
                 "    \"page\":1,\n" +
                 "    \"limit\":1,\n" +
                 "    \"total\":248,\n" +
+                "    \"im_id\":test_im_id,\n" +
                 "    \"result\":[\n" +
                 "        {\n" +
                 "            \"im_name\":\"RMK1647SLG\"\n" +
@@ -81,6 +82,7 @@ public class ViSearchTest {
         assertEquals(248, argument.getValue().getTotal());
         assertEquals(1, argument.getValue().getPageLimit());
         assertEquals(1, argument.getValue().getPage());
+        assertEquals("test_im_id", argument.getValue().getImId());
     }
 
     @Test

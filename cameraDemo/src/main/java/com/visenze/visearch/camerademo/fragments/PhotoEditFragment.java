@@ -113,6 +113,7 @@ public class PhotoEditFragment extends Fragment implements ViSearch.ResultListen
     private String                      imagePath;
     private String                      selectedType;
     private Bitmap                      bitmap;
+    private String                      imId;
     private List<String>                productList;
     private ResultList                  resultList;
     //ViSearch and Search parameters
@@ -146,6 +147,7 @@ public class PhotoEditFragment extends Fragment implements ViSearch.ResultListen
         //set up data
         imagePath = ((EditPhotoActivity)getActivity()).getImagePath();
         resultList = ((EditPhotoActivity)getActivity()).getResultList();
+        imId = resultList.getImId();
 
         List<ProductType> cachedProductList = DataHelper.copyProductTypeList(resultList.getProductTypes());
         selectedType = DataHelper.getSelectedProductType(cachedProductList).getType();
@@ -163,12 +165,13 @@ public class PhotoEditFragment extends Fragment implements ViSearch.ResultListen
             public void onItemClick(it.sephiroth.android.library.widget.AdapterView<?> adapterView, View view, int i, long l) {
                 horizontalAdapter.setSelected(i);
 
-                Image image = new Image(imagePath, Config.IMAGE_QUALITY);
+//                Image image = new Image(imagePath, Config.IMAGE_QUALITY);
                 ScalableBox b = editableImage.getBox();
-                image.setBox(b.getX1(), b.getY1(), b.getX2(), b.getY2());
 
                 //set search parameters
-                UploadSearchParams uploadSearchParams = new UploadSearchParams(image);
+                UploadSearchParams uploadSearchParams = new UploadSearchParams();
+                uploadSearchParams.setImId(imId);
+                uploadSearchParams.setBox(new Box(b.getX1(), b.getY1(), b.getX2(), b.getY2()));
 
                 //set detection
                 selectedType = productList.get(i);
@@ -186,11 +189,14 @@ public class PhotoEditFragment extends Fragment implements ViSearch.ResultListen
         editPhotoView.setOnBoxChangedListener(new OnBoxChangedListener() {
             @Override
             public void onChanged(int x1, int y1, int x2, int y2) {
-                Image image = new Image(imagePath, Config.IMAGE_QUALITY);
-                image.setBox(x1, y1, x2, y2);
+//                Image image = new Image(imagePath, Config.IMAGE_QUALITY);
+//                image.setBox(x1, y1, x2, y2);
 
                 //set search parameters
-                UploadSearchParams uploadSearchParams = new UploadSearchParams(image);
+                UploadSearchParams uploadSearchParams = new UploadSearchParams();
+                uploadSearchParams.setImId(imId);
+                uploadSearchParams.setBox(new Box(x1, y1, x2, y2));
+
                 //set detection
                 DataHelper.setSearchParams(uploadSearchParams, selectedType);
 
@@ -219,6 +225,10 @@ public class PhotoEditFragment extends Fragment implements ViSearch.ResultListen
         } else if (currentLayout == VIEW_LAYOUT.WATERFALL) {
             waterfallViewLayout.setAdapter(new StrechImageAdapter(getActivity(), resultList.getImageList()));
             waterfallViewLayout.invalidate();
+        }
+
+        if (resultList.getImId() != null) {
+            this.imId = resultList.getImId();
         }
 
         horizontalAdapter.setSelected(productList.indexOf(selectedType));

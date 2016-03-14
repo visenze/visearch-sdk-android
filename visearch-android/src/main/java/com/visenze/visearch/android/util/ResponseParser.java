@@ -50,6 +50,10 @@ public class ResponseParser {
                 resultList.setSupportedProductTypeList(parseSupportedProductTypeList(productTypeListArray));
             }
 
+            if (resultObj.has("im_id")) {
+                resultList.setImId(resultObj.getString("im_id"));
+            }
+
             return resultList;
         } catch (JSONException e) {
             throw new ViSearchException("Error parsing response " + e.getMessage(), e);

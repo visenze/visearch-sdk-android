@@ -34,6 +34,8 @@ public class ResultList {
 
     private List<ProductType> supportedProductTypeList;
 
+    private String imId;
+
     public ResultList() {
         imageResult = new ArrayList<ImageResult>();
         queryInfo = new HashMap<String, String>();
@@ -125,6 +127,14 @@ public class ResultList {
         return transId;
     }
 
+    /**
+     * Get im id for uploadsearch
+     * @return imId
+     */
+    public String getImId() {
+        return imId;
+    }
+
     public void setPage(Integer page) {
         this.page = page;
     }
@@ -159,5 +169,9 @@ public class ResultList {
 
     public void setTransId(String transId) {
         this.transId = transId;
+    }
+
+    public void setImId(String imId) {
+        this.imId = imId;
     }
 }

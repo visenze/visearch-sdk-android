@@ -64,7 +64,6 @@ public class ImageResult {
      * @return field list.
      */
     public Map<String, String> getMetaData() {
-
         return fieldList;
     }
 
@@ -86,4 +85,5 @@ public class ImageResult {
     public void setFieldList(Map<String, String> fieldList) {
         this.fieldList = fieldList;
     }
+
 }

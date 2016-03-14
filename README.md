@@ -194,6 +194,25 @@ UploadSearchParams uploadSearchParams = new UploadSearchParams(url);
 viSearcher.uploadSearch(uploadSearchParams);
 ```
 
+* If you are performing refinement on an uploaded image, you can pass the im_id returned in the search result to start the search instead of uploading the image again:
+
+```
+String imId;
+
+@Override
+public void onSearchResult(ResultList resultList) {
+    imId = resultList.getImId();
+	for (ImageResult imageResult : resultList.getImageList()) {
+		//Do something with the result
+		...
+	}
+}
+
+UploadSearchParams uploadSearchParams = new UploadSearchParams();
+uploadSearchParams.setImId(imId);
+viSearcher.uploadSearch(uploadSearchParams);
+```
+
 ####4.3.1 Selection Box
 If the object you wish to search for takes up only a small portion of your image, or other irrelevant objects exists in the same image, chances are the search result could become inaccurate. Use the Box parameter to refine the search area of the image to improve accuracy. The box coordinated is set with respect to the original size of the uploading image:
 
@@ -204,6 +223,16 @@ Image image = new Image(this, uri);
 // of the image, (x1, y1) is the top-left corner of the box,
 // and (x2, y2) is the bottom-right corner of the box.
 image.setBox(0, 0, 400, 400);
+```
+
+If you are using im_url or im_id for upload search. You should pass the box in this way:
+
+```java
+UploadSearchParams uploadSearchParams = new UploadSearchParams();
+uploadSearchParams.setImId(imId);
+uploadSearchParams.setBox(new Box(0, 0, 400, 400));
+
+viSearcher.uploadSearch(uploadSearchParams);
 ```
 
 ####4.3.2 Resizing Settings
