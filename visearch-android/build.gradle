@@ -18,8 +18,8 @@ repositories {
 
 def versionMajor = 1
 def versionMinor = 0
-def versionPatch = 11
-version = '1.0.11'
+def versionPatch = 12
+version = '1.0.12'
 
 android {
     compileSdkVersion 21
@@ -74,9 +74,9 @@ bintray {
         licenses = ['The MIT License']
         labels = ['visenze', 'visearch', 'sdk', 'android']
         version {
-            name = '1.0.11'
+            name = '1.0.12'
             description = 'ViSearch Android SDK'
-            vcsTag = '1.0.11'
+            vcsTag = '1.0.12'
         }
     }
 }
