@@ -69,7 +69,7 @@ public class CameraPreview extends SurfaceView implements
     /**
      * Focus mode
      */
-    private static final String FOCUS_MODE = Camera.Parameters.FOCUS_MODE_MACRO;
+    private static final String FOCUS_MODE = Camera.Parameters.FOCUS_MODE_AUTO;
     /**
      * Flag to control flash on and off
      */
