@@ -426,6 +426,10 @@ Notice: This feature is currently available for fashion application type only. Y
 uploadSearchParams.setDetection("all");
 ```
 
+You can use the Box parameter to restrict the image area [x1, y1, x2, y2] as the portion of your image to search for. When you input a box with 0 width and 0 height, eg. “box”:[574,224,574,224]. We will treat it as a point and detect the object over the current point.
+
+![](https://developers.visenze.com/api/images/detection_point.png)
+
 You could also recognize objects from a paticular type on the uploaded query image through configuring the detection parameter to a specific product type as "detection={type}". Our API will run the search within that product type.
 
 Sample request to detect `bag` in an uploaded image:
