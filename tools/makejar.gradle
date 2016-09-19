@@ -1,0 +1,12 @@
+task clearJar(type: Delete) {
+    delete '../dependency/visearch-android.jar'
+}
+
+task makeJar(type: Copy) {
+    from('build/intermediates/bundles/release/')
+    into('../dependency/')
+    include('classes.jar')
+    rename ('classes.jar', "visearch-android-1.1.0.jar")
+}
+
+makeJar.dependsOn(clearJar, build)

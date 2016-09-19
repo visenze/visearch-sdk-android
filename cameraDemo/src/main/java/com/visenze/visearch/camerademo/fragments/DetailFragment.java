@@ -39,6 +39,7 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.squareup.picasso.Picasso;
 import com.visenze.visearch.android.IdSearchParams;
 import com.visenze.visearch.android.ResultList;
+import com.visenze.visearch.android.TrackParams;
 import com.visenze.visearch.android.ViSearch;
 import com.visenze.visearch.android.model.ImageResult;
 import com.visenze.visearch.camerademo.DetailActivity;
@@ -145,6 +146,7 @@ public class DetailFragment extends Fragment implements ViSearch.ResultListener 
                     ImageResult imageResult = resultList.getImageList().get(position);
                     updateUI(imageResult.getImageUrl(), imageResult.getImageName());
                     startSearch(imageResult.getImageName());
+                    viSearch.track(new TrackParams().setAction("click").setReqid(resultList.getTransId()).setImName(imageResult.getImageName()));
                 }
             });
         }

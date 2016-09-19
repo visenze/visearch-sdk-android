@@ -40,6 +40,7 @@ import android.widget.Toast;
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.visenze.visearch.android.ResultList;
+import com.visenze.visearch.android.TrackParams;
 import com.visenze.visearch.android.UploadSearchParams;
 import com.visenze.visearch.android.ViSearch;
 import com.visenze.visearch.android.model.Box;
@@ -360,6 +361,8 @@ public class PhotoEditFragment extends Fragment implements ViSearch.ResultListen
     }
 
     private void startDetailActivity(ImageResult imageResult) {
+        viSearch.track(new TrackParams().setAction("click").setReqid(resultList.getTransId()).setImName(imageResult.getImageName()));
+
         IntentHelper.addObjectForKey(imageResult.getImageName(), IntentHelper.SEARCH_RESULT_EXTRA);
         IntentHelper.addObjectForKey(imageResult.getImageUrl(), IntentHelper.SEARCH_IMAGE_PATH_EXTRA);
 

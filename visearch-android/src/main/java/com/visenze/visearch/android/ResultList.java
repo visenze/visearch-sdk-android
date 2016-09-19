@@ -10,7 +10,6 @@ import java.util.Map;
 
 /**
  * The ResultList class represents a successful search result
- * <p/>
  * In practice you will never need to initialise a Result by yourself. Instead you should implement
  * {@link ViSearch.ResultListener ResultListener} to get the returned result from a search session.
  */
