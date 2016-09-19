@@ -18,8 +18,8 @@ repositories {
 
 def versionMajor = 1
 def versionMinor = 0
-def versionPatch = 12
-version = '1.0.12'
+def versionPatch = 13
+version = '1.0.13'
 
 android {
     compileSdkVersion 21
@@ -74,46 +74,10 @@ bintray {
         licenses = ['The MIT License']
         labels = ['visenze', 'visearch', 'sdk', 'android']
         version {
-            name = '1.0.12'
+            name = '1.0.13'
             description = 'ViSearch Android SDK'
-            vcsTag = '1.0.12'
+            vcsTag = '1.0.13'
         }
-    }
-}
-
-apply plugin: 'com.github.dcendents.android-maven'
-
-install {
-    repositories.mavenInstaller {
-        pom {
-            project {
-                packaging 'aar'
-                name 'visearch-android'
-                description 'ViSearch Android SDK'
-                url 'https://github.com/visenze/visearch-sdk-android'
-
-                scm {
-                    url 'https://github.com/visenze/visearch-sdk-android'
-                    connection 'scm:git@github.com/visenze/visearch-sdk-android.git'
-                    developerConnection 'scm:git@github.com/visenze/visearch-sdk-android.git'
-                }
-
-                licenses {
-                    license {
-                        name 'The MIT License'
-                        url 'https://raw.githubusercontent.com/visenze/visearch-sdk-android/develop/LISENCE'
-                        distribution 'repo'
-                    }
-                }
-
-                developers {
-                    developer {
-                        id 'visenze'
-                        name 'ViSenze'
-                    }
-                }
-            }
-        }.writeTo("$buildDir/pom.xml")
     }
 }
 

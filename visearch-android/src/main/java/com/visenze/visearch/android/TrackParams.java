@@ -9,7 +9,6 @@ import java.util.Map;
 public class TrackParams {
     private String cuid;
     private String reqid;
-    private String reqType;
     private String imName;
     private String action;
 
@@ -38,15 +37,6 @@ public class TrackParams {
 
     public TrackParams setReqid(String reqid) {
         this.reqid = reqid;
-        return this;
-    }
-
-    public String getReqType() {
-        return reqType;
-    }
-
-    public TrackParams setReqType(String reqType) {
-        this.reqType = reqType;
         return this;
     }
 
@@ -79,10 +69,6 @@ public class TrackParams {
 
         if (reqid != null) {
             map.put("reqid", reqid);
-        }
-
-        if (reqType!= null) {
-            map.put("req_type", reqType);
         }
 
         if (imName != null) {
