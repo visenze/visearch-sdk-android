@@ -20,6 +20,15 @@ public interface SearchOperations {
     public void search(IdSearchParams idSearchParams, final ViSearch.ResultListener resultListener);
 
     /**
+     * Recommendation (GET /recommendation)
+     * Get list of recommended images against the image collection using an existing image in the collection
+     *
+     * @param idSearchParams the index search parameter setting
+     * @param resultListener result listener
+     */
+    public void recommendation(IdSearchParams idSearchParams, final ViSearch.ResultListener resultListener);
+
+    /**
      * Color Search (GET /colorsearch)
      * Searching for image matching a color
      *

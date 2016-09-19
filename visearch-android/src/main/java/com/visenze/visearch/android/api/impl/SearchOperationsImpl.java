@@ -19,6 +19,7 @@ public class SearchOperationsImpl implements SearchOperations {
      */
     private static String apiBase;
     private final static String ID_SEARCH = "/search";
+    private final static String RECOMMENDATION = "/recommendation";
     private final static String COLOR_SEARCH = "/colorsearch";
     private final static String UPLOAD_SEARCH = "/uploadsearch";
 
@@ -56,6 +57,23 @@ public class SearchOperationsImpl implements SearchOperations {
         }
 
         httpInstance.addGetRequestToQueue(apiBase + ID_SEARCH, idSearchParams.toMap(), "search", resultListener);
+    }
+
+    /**
+     * /search api
+     *
+     * @param idSearchParams the index search parameter setting
+     * @param resultListener result listener
+     */
+    @Override
+    public void recommendation(IdSearchParams idSearchParams, final ViSearch.ResultListener resultListener) {
+        String imageId = idSearchParams.getImageName();
+
+        if (imageId == null || imageId.isEmpty()) {
+            throw new ViSearchException("Missing parameter, image name is empty");
+        }
+
+        httpInstance.addGetRequestToQueue(apiBase + RECOMMENDATION, idSearchParams.toMap(), "recommendation", resultListener);
     }
 
     /**

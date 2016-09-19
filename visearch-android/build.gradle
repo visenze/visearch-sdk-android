@@ -17,9 +17,9 @@ repositories {
 }
 
 def versionMajor = 1
-def versionMinor = 0
-def versionPatch = 13
-version = '1.0.13'
+def versionMinor = 1
+def versionPatch = 0
+version = '1.1.0'
 
 android {
     compileSdkVersion 21
@@ -74,9 +74,9 @@ bintray {
         licenses = ['The MIT License']
         labels = ['visenze', 'visearch', 'sdk', 'android']
         version {
-            name = '1.0.13'
+            name = '1.1.0'
             description = 'ViSearch Android SDK'
-            vcsTag = '1.0.13'
+            vcsTag = '1.1.0'
         }
     }
 }
@@ -110,7 +110,7 @@ task makeJar(type: Copy) {
     from('build/intermediates/bundles/release/')
     into('../dependency/')
     include('classes.jar')
-    rename ('classes.jar', "visearch-android-1.0.6.jar")
+    rename ('classes.jar', "visearch-android-1.1.0.jar")
 }
 
 makeJar.dependsOn(clearJar, build)
