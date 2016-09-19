@@ -11,12 +11,13 @@
       - 2.2 [Install the SDK](#22-install-the-sdk)
       - 2.3 [Add User Permissions](#23-add-user-permissions)
  3. [Initialization](#3-initialization)
- 4. [Searching Images](#4-searching-images)
-	  - 4.1 [Pre-indexed Search](#41-pre-indexed-search)
-	  - 4.2 [Color Search](#42-color-search)
-	  - 4.3 [Upload Search](#43-upload-search)
+ 4. [Solutions](#4-solutions)
+	  - 4.1 [Find Similar](#41-find-similar)
+	  - 4.2 [You May Also Like](#42-you-may-also-like)
+	  - 4.3 [Search by Image](#43-search-by-image)
 	    - 4.3.1 [Selection Box](#431-selection-box)
 	    - 4.3.2 [Resizing Settings](#432-resizing-settings)
+	  - 4.4 [Search by Color](#44-search-by-color)
  5. [Search Results](#5-search-results)
  6. [Advanced Search Parameters](#6-advanced-search-parameters)
 	  - 6.1 [Retrieving Metadata](#61-retrieving-metadata)
@@ -135,26 +136,26 @@ public class MyActivity extends Activity implements ViSearch.ResultListener{
 }
 ```
 
-##4. Searching Images
+##4. Solutions
 
-###4.1 Pre-indexed Search
-Search similar images based on the your indexed image by its unique identifier (im_name):
+###4.1 Find Similar
+**Find similar** solution is to search for visually similar images in the image database giving an indexed image’s unique identifier (im_name).
 
 ```java
 IdSearchParams idSearchParams = new IdSearchParams("dress_1");
 viSearch.idSearch(idSearchParams);
 ```
 
-###4.2 Color Search
-Color search is to search images with similar color by providing a color code. The color code should be in Hexadecimal and passed to `ColorSearchParams` as a `String`.
+###4.2 You May Also Like
+**You may also like** solution is to provide a list of recommended items from the indexed image database based on customizable rules giving an indexed image’s unique identifier (im_name).
 
 ```java
-ColorSearchParams colorSearchParams = new ColorSearchParams("9b351b");
-viSearch.colorSearch(colorSearchParams);
-``` 
+IdSearchParams idSearchParams = new IdSearchParams("dress_1");
+viSearch.recommendation(idSearchParams);
+```
 
-###4.3 Upload Search
-Upload search is used to search similar images by uploading an image or providing an image url. `Image` class is used to perform the image encoding and resizing. You should construct the `Image` object and pass it to `UploadSearchParams` to start a search.
+###4.3 Search by Image
+**Search by image** solution is to search similar images by uploading an image or providing an image url. Image class is used to perform the image encoding and resizing. You should construct the Image object and pass it to uploadsearch to start a search.
 
 * Using an image from a local file path:
 
@@ -276,6 +277,15 @@ public void onPictureTaken(byte[] bytes, Camera camera) {
 ```
 
 Please refer to the source code of [camera demo app](https://github.com/visenze/visearch-sdk-android/tree/master/cameraDemo) for the usage.
+
+###4.4 Search by Color
+
+**Search by color** solution is to search images with similar color by providing a color code. The color code should be in Hexadecimal and passed to the colorsearch service.
+
+```java
+ColorSearchParams colorSearchParams = new ColorSearchParams("9b351b");
+viSearch.colorSearch(colorSearchParams);
+```
 
 ##5. Search Results
 The search results are returned as a list of image names with required additional information. Use `getImageList()` to get the list of images. The basic information returned about the image are image name. Use`viSearch.cancelSearch()` to cancel a search, and handle the result by implementing the `onSearchCanceled()` callback. If error occurs during the search, an error message will be returned and can be handled in `viSearch.onSearchError(String error)` callback method. 

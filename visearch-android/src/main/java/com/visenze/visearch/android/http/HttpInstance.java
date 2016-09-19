@@ -156,7 +156,7 @@ public class HttpInstance {
                 uri.appendQueryParameter(entry.getKey(), s);
         }
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url + uri.toString(), null,
+        JsonWithHeaderRequest jsonObjectRequest = new JsonWithHeaderRequest(Request.Method.GET, url + uri.toString(), null,
                 responseListener,
                 new Response.ErrorListener() {
                     @Override

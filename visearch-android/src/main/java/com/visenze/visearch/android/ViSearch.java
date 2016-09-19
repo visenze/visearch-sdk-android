@@ -76,6 +76,19 @@ public class ViSearch {
     }
 
     /**
+     * Start search session with index parameters: search by provide the image id
+     *
+     * @param idSearchParams index parameters.
+     */
+    public void recommendation(final IdSearchParams idSearchParams) {
+        try {
+            searchOperations.recommendation(idSearchParams, mListener);
+        } catch (ViSearchException e) {
+            Log.e("ViSearch SDK", e.getMessage());
+        }
+    }
+
+    /**
      * Start search session with color parameters: search by providing a color code in hexadecimal
      *
      * @param colorSearchParams color parameters.

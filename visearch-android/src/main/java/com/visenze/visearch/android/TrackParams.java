@@ -60,12 +60,11 @@ public class TrackParams {
 
     public Map<String, String> toMap(String accessKey) {
         Map<String, String> map = new HashMap<>();
+        map.put("cid", accessKey);
 
         if (cuid != null) {
             map.put("cuid", cuid);
         }
-
-        map.put("cid", accessKey);
 
         if (reqid != null) {
             map.put("reqid", reqid);
