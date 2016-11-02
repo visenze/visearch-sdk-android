@@ -34,7 +34,7 @@ public class ResponseListener implements Response.Listener<JSONObject> {
                 if (resultList.getErrorMessage() != null)
                     resultListener.onSearchError(resultList.getErrorMessage());
                 else {
-                    trackOperations.track(new TrackParams().setAction(type));
+                    trackOperations.track(new TrackParams().setAction(type).setReqid(resultList.getTransId()));
                     resultListener.onSearchResult(getResult(jsonObject.toString()));
                 }
             } catch (ViSearchException e) {
