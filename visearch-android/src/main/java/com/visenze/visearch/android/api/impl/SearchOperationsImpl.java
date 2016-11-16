@@ -36,10 +36,11 @@ public class SearchOperationsImpl implements SearchOperations {
      * @param accessKey access key
      * @param secretKey secret key
      */
-    public SearchOperationsImpl(String apiUrl, Context context, String accessKey, String secretKey) {
+    public SearchOperationsImpl(String apiUrl, Context context, String accessKey, String secretKey, String userAgent) {
         apiBase = apiUrl;
         httpInstance = HttpInstance.getInstance(context.getApplicationContext());
         httpInstance.setKeys(accessKey, secretKey);
+        httpInstance.setUserAgent(userAgent);
     }
 
     /**
