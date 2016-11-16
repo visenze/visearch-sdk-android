@@ -45,6 +45,8 @@ public class HttpInstance {
     private String                  accessKey;
     private String                  secretKey;
 
+    private String                  userAgent;
+
     /**
      * request queue
      */
@@ -80,6 +82,10 @@ public class HttpInstance {
     public void setKeys(String accessKey, String secretKey) {
         this.accessKey = accessKey;
         this.secretKey = secretKey;
+    }
+
+    public void setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
     }
 
     /**
@@ -200,7 +206,7 @@ public class HttpInstance {
 
         MultiPartRequest multipartRequest = new MultiPartRequest(Request.Method.POST, url,
                 params, bytes,
-                accessKey, secretKey,
+                accessKey, secretKey, userAgent,
                 responseListener,
                 new Response.ErrorListener() {
                     @Override
@@ -228,11 +234,15 @@ public class HttpInstance {
         }
     }
 
+
     private Map<String, String> getAuthHeader(String accessKey, String secretKey) {
         Map<String, String> params = new HashMap<>();
         String creds = String.format("%s:%s", accessKey, secretKey);
         String auth = "Basic " + Base64.encodeToString(creds.getBytes(), Base64.NO_WRAP);
         params.put("Authorization", auth);
+
+        //add request header
+        params.put("X-Requested-With", userAgent);
 
         return params;
     }

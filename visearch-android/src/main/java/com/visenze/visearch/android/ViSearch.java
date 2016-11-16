@@ -16,6 +16,7 @@ import java.net.URL;
  */
 public class ViSearch {
 
+    private static final String USER_AGENT = "ViSenze-Android-SDK";
     private static final String SEARCH_URL = "http://visearch.visenze.com";
 
     private SearchOperationsImpl searchOperations;
@@ -34,14 +35,15 @@ public class ViSearch {
      * @param secretKey the Secret Key
      */
     private ViSearch(Context context,
-                       String accessKey, String secretKey,
-                       String searchApiEndPoint) {
+                     String accessKey, String secretKey,
+                     String searchApiEndPoint,
+                     String userAgent) {
 
         initTracking(context.getApplicationContext());
         searchOperations = new SearchOperationsImpl(
                 searchApiEndPoint,
                 context,
-                accessKey, secretKey);
+                accessKey, secretKey, userAgent);
         trackOperations = new TrackOperationsImpl(context, accessKey);
     }
 
@@ -133,11 +135,13 @@ public class ViSearch {
         private String mAccessKey;
         private String mSecretKey;
         private String searchApiEndPoint;
+        private String userAgent;
 
         public Builder(String accessKey, String secretKey) {
             mAccessKey = accessKey;
             mSecretKey = secretKey;
             searchApiEndPoint = SEARCH_URL;
+            userAgent = USER_AGENT + "/" + BuildConfig.VERSION_NAME;
         }
 
         public Builder(URL endPoint, String accessKey, String secretKey) {
@@ -147,6 +151,7 @@ public class ViSearch {
             searchApiEndPoint = endPoint.toString();
             mAccessKey = accessKey;
             mSecretKey = secretKey;
+            userAgent = USER_AGENT + "/" + BuildConfig.VERSION_NAME;
         }
 
         public Builder setApiEndPoint(URL endPoint) {
@@ -154,13 +159,18 @@ public class ViSearch {
             return this;
         }
 
+        public Builder setUserAgent(String userAgent) {
+            this.userAgent = userAgent;
+            return this;
+        }
+
         public ViSearch build(Context context) {
-            ViSearch viSearch = new ViSearch(context,
+
+            return new ViSearch(context,
                     mAccessKey,
                     mSecretKey,
-                    searchApiEndPoint);
-
-            return viSearch;
+                    searchApiEndPoint,
+                    userAgent);
         }
     }
 

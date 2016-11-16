@@ -30,14 +30,15 @@ public class MultiPartRequest extends Request<JSONObject> {
     private static final String FILE_PART_NAME = "image";
 
     private final Response.Listener<JSONObject> mListener;
-    private HttpEntity entity;
+    private HttpEntity                          entity;
     private String                              accessKey;
     private String                              secretKey;
+    private String                              userAgent;
 
 
     public MultiPartRequest(int method, String url,
                             Map<String, List<String>> params, byte[] bytes,
-                            String accessKey, String secretKey,
+                            String accessKey, String secretKey, String userAgent,
                             Response.Listener<JSONObject> mListener,
                             Response.ErrorListener listener) {
 
@@ -45,6 +46,7 @@ public class MultiPartRequest extends Request<JSONObject> {
         this.mListener = mListener;
         this.accessKey = accessKey;
         this.secretKey = secretKey;
+        this.userAgent = userAgent;
 
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
         for (Map.Entry<String, List<String> > entry : params.entrySet()) {
@@ -83,6 +85,9 @@ public class MultiPartRequest extends Request<JSONObject> {
         String creds = String.format("%s:%s", accessKey, secretKey);
         String auth = "Basic " + Base64.encodeToString(creds.getBytes(), Base64.NO_WRAP);
         params.put("Authorization", auth);
+
+        //add request header
+        params.put("X-Requested-With", userAgent);
 
         return params;
     }
