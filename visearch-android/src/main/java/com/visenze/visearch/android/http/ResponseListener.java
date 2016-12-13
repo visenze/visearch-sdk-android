@@ -52,11 +52,7 @@ public class ResponseListener implements Response.Listener<JSONObject> {
     private ResultList getResult(String jsonResponse) {
         ResultList resultList = null;
 
-        try {
-            resultList = ResponseParser.parseResult(jsonResponse);
-        } catch (ViSearchException exception) {
-            exception.printStackTrace();
-        }
+        resultList = ResponseParser.parseResult(jsonResponse);
 
         return resultList;
     }

@@ -15,6 +15,8 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 
 /**
  * Created by visenze on 30/11/15.
@@ -44,9 +46,9 @@ public class ViSearchTest {
 
         responseListener.onResponse(new JSONObject(errorSearchResponse));
 
-        Mockito.verify(resultListener, Mockito.times(1)).onSearchError(Mockito.anyString());
-        Mockito.verify(resultListener, Mockito.never()).onSearchResult(Mockito.<ResultList>any());
-        Mockito.verify(resultListener, Mockito.never()).onSearchCanceled();
+        Mockito.verify(resultListener, times(1)).onSearchError(Mockito.anyString());
+        Mockito.verify(resultListener, never()).onSearchResult(Mockito.<ResultList>any());
+        Mockito.verify(resultListener, never()).onSearchCanceled();
     }
 
     @Test
@@ -75,15 +77,43 @@ public class ViSearchTest {
 
         responseListener.onResponse(new JSONObject(searchResponse));
 
-        Mockito.verify(resultListener, Mockito.never()).onSearchError(Mockito.anyString());
-        Mockito.verify(resultListener, Mockito.never()).onSearchCanceled();
+        Mockito.verify(resultListener, never()).onSearchError(Mockito.anyString());
+        Mockito.verify(resultListener, never()).onSearchCanceled();
 
-        Mockito.verify(resultListener, Mockito.times(1)).onSearchResult(argument.capture());
+        Mockito.verify(resultListener, times(1)).onSearchResult(argument.capture());
         assertEquals(1, argument.getValue().getImageList().size());
         assertEquals(248, argument.getValue().getTotal());
         assertEquals(1, argument.getValue().getPageLimit());
         assertEquals(1, argument.getValue().getPage());
         assertEquals("test_im_id", argument.getValue().getImId());
+    }
+
+    @Test
+    public void testResultResponseFail() throws Exception {
+        String searchResponse = "{\n" +
+                "    \"status\":\"Fail\",\n" +
+                "    \"method\":\"uploadsearch\",\n" +
+                "    \"error\":[\n" +
+                "        \"Some thing is wrong\"\n" +
+                "    ],\n" +
+                "    \"page\":1,\n" +
+                "    \"limit\":1,\n" +
+                "    \"total\":0,\n" +
+                "    \"im_id\":test_im_id,\n" +
+                "    \"result\":[\n" +
+                "    ]\n" +
+                "}";
+
+        ViSearch.ResultListener resultListener = Mockito.mock(ViSearch.ResultListener.class);
+        TrackOperationsImpl trackOperations = Mockito.mock(TrackOperationsImpl.class);
+        ArgumentCaptor<ResultList> argument = ArgumentCaptor.forClass(ResultList.class);
+        ResponseListener responseListener = new ResponseListener(resultListener, trackOperations, "uploadsearch");
+
+        responseListener.onResponse(new JSONObject(searchResponse));
+
+        Mockito.verify(resultListener, times(1)).onSearchError(Mockito.anyString());
+        Mockito.verify(resultListener, never()).onSearchCanceled();
+        Mockito.verify(resultListener, never()).onSearchResult(argument.capture());
     }
 
     @Test
@@ -137,10 +167,10 @@ public class ViSearchTest {
 
         responseListener.onResponse(new JSONObject(searchWithDetectionResponse));
 
-        Mockito.verify(resultListener, Mockito.never()).onSearchError(Mockito.anyString());
-        Mockito.verify(resultListener, Mockito.never()).onSearchCanceled();
+        Mockito.verify(resultListener, never()).onSearchError(Mockito.anyString());
+        Mockito.verify(resultListener, never()).onSearchCanceled();
 
-        Mockito.verify(resultListener, Mockito.times(1)).onSearchResult(argument.capture());
+        Mockito.verify(resultListener, times(1)).onSearchResult(argument.capture());
         assertEquals(2, argument.getValue().getImageList().size());
         assertEquals(1000, argument.getValue().getTotal());
         assertEquals(2, argument.getValue().getPageLimit());
