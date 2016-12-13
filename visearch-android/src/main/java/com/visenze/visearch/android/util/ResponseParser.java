@@ -198,7 +198,7 @@ public class ResponseParser {
                     return null;
                 } else {
                     if (!jsonObj.has("error") || jsonObj.getJSONArray("error").length() == 0) {
-                        throw new ViSearchException("Error parsing response: missing error");
+                        return "Error parsing response: missing error";
                     } else {
                         return jsonObj.getJSONArray("error").get(0).toString();
                     }
