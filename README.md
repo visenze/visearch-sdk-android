@@ -38,7 +38,7 @@ ViSearch is an API that provides accurate, reliable and scalable image search. V
 
 The ViSearch Androi SDK is an open source software to provide easy integration of ViSearch Search API with your Android mobile applications. It provides three search methods based on the ViSearch Search API - pre-indexed search, color search and upload search. For source code and references, please visit the [Github Repository](https://github.com/visenze/visearch-sdk-android).
 
->Current stable version: 1.1.3
+>Current stable version: 1.2.0
 
 >Minimum Android SDK Version: API 9, Android 2.3
 
@@ -52,13 +52,12 @@ The source code of a demo application is provided together with the SDK ([demo](
 
 ![screenshot](./doc/android_studio_2.png)
 
-You should change the access key and secret key to your own key pair before running. 
+You should change the app key  your own app key before running. You can create and mange
 
 ```java
 public class MainActivity extends FragmentActivity {
-    //TODO: init visearch key here
-    private static final String accessKey = "your_access_key ";
-    private static final String secretKey = "your_secret_key ";
+    //TODO: init visearch app key here
+    private static final String appKey = "your_app_key ";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -75,7 +74,7 @@ You can play around with our demo app to see how we build up the cool image sear
 You can include the dependency in your project using gradle:
 
 ```
-compile 'com.visenze:visearch-android:1.1.3'
+compile 'com.visenze:visearch-android:1.2.0'
 ```
 
 In the `build.gradle` file under your app module, add the packaging options to ensure a successful compilation:
@@ -113,23 +112,22 @@ ViSearch Android SDK needs these user permissions to work. Add the following dec
 ```
 
 ##3. Initialization
-`ViSearch` must be initialized with an accessKey/secretKey pair before it can be used. In order for it to be notified of the search result, `ViSearch.ResultListener` must be implemented. Call `viSearch.setListener` to set the listener.
+`ViSearch` must be initialized with an app key before it can be used. In order for it to be notified of the search result, `ViSearch.ResultListener` must be implemented. Call `viSearch.setListener` to set the listener.
 
 ```java
 
 public class MyActivity extends Activity implements ViSearch.ResultListener{
-    //Please change to your access key / secret Key pair
-    private static final String ACCESS_KEY = "your_access_key";
-    private static final String SECRET_KEY = "your_secret_key";
+    //Please change to your app key
+    private static final String APP_KEY = "your_app_key";
 	...
 
 	 @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-		ViSearch viSearch = new ViSearch.Builder(ACCESS_KEY, SECRET_KEY).build(this);
+
+		ViSearch viSearch = new ViSearch.Builder(APP_KEY).build(context);
 		viSearch.setListener(this);
-		
+
 		...
 	}
 	...
