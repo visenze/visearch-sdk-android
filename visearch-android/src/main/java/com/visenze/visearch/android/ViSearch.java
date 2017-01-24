@@ -31,10 +31,12 @@ public class ViSearch {
      * Initialise the ViSearcher with a valid access/secret key pair
      *
      * @param context Activity context
-     * @param appKey the App Key
+     * @param accessKey the App Key or the Access Key
+     * @param secretKey the Secret Key
      */
     private ViSearch(Context context,
-                     String appKey,
+                     String accessKey,
+                     String secretKey,
                      String searchApiEndPoint,
                      String userAgent) {
 
@@ -42,8 +44,8 @@ public class ViSearch {
         searchOperations = new SearchOperationsImpl(
                 searchApiEndPoint,
                 context,
-                appKey, userAgent);
-        trackOperations = new TrackOperationsImpl(context, appKey);
+                accessKey, secretKey, userAgent);
+        trackOperations = new TrackOperationsImpl(context, accessKey);
     }
 
     /**
@@ -132,6 +134,7 @@ public class ViSearch {
      */
     public static class Builder {
         private String mAppKey;
+        private String mSecretKey;
         private String searchApiEndPoint;
         private String userAgent;
 
@@ -150,6 +153,23 @@ public class ViSearch {
             userAgent = USER_AGENT + "/" + BuildConfig.VERSION_NAME;
         }
 
+        public Builder(String accessKey, String secretKey) {
+            mAppKey = accessKey;
+            mSecretKey = secretKey;
+            searchApiEndPoint = SEARCH_URL;
+            userAgent = USER_AGENT + "/" + BuildConfig.VERSION_NAME;
+        }
+
+        public Builder(URL endPoint, String accessKey, String secretKey) {
+            if (endPoint == null)
+                throw new ViSearchException("Endpoint is not specified");
+
+            searchApiEndPoint = endPoint.toString();
+            mAppKey = accessKey;
+            mSecretKey = secretKey;
+            userAgent = USER_AGENT + "/" + BuildConfig.VERSION_NAME;
+        }
+
         public Builder setApiEndPoint(URL endPoint) {
             searchApiEndPoint = endPoint.toString();
             return this;
@@ -163,7 +183,7 @@ public class ViSearch {
         public ViSearch build(Context context) {
 
             return new ViSearch(context,
-                    mAppKey,
+                    mAppKey, mSecretKey,
                     searchApiEndPoint,
                     userAgent);
         }
