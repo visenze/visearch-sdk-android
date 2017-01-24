@@ -568,6 +568,7 @@ public class CameraPreview extends SurfaceView implements
             if (imageCapturedCallback != null) {
                 //save to image, rotate the image as the image taken is in landscape mode
                 int rotation = ((Activity) getContext()).getWindowManager().getDefaultDisplay().getRotation();
+
                 final Image image = new Image(_bytes, Config.CAMERA_IMAGE_QUALITY, ORIENTATIONS.get(rotation));
 
                 //save to local path

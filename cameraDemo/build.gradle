@@ -56,7 +56,7 @@ android {
 
 dependencies {
 //    compile project(":visearch-android")
-    compile 'com.visenze:visearch-android:1.1.3'
+    compile 'com.visenze:visearch-android:1.2.0'
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'me.littlecheesecake:waterfalllayoutview:1.0.0'
     compile 'me.littlecheesecake:croplayout:1.0.5'
