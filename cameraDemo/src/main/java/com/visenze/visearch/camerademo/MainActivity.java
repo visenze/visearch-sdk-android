@@ -30,9 +30,8 @@ import com.visenze.visearch.camerademo.fragments.MainFragment;
 import com.visenze.visearch.camerademo.http.SearchAPI;
 
 public class MainActivity extends FragmentActivity {
-    //TODO: init visearch key here
-    private static final String accessKey = "YOUR_ACCESS_KEY";
-    private static final String secretKey = "YOUR_SECRET_KEY";
+    //TODO: init app key here
+    private static final String appKey = "YOUR_APP_KEY";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,6 +43,6 @@ public class MainActivity extends FragmentActivity {
                 .add(R.id.main_holder, MainFragment.newInstance())
                 .commit();
 
-        SearchAPI.initSearchAPI(this, accessKey, secretKey);
+        SearchAPI.initSearchAPI(this, appKey);
     }
 }

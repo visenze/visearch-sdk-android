@@ -1,7 +1,5 @@
 package com.visenze.visearch.android.http;
 
-import android.util.Base64;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
@@ -31,21 +29,17 @@ public class MultiPartRequest extends Request<JSONObject> {
 
     private final Response.Listener<JSONObject> mListener;
     private HttpEntity                          entity;
-    private String                              accessKey;
-    private String                              secretKey;
     private String                              userAgent;
 
 
     public MultiPartRequest(int method, String url,
                             Map<String, List<String>> params, byte[] bytes,
-                            String accessKey, String secretKey, String userAgent,
+                            String accessKey, String userAgent,
                             Response.Listener<JSONObject> mListener,
                             Response.ErrorListener listener) {
 
         super(method, url, listener);
         this.mListener = mListener;
-        this.accessKey = accessKey;
-        this.secretKey = secretKey;
         this.userAgent = userAgent;
 
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
@@ -53,6 +47,9 @@ public class MultiPartRequest extends Request<JSONObject> {
             for (String s : entry.getValue())
                 builder.addTextBody(entry.getKey(), s);
         }
+
+        // add auth access key
+        builder.addTextBody("access_key", accessKey);
 
         ByteArrayBody byteArrayBody = new ByteArrayBody(bytes, FILE_PART_NAME);
         builder.addPart(FILE_PART_NAME, byteArrayBody);
@@ -82,9 +79,6 @@ public class MultiPartRequest extends Request<JSONObject> {
     @Override
     public Map<String, String> getHeaders() throws AuthFailureError {
         Map<String, String> params = new HashMap<>();
-        String creds = String.format("%s:%s", accessKey, secretKey);
-        String auth = "Basic " + Base64.encodeToString(creds.getBytes(), Base64.NO_WRAP);
-        params.put("Authorization", auth);
 
         //add request header
         params.put("X-Requested-With", userAgent);

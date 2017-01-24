@@ -17,6 +17,7 @@ import com.visenze.visearch.android.util.ViSearchUIDManager;
 
 import java.net.CookieHandler;
 import java.net.CookieManager;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +44,6 @@ public class HttpInstance {
      * api access key and secret key
      */
     private String                  accessKey;
-    private String                  secretKey;
 
     private String                  userAgent;
 
@@ -79,9 +79,8 @@ public class HttpInstance {
         return mInstance;
     }
 
-    public void setKeys(String accessKey, String secretKey) {
+    public void setKeys(String accessKey) {
         this.accessKey = accessKey;
-        this.secretKey = secretKey;
     }
 
     public void setUserAgent(String userAgent) {
@@ -153,6 +152,8 @@ public class HttpInstance {
         ResponseListener responseListener = new ResponseListener(resultListener,
                 new TrackOperationsImpl(mContext.getApplicationContext(), accessKey ), type);
 
+        getAuthHeader();
+
         if (null == params)
             params = new HashMap<String, List<String> >();
 
@@ -161,6 +162,9 @@ public class HttpInstance {
             for (String s: entry.getValue())
                 uri.appendQueryParameter(entry.getKey(), s);
         }
+
+        // add key
+        uri.appendQueryParameter("access_key", accessKey);
 
         JsonWithHeaderRequest jsonObjectRequest = new JsonWithHeaderRequest(Request.Method.GET, url + uri.toString(), null,
                 responseListener,
@@ -171,14 +175,7 @@ public class HttpInstance {
                         if (null != resultListener)
                             resultListener.onSearchError("Network Error");
                     }
-                })
-            {
-                //set auth information in header
-                @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    return getAuthHeader(accessKey, secretKey);
-                }
-            };
+                });
 
         jsonObjectRequest.setTag(mContext);
         getRequestQueue().add(jsonObjectRequest);
@@ -206,7 +203,7 @@ public class HttpInstance {
 
         MultiPartRequest multipartRequest = new MultiPartRequest(Request.Method.POST, url,
                 params, bytes,
-                accessKey, secretKey, userAgent,
+                accessKey, userAgent,
                 responseListener,
                 new Response.ErrorListener() {
                     @Override
@@ -235,11 +232,8 @@ public class HttpInstance {
     }
 
 
-    private Map<String, String> getAuthHeader(String accessKey, String secretKey) {
+    private Map<String, String> getAuthHeader() {
         Map<String, String> params = new HashMap<>();
-        String creds = String.format("%s:%s", accessKey, secretKey);
-        String auth = "Basic " + Base64.encodeToString(creds.getBytes(), Base64.NO_WRAP);
-        params.put("Authorization", auth);
 
         //add request header
         params.put("X-Requested-With", userAgent);
