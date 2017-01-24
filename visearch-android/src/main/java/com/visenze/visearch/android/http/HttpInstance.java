@@ -44,6 +44,7 @@ public class HttpInstance {
      * api access key and secret key
      */
     private String                  accessKey;
+    private String                  secretKey;
 
     private String                  userAgent;
 
@@ -79,8 +80,9 @@ public class HttpInstance {
         return mInstance;
     }
 
-    public void setKeys(String accessKey) {
+    public void setKeys(String accessKey, String secretKey) {
         this.accessKey = accessKey;
+        this.secretKey = secretKey;
     }
 
     public void setUserAgent(String userAgent) {
@@ -152,8 +154,6 @@ public class HttpInstance {
         ResponseListener responseListener = new ResponseListener(resultListener,
                 new TrackOperationsImpl(mContext.getApplicationContext(), accessKey ), type);
 
-        getAuthHeader();
-
         if (null == params)
             params = new HashMap<String, List<String> >();
 
@@ -164,7 +164,8 @@ public class HttpInstance {
         }
 
         // add key
-        uri.appendQueryParameter("access_key", accessKey);
+        if (secretKey == null)
+            uri.appendQueryParameter("access_key", accessKey);
 
         JsonWithHeaderRequest jsonObjectRequest = new JsonWithHeaderRequest(Request.Method.GET, url + uri.toString(), null,
                 responseListener,
@@ -175,7 +176,13 @@ public class HttpInstance {
                         if (null != resultListener)
                             resultListener.onSearchError("Network Error");
                     }
-                });
+                }) {
+            //set auth information in header
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                return getAuthHeader();
+            }
+        };
 
         jsonObjectRequest.setTag(mContext);
         getRequestQueue().add(jsonObjectRequest);
@@ -203,7 +210,7 @@ public class HttpInstance {
 
         MultiPartRequest multipartRequest = new MultiPartRequest(Request.Method.POST, url,
                 params, bytes,
-                accessKey, userAgent,
+                accessKey, secretKey, userAgent,
                 responseListener,
                 new Response.ErrorListener() {
                     @Override
@@ -234,6 +241,11 @@ public class HttpInstance {
 
     private Map<String, String> getAuthHeader() {
         Map<String, String> params = new HashMap<>();
+        if (secretKey != null) {
+            String creds = String.format("%s:%s", accessKey, secretKey);
+            String auth = "Basic " + Base64.encodeToString(creds.getBytes(), Base64.NO_WRAP);
+            params.put("Authorization", auth);
+        }
 
         //add request header
         params.put("X-Requested-With", userAgent);
