@@ -31,11 +31,12 @@ public class ViSearch {
      * Initialise the ViSearcher with a valid access/secret key pair
      *
      * @param context Activity context
-     * @param accessKey the Access Key
+     * @param accessKey the App Key or the Access Key
      * @param secretKey the Secret Key
      */
     private ViSearch(Context context,
-                     String accessKey, String secretKey,
+                     String accessKey,
+                     String secretKey,
                      String searchApiEndPoint,
                      String userAgent) {
 
@@ -132,13 +133,28 @@ public class ViSearch {
      * Builder class for {@link ViSearch}
      */
     public static class Builder {
-        private String mAccessKey;
+        private String mAppKey;
         private String mSecretKey;
         private String searchApiEndPoint;
         private String userAgent;
 
+        public Builder(String appKey) {
+            mAppKey = appKey;
+            searchApiEndPoint = SEARCH_URL;
+            userAgent = USER_AGENT + "/" + BuildConfig.VERSION_NAME;
+        }
+
+        public Builder(URL endPoint, String appKey) {
+            if (endPoint == null)
+                throw new ViSearchException("Endpoint is not specified");
+
+            searchApiEndPoint = endPoint.toString();
+            mAppKey = appKey;
+            userAgent = USER_AGENT + "/" + BuildConfig.VERSION_NAME;
+        }
+
         public Builder(String accessKey, String secretKey) {
-            mAccessKey = accessKey;
+            mAppKey = accessKey;
             mSecretKey = secretKey;
             searchApiEndPoint = SEARCH_URL;
             userAgent = USER_AGENT + "/" + BuildConfig.VERSION_NAME;
@@ -149,7 +165,7 @@ public class ViSearch {
                 throw new ViSearchException("Endpoint is not specified");
 
             searchApiEndPoint = endPoint.toString();
-            mAccessKey = accessKey;
+            mAppKey = accessKey;
             mSecretKey = secretKey;
             userAgent = USER_AGENT + "/" + BuildConfig.VERSION_NAME;
         }
@@ -167,8 +183,7 @@ public class ViSearch {
         public ViSearch build(Context context) {
 
             return new ViSearch(context,
-                    mAccessKey,
-                    mSecretKey,
+                    mAppKey, mSecretKey,
                     searchApiEndPoint,
                     userAgent);
         }

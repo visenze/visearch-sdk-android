@@ -30,9 +30,9 @@ public class MultiPartRequest extends Request<JSONObject> {
     private static final String FILE_PART_NAME = "image";
 
     private final Response.Listener<JSONObject> mListener;
-    private HttpEntity                          entity;
     private String                              accessKey;
     private String                              secretKey;
+    private HttpEntity                          entity;
     private String                              userAgent;
 
 
@@ -53,6 +53,10 @@ public class MultiPartRequest extends Request<JSONObject> {
             for (String s : entry.getValue())
                 builder.addTextBody(entry.getKey(), s);
         }
+
+        // add auth access key
+        if (secretKey == null)
+            builder.addTextBody("access_key", accessKey);
 
         ByteArrayBody byteArrayBody = new ByteArrayBody(bytes, FILE_PART_NAME);
         builder.addPart(FILE_PART_NAME, byteArrayBody);
@@ -82,9 +86,12 @@ public class MultiPartRequest extends Request<JSONObject> {
     @Override
     public Map<String, String> getHeaders() throws AuthFailureError {
         Map<String, String> params = new HashMap<>();
-        String creds = String.format("%s:%s", accessKey, secretKey);
-        String auth = "Basic " + Base64.encodeToString(creds.getBytes(), Base64.NO_WRAP);
-        params.put("Authorization", auth);
+        //add auth header if secret key presents
+        if (secretKey != null) {
+            String creds = String.format("%s:%s", accessKey, secretKey);
+            String auth = "Basic " + Base64.encodeToString(creds.getBytes(), Base64.NO_WRAP);
+            params.put("Authorization", auth);
+        }
 
         //add request header
         params.put("X-Requested-With", userAgent);

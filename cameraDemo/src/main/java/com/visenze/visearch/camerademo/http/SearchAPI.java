@@ -48,10 +48,9 @@ public class SearchAPI {
      * Initialise the ViSearcher with a valid access/secret key pair
      *
      * @param context   Activity context
-     * @param accessKey the Access Key
-     * @param secretKey the Secret Key
+     * @param appKey    the App Key
      */
-    public static void initSearchAPI(Context context, String accessKey, String secretKey) {
-        viSearch = new ViSearch.Builder(accessKey, secretKey).build(context);
+    public static void initSearchAPI(Context context, String appKey) {
+        viSearch = new ViSearch.Builder(appKey).build(context);
     }
 }

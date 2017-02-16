@@ -17,6 +17,7 @@ import com.visenze.visearch.android.util.ViSearchUIDManager;
 
 import java.net.CookieHandler;
 import java.net.CookieManager;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -162,6 +163,10 @@ public class HttpInstance {
                 uri.appendQueryParameter(entry.getKey(), s);
         }
 
+        // add key
+        if (secretKey == null)
+            uri.appendQueryParameter("access_key", accessKey);
+
         JsonWithHeaderRequest jsonObjectRequest = new JsonWithHeaderRequest(Request.Method.GET, url + uri.toString(), null,
                 responseListener,
                 new Response.ErrorListener() {
@@ -171,14 +176,13 @@ public class HttpInstance {
                         if (null != resultListener)
                             resultListener.onSearchError("Network Error");
                     }
-                })
-            {
-                //set auth information in header
-                @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    return getAuthHeader(accessKey, secretKey);
-                }
-            };
+                }) {
+            //set auth information in header
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                return getAuthHeader();
+            }
+        };
 
         jsonObjectRequest.setTag(mContext);
         getRequestQueue().add(jsonObjectRequest);
@@ -235,11 +239,13 @@ public class HttpInstance {
     }
 
 
-    private Map<String, String> getAuthHeader(String accessKey, String secretKey) {
+    private Map<String, String> getAuthHeader() {
         Map<String, String> params = new HashMap<>();
-        String creds = String.format("%s:%s", accessKey, secretKey);
-        String auth = "Basic " + Base64.encodeToString(creds.getBytes(), Base64.NO_WRAP);
-        params.put("Authorization", auth);
+        if (secretKey != null) {
+            String creds = String.format("%s:%s", accessKey, secretKey);
+            String auth = "Basic " + Base64.encodeToString(creds.getBytes(), Base64.NO_WRAP);
+            params.put("Authorization", auth);
+        }
 
         //add request header
         params.put("X-Requested-With", userAgent);
