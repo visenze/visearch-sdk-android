@@ -11,13 +11,12 @@
       - 2.2 [Install the SDK](#22-install-the-sdk)
       - 2.3 [Add User Permissions](#23-add-user-permissions)
  3. [Initialization](#3-initialization)
- 4. [Solutions](#4-solutions)
-	  - 4.1 [Find Similar](#41-find-similar)
-	  - 4.2 [You May Also Like](#42-you-may-also-like)
-	  - 4.3 [Search by Image](#43-search-by-image)
-	    - 4.3.1 [Selection Box](#431-selection-box)
-	    - 4.3.2 [Resizing Settings](#432-resizing-settings)
-	  - 4.4 [Search by Color](#44-search-by-color)
+ 4. [Solution APIs](#4-solution-apis)
+	  - 4.1 [Visually Similar Recommendations](#41-visually-similar-recommendations)
+	  - 4.2 [Search by Image](#42-search-by-image)
+	    - 4.2.1 [Selection Box](#421-selection-box)
+	    - 4.2.2 [Resizing Settings](#422-resizing-settings)
+	  - 4.3 [Search by Color](#43-search-by-color)
  5. [Search Results](#5-search-results)
  6. [Advanced Search Parameters](#6-advanced-search-parameters)
 	  - 6.1 [Retrieving Metadata](#61-retrieving-metadata)
@@ -31,9 +30,9 @@
 ---
 
 
-##1. Overview
+## 1. Overview
 
-###1.1 About ViSearch Android SDK
+### 1.1 About ViSearch Android SDK
 ViSearch is an API that provides accurate, reliable and scalable image search. ViSearch API provides two services ( Data API and Search API) to let the developers prepare image database and perform image searches efficiently. ViSearch API can be easily integrated into your web and mobile applications. For more details, see [ViSearch API Documentation](http://www.visenze.com/docs/overview/introduction).
 
 The ViSearch Androi SDK is an open source software to provide easy integration of ViSearch Search API with your Android mobile applications. It provides three search methods based on the ViSearch Search API - pre-indexed search, color search and upload search. For source code and references, please visit the [Github Repository](https://github.com/visenze/visearch-sdk-android).
@@ -43,9 +42,9 @@ The ViSearch Androi SDK is an open source software to provide easy integration o
 >Minimum Android SDK Version: API 9, Android 2.3
 
 
-##2. Setup
+## 2. Setup
 
-###2.1 Run the Demo
+### 2.1 Run the Demo
 The source code of a demo application is provided together with the SDK ([demo](https://github.com/visenze/visearch-sdk-android/tree/master/cameraDemo)). You can simply open **visearch-sdk-android** project in Android Studio and run the **cameraDemo** project. 
 
 ![screenshot](./doc/android_studio_1.png)
@@ -70,7 +69,7 @@ You can play around with our demo app to see how we build up the cool image sear
 ![screenshot](./doc/android_demo.png)
 
 
-###2.2 Install the SDK
+### 2.2 Install the SDK
 You can include the dependency in your project using gradle:
 
 ```
@@ -93,7 +92,7 @@ android {
 
 If you want to use the packaged Jars directly in your project, please find all the dependencies in the directory `/dependency`
 
-###2.3 Add User Permissions
+### 2.3 Add User Permissions
 ViSearch Android SDK needs these user permissions to work. Add the following declarations to the `AndroidManifest.xml` file.  Network permission allows the app to connect to network services. Write/read to external storage permissions allow the app to load and save images on the device.
 
 ```xml
@@ -111,7 +110,7 @@ ViSearch Android SDK needs these user permissions to work. Add the following dec
 </manifest>
 ```
 
-##3. Initialization
+## 3. Initialization
 `ViSearch` must be initialized with an app key before it can be used. In order for it to be notified of the search result, `ViSearch.ResultListener` must be implemented. Call `viSearch.setListener` to set the listener.
 
 ```java
@@ -134,25 +133,23 @@ public class MyActivity extends Activity implements ViSearch.ResultListener{
 }
 ```
 
-##4. Solutions
+## 4. Solution APIs
 
-###4.1 Find Similar
-**Find similar** solution is to search for visually similar images in the image database giving an indexed image’s unique identifier (im_name).
+### 4.1 Visually Similar Recommendations
+
+GET /search
+
+**Visually Similar Recommendations** solution is to search for visually similar images in the image database giving an indexed image’s unique identifier (im_name).
 
 ```java
 IdSearchParams idSearchParams = new IdSearchParams("dress_1");
 viSearch.idSearch(idSearchParams);
 ```
 
-###4.2 You May Also Like
-**You may also like** solution is to provide a list of recommended items from the indexed image database based on customizable rules giving an indexed image’s unique identifier (im_name).
+### 4.2 Search by Image
 
-```java
-IdSearchParams idSearchParams = new IdSearchParams("dress_1");
-viSearch.recommendation(idSearchParams);
-```
+POST /uploadsearch
 
-###4.3 Search by Image
 **Search by image** solution is to search similar images by uploading an image or providing an image url. Image class is used to perform the image encoding and resizing. You should construct the Image object and pass it to uploadsearch to start a search.
 
 * Using an image from a local file path:
@@ -212,7 +209,7 @@ uploadSearchParams.setImId(imId);
 viSearcher.uploadSearch(uploadSearchParams);
 ```
 
-####4.3.1 Selection Box
+#### 4.2.1 Selection Box
 If the object you wish to search for takes up only a small portion of your image, or other irrelevant objects exists in the same image, chances are the search result could become inaccurate. Use the Box parameter to refine the search area of the image to improve accuracy. The box coordinated is set with respect to the original size of the uploading image:
 
 ```java
@@ -234,7 +231,7 @@ uploadSearchParams.setBox(new Box(0, 0, 400, 400));
 viSearcher.uploadSearch(uploadSearchParams);
 ```
 
-####4.3.2 Resizing Settings
+#### 4.2.2 Resizing Settings
 When performing upload search, you may notice the increased search latency with increased image file size. This is due to the increased time spent in network transferring your images to the ViSearch server, and the increased time for processing larger image files in ViSearch. 
 
 To reduce upload search latency, by default the uploadSearch method makes a copy of your image file and resizes the copy to 512x512 pixels if both of the original dimensions exceed 512 pixels. This is the optimized size to lower search latency while not sacrificing search accuracy for general use cases:
@@ -276,7 +273,9 @@ public void onPictureTaken(byte[] bytes, Camera camera) {
 
 Please refer to the source code of [camera demo app](https://github.com/visenze/visearch-sdk-android/tree/master/cameraDemo) for the usage.
 
-###4.4 Search by Color
+### 4.3 Search by Color
+
+GET /colorsearch
 
 **Search by color** solution is to search images with similar color by providing a color code. The color code should be in Hexadecimal and passed to the colorsearch service.
 
@@ -285,7 +284,7 @@ ColorSearchParams colorSearchParams = new ColorSearchParams("9b351b");
 viSearch.colorSearch(colorSearchParams);
 ```
 
-##5. Search Results
+## 5. Search Results
 The search results are returned as a list of image names with required additional information. Use `getImageList()` to get the list of images. The basic information returned about the image are image name. Use`viSearch.cancelSearch()` to cancel a search, and handle the result by implementing the `onSearchCanceled()` callback. If error occurs during the search, an error message will be returned and can be handled in `viSearch.onSearchError(String error)` callback method. 
 
 ```java
@@ -325,9 +324,9 @@ colorSearchParams.setBaseSearchParams(baseSearchParams);
 visearcher.colorSearch(colorSearchParams);
 ```
 
-##6. Advanced Search Parameters
+## 6. Advanced Search Parameters
 
-###6.1 Retrieving Metadata
+### 6.1 Retrieving Metadata
 To retrieve metadata of your search results, provide a list of metadata keys as the `fl` (field list) in the basic search property:
 
 ```java
@@ -365,7 +364,7 @@ public void onSearchResult(ResultList resultList) {
 
 >Only metadata of type string, int, and float can be retrieved from ViSearch. Metadata of type text is not available for retrieval.
 
-###6.2 Filtering Results
+### 6.2 Filtering Results
 To filter search results based on metadata values, provide a map of metadata key to filter value as the `fq` (filter query) property:
 
 ```java
@@ -388,7 +387,7 @@ int | Metadata value can be either: <ul><li>exactly matched with the query value
 float | Metadata value can be either <ul><li>exactly matched with the query value</li><li>matched with a ranged query ```minValue,maxValue```, e.g. float value ```1.0, 99.99```, and ```199.99``` would match ranged query ```0.0,199.99``` but would not match ranged query ```200.0,300.0```</li></ul>
 
 
-###6.3 Result Score
+### 6.3 Result Score
 ViSearch image search results are ranked in descending order i.e. from the highest scores to the lowest, ranging from 1.0 to 0.0. By default, the score for each result is not returned. You can turn on the score parameter to retrieve the scores for each image result:
 
 ```java
@@ -423,7 +422,7 @@ idSearchParams.setBaseSearchParams(baseSearchParams);
 visearch.idSearch(idSearchParams);
 ```
 
-###6.4 Automatic Object Recognition Beta
+### 6.4 Automatic Object Recognition Beta
 With Automatic Object Recognition, ViSearch /uploadsearch API is smart to detect the objects present in the query image and suggest the best matched product type to run the search on. 
 
 You can turn on the feature in upload search by setting the API parameter "detection=all". We are now able to detect various types of fashion items, including `Top`, `Dress`, `Bottom`, `Shoe`, `Bag`, `Watch` and `Indian Ethnic Wear`. The list is ever-expanding as we explore this feature for other categories. 
@@ -448,13 +447,13 @@ uploadSearchParams.setDetection("bag");
 
 The detected product types are listed in `product_types` together with the match score and box area of the detected object. Multiple objects can be detected from the query image and they are ranked from the highest score to lowest. The full list of supported product types by our API will also be returned in `product_types_list`. 
 
-##7. Event Tracking
+## 7. Event Tracking
 
 ViSearch Android SDK provides methods to understand how your customer interact with the search results. 
 
 In addition, to improve subsequent search quality, it is recommended to send user actions when they interact with the results. 
 
-###7.1 Setup Tracking
+### 7.1 Setup Tracking
 
 It is important that a unique device ID is provided for user action tracking. ViSearch Android SDK uses [Google Adervertising ID](https://support.google.com/googleplay/android-developer/answer/6048248?hl=en) as the default unique id. Add this tag to your `<application>` in the `AndroidManifest.xml` to use Google Play Service:
 
@@ -464,7 +463,7 @@ It is important that a unique device ID is provided for user action tracking. Vi
 
 In the case where Google Adervertising ID is not available, a server-generated UID will be returned. This UID is automatically stored with your app that integates with ViSearch Android SDK and will be refreshed only when the user uninstall your app.  
 
-###7.2  Send Action for Tracking
+### 7.2  Send Action for Tracking
 
 User action can be sent in this way:
 
