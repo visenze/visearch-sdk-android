@@ -17,7 +17,7 @@ import java.net.URL;
 public class ViSearch {
 
     private static final String USER_AGENT = "visearch-android-sdk";
-    private static final String SEARCH_URL = "http://visearch.visenze.com";
+    private static final String SEARCH_URL = "https://visearch.visenze.com";
 
     private SearchOperationsImpl searchOperations;
 
