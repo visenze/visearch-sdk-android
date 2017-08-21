@@ -46,6 +46,7 @@ import com.visenze.visearch.camerademo.util.Config;
 import com.visenze.visearch.camerademo.util.ImageHelper;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import static android.view.SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS;
 
@@ -115,6 +116,11 @@ public class CameraPreview extends SurfaceView implements
      * Camera hardware interface 
      */
     private Camera              mCamera;
+
+    /**
+     * Camera orientation
+     */
+    private int                 cameraOrientation;
 
     /**
      * image save and processing runnable 
@@ -418,8 +424,9 @@ public class CameraPreview extends SurfaceView implements
                         mCamera.setParameters(params);
 
                         //rotate display
-                        int rotation = ((Activity) getContext()).getWindowManager().getDefaultDisplay().getRotation();
-                        mCamera.setDisplayOrientation(ORIENTATIONS.get(rotation));
+                        cameraOrientation = cameraInfo.orientation;
+                        mCamera.setDisplayOrientation(cameraOrientation % 180);
+                        Log.d("Camera", "camera info orientation: " + cameraInfo.orientation);
 
                         return true;
                     }
@@ -569,7 +576,7 @@ public class CameraPreview extends SurfaceView implements
                 //save to image, rotate the image as the image taken is in landscape mode
                 int rotation = ((Activity) getContext()).getWindowManager().getDefaultDisplay().getRotation();
 
-                final Image image = new Image(_bytes, Config.CAMERA_IMAGE_QUALITY, ORIENTATIONS.get(rotation));
+                final Image image = new Image(_bytes, Config.CAMERA_IMAGE_QUALITY, cameraOrientation);
 
                 //save to local path
                 final String path = ImageHelper.saveImageByte(context, image.getByteArray());
