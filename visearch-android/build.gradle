@@ -3,7 +3,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:+'
+        classpath 'com.android.tools.build:gradle:2.3.3'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.0'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.4.1'
     }
@@ -46,7 +46,7 @@ dependencies {
     }
 
     compile 'org.apache.httpcomponents:httpclient-android:4.3.5'
-    compile 'com.google.android.gms:play-services-ads:8.4.0'
+    compile 'com.google.android.gms:play-services-ads:11.0.1'
     compile(group: 'com.mcxiaoke.volley', name: 'library', version: '1.0.10', ext: 'aar')
 
     testCompile 'junit:junit:4.12'
