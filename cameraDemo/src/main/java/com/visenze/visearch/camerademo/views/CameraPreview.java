@@ -46,7 +46,6 @@ import com.visenze.visearch.camerademo.util.Config;
 import com.visenze.visearch.camerademo.util.ImageHelper;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import static android.view.SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS;
 
