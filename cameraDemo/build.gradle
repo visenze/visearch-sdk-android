@@ -60,13 +60,11 @@ android {
 }
 
 dependencies {
-//    annotationProcessor "com.jakewharton:butterknife:6.0.0"
-
-//    compile project(":visearch-android")
+    compile project(":visearch-android")
     compile 'com.google.android.gms:play-services-ads:11.0.1'
-    compile ('com.visenze:visearch-android:1.2.2') {
-        exclude module: 'com.google.android.gms'
-    }
+//    compile ('com.visenze:visearch-android:1.2.2') {
+//        exclude module: 'com.google.android.gms'
+//    }
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'me.littlecheesecake:waterfalllayoutview:1.0.0'
     compile 'me.littlecheesecake:croplayout:1.0.5'
