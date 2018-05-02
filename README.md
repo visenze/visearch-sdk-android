@@ -120,7 +120,7 @@ public class MyActivity extends Activity implements ViSearch.ResultListener{
     private static final String APP_KEY = "your_app_key";
 	...
 
-	 @Override
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -132,6 +132,14 @@ public class MyActivity extends Activity implements ViSearch.ResultListener{
 	...
 }
 ```
+
+Please init ViSearch client in this way if you connect to another endpoint rather than default (https://visearch.visenze.com)
+
+```java
+ViSearch viSearch = new ViSearch
+                .Builder(APP_KEY)
+                .setApiEndPoint("https://custom-visearch.yourdomain.com")
+                .build(context);
 
 ## 4. Solution APIs
 
