@@ -140,6 +140,7 @@ ViSearch viSearch = new ViSearch
                 .Builder(APP_KEY)
                 .setApiEndPoint("https://custom-visearch.yourdomain.com")
                 .build(context);
+```                
 
 ## 4. Solution APIs
 
