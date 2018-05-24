@@ -1,10 +1,10 @@
 package com.visenze.visearch.android.api.impl;
 
-import android.content.Context;
+        import android.content.Context;
 
-import com.visenze.visearch.android.TrackParams;
-import com.visenze.visearch.android.api.TrackOperations;
-import com.visenze.visearch.android.http.HttpInstance;
+        import com.visenze.visearch.android.TrackParams;
+        import com.visenze.visearch.android.api.TrackOperations;
+        import com.visenze.visearch.android.http.HttpInstance;
 
 /**
  * Created by visenze on 26/2/16.
