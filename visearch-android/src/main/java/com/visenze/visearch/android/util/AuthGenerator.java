@@ -1,5 +1,7 @@
 package com.visenze.visearch.android.util;
 
+import android.util.Base64;
+
 import com.visenze.visearch.android.ViSearchException;
 
 import java.io.UnsupportedEncodingException;
@@ -65,5 +67,20 @@ public class AuthGenerator {
             out[j++] = DIGITS_LOWER[0x0F & bytes[i]];
         }
         return new String(out);
+    }
+
+    public static Map<String, String> generateHeaderParams(String accessKey, String secretKey, String userAgent) {
+        Map<String, String> params = new HashMap<>();
+        //add auth header if secret key presents
+        if (secretKey != null) {
+            String creds = String.format("%s:%s", accessKey, secretKey);
+            String auth = "Basic " + Base64.encodeToString(creds.getBytes(), Base64.NO_WRAP);
+            params.put("Authorization", auth);
+        }
+
+        //add request header
+        params.put("X-Requested-With", userAgent);
+
+        return params;
     }
 }

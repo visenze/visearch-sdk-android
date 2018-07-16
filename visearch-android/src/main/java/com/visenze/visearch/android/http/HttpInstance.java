@@ -114,23 +114,10 @@ public class HttpInstance {
             uri.appendQueryParameter(s, params.get(s));
         }
 
-        JsonWithHeaderRequest jsonObjectRequest = new JsonWithHeaderRequest(Request.Method.GET, url + uri.toString(),
+        JsonWithUUIDRequest jsonObjectRequest = new JsonWithUUIDRequest(Request.Method.GET, url + uri.toString(),
                 null,
                 null,
-                null)
-        {
-            //set auth information in header
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> header = new HashMap<>();
-                String uid = ViSearchUIDManager.getUid();
-                if (uid != null) {
-                    header.put("Cookie", "uid=" + uid);
-                }
-
-                return header;
-            }
-        };
+                null);
 
         jsonObjectRequest.setTag(mContext);
         getRequestQueue().add(jsonObjectRequest);
@@ -167,7 +154,9 @@ public class HttpInstance {
         if (secretKey == null)
             uri.appendQueryParameter("access_key", accessKey);
 
-        JsonWithHeaderRequest jsonObjectRequest = new JsonWithHeaderRequest(Request.Method.GET, url + uri.toString(), null,
+        JsonWithHeaderRequest jsonObjectRequest = new JsonWithHeaderRequest(
+                Request.Method.GET, url + uri.toString(), null,
+                accessKey, secretKey, userAgent,
                 responseListener,
                 new Response.ErrorListener() {
                     @Override
@@ -176,13 +165,7 @@ public class HttpInstance {
                         if (null != resultListener)
                             resultListener.onSearchError("Network Error");
                     }
-                }) {
-            //set auth information in header
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                return getAuthHeader();
-            }
-        };
+                });
 
         jsonObjectRequest.setTag(mContext);
         getRequestQueue().add(jsonObjectRequest);
@@ -236,20 +219,5 @@ public class HttpInstance {
             if (null != resultListener)
                 resultListener.onSearchCanceled();
         }
-    }
-
-
-    private Map<String, String> getAuthHeader() {
-        Map<String, String> params = new HashMap<>();
-        if (secretKey != null) {
-            String creds = String.format("%s:%s", accessKey, secretKey);
-            String auth = "Basic " + Base64.encodeToString(creds.getBytes(), Base64.NO_WRAP);
-            params.put("Authorization", auth);
-        }
-
-        //add request header
-        params.put("X-Requested-With", userAgent);
-
-        return params;
     }
 }
