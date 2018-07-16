@@ -10,6 +10,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.HttpHeaderParser;
+import com.visenze.visearch.android.util.AuthGenerator;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
@@ -85,18 +86,7 @@ public class MultiPartRequest extends Request<JSONObject> {
 
     @Override
     public Map<String, String> getHeaders() throws AuthFailureError {
-        Map<String, String> params = new HashMap<>();
-        //add auth header if secret key presents
-        if (secretKey != null) {
-            String creds = String.format("%s:%s", accessKey, secretKey);
-            String auth = "Basic " + Base64.encodeToString(creds.getBytes(), Base64.NO_WRAP);
-            params.put("Authorization", auth);
-        }
-
-        //add request header
-        params.put("X-Requested-With", userAgent);
-
-        return params;
+        return AuthGenerator.generateHeaderParams(accessKey, secretKey, userAgent);
     }
 
     @Override

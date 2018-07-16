@@ -9,6 +9,7 @@ import com.android.volley.ParseError;
 import com.android.volley.Response;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.visenze.visearch.android.util.AuthGenerator;
 import com.visenze.visearch.android.util.ViSearchUIDManager;
 
 import org.json.JSONException;
@@ -49,7 +50,7 @@ public class JsonWithHeaderRequest extends JsonObjectRequest {
     //set auth information in header
     @Override
     public Map<String, String> getHeaders() throws AuthFailureError {
-        return getAuthHeader();
+        return AuthGenerator.generateHeaderParams(accessKey, secretKey, userAgent);
     }
 
     @Override
@@ -88,20 +89,5 @@ public class JsonWithHeaderRequest extends JsonObjectRequest {
         } catch (JSONException je) {
             return Response.error(new ParseError(je));
         }
-    }
-
-
-    private Map<String, String> getAuthHeader() {
-        Map<String, String> params = new HashMap<>();
-        if (secretKey != null) {
-            String creds = String.format("%s:%s", accessKey, secretKey);
-            String auth = "Basic " + Base64.encodeToString(creds.getBytes(), Base64.NO_WRAP);
-            params.put("Authorization", auth);
-        }
-
-        //add request header
-        params.put("X-Requested-With", userAgent);
-
-        return params;
     }
 }
