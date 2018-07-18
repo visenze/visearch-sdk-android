@@ -37,7 +37,7 @@ ViSearch is an API that provides accurate, reliable and scalable image search. V
 
 The ViSearch Androi SDK is an open source software to provide easy integration of ViSearch Search API with your Android mobile applications. It provides three search methods based on the ViSearch Search API - pre-indexed search, color search and upload search. For source code and references, please visit the [Github Repository](https://github.com/visenze/visearch-sdk-android).
 
->Current stable version: 1.2.3
+>Current stable version: 1.3.0
 
 >Minimum Android SDK Version: API 9, Android 2.3
 
@@ -73,7 +73,7 @@ You can play around with our demo app to see how we build up the cool image sear
 You can include the dependency in your project using gradle:
 
 ```
-compile 'com.visenze:visearch-android:1.2.3'
+implementation 'com.visenze:visearch-android:1.3.0'
 ```
 
 In the `build.gradle` file under your app module, add the packaging options to ensure a successful compilation:
