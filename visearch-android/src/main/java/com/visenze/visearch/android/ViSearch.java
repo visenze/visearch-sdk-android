@@ -126,7 +126,7 @@ public class ViSearch {
     }
 
     private void initTracking(final Context context) {
-        ViSearchUIDManager.getAdvertisingId(context);
+        ViSearchUIDManager.initUIDManager(context);
     }
 
     /**
