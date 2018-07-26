@@ -158,14 +158,7 @@ public class HttpInstance {
                 Request.Method.GET, url + uri.toString(), null,
                 accessKey, secretKey, userAgent,
                 responseListener,
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-                        volleyError.printStackTrace();
-                        if (null != resultListener)
-                            resultListener.onSearchError("Network Error");
-                    }
-                });
+                new ResponseErrorListener(resultListener));
 
         jsonObjectRequest.setTag(mContext);
         getRequestQueue().add(jsonObjectRequest);
@@ -195,14 +188,7 @@ public class HttpInstance {
                 params, bytes,
                 accessKey, secretKey, userAgent,
                 responseListener,
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-                        volleyError.printStackTrace();
-                        if (null != resultListener)
-                            resultListener.onSearchError("Network Error");
-                    }
-                });
+                new ResponseErrorListener(resultListener));
 
         multipartRequest.setTag(mContext);
         getRequestQueue().add(multipartRequest);
