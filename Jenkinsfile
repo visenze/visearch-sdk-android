@@ -35,7 +35,7 @@ pipeline {
     stage('Build') {
       steps {
         script {
-          sh "./gradlew assemble"
+          sh "./gradlew assembleRelease"
         }
       }
     }
