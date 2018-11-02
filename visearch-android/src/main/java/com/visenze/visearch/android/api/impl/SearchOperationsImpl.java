@@ -116,7 +116,8 @@ public class SearchOperationsImpl implements SearchOperations {
             throw new ViSearchException("Missing parameter, image empty");
 
         } else if (imageBytes != null) {
-            httpInstance.addMultipartRequestToQueue(apiBase + UPLOAD_SEARCH, uploadSearchParams.toMap(), imageBytes, resultListener);
+            httpInstance.addMultipartRequestToQueue(apiBase + UPLOAD_SEARCH, uploadSearchParams.toMap(),
+                    uploadSearchParams.getBaseSearchParams().getCharset(),imageBytes, resultListener);
         } else {
             httpInstance.addGetRequestToQueue(apiBase + UPLOAD_SEARCH, uploadSearchParams.toMap(), "uploadsearch", resultListener);
         }
