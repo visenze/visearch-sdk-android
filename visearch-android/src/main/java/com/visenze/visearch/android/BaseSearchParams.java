@@ -1,5 +1,6 @@
 package com.visenze.visearch.android;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +30,8 @@ public class BaseSearchParams {
 
     private Map<String, String> custom;
 
+    private Charset charset;
+
     /**
      * The default sets limit at 10 and page at 1, other basic parameters are set as null
      */
@@ -40,6 +43,7 @@ public class BaseSearchParams {
         this.fq = null;
         this.queryInfo = null;
         this.getAllFl = null;
+        this.charset = null;
     }
 
     /**
@@ -202,6 +206,23 @@ public class BaseSearchParams {
         this.scoreMax = scoreMax;
     }
 
+    /**
+     * Set the charset in which the parameters will be encoded in
+     *
+     * @param charset the charset
+     */
+    public void setCharset(Charset charset) {
+        this.charset = charset;
+    }
+
+    /**
+     * Get the charset in which the parameters will be encoded in
+     *
+     * @return the charset
+     */
+    public Charset getCharset() {
+        return charset;
+    }
 
     /**
      * Get the filter queries

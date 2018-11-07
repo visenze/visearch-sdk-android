@@ -11,6 +11,7 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.visenze.visearch.android.util.AuthGenerator;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.json.JSONException;
@@ -19,6 +20,7 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 
@@ -33,10 +35,17 @@ public class MultiPartRequest extends Request<JSONObject> {
     private HttpEntity                          entity;
     private String                              userAgent;
 
-
     public MultiPartRequest(int method, String url,
                             Map<String, List<String>> params, byte[] bytes,
                             String accessKey, String secretKey, String userAgent,
+                            Response.Listener<JSONObject> mListener,
+                            Response.ErrorListener listener) {
+        this(method, url, params, null, bytes, accessKey, secretKey, userAgent, mListener, listener);
+    }
+
+    public MultiPartRequest(int method, String url,
+                            Map<String, List<String>> params, Charset charset,
+                            byte[] bytes, String accessKey, String secretKey, String userAgent,
                             Response.Listener<JSONObject> mListener,
                             Response.ErrorListener listener) {
 
@@ -46,10 +55,13 @@ public class MultiPartRequest extends Request<JSONObject> {
         this.secretKey = secretKey;
         this.userAgent = userAgent;
 
+        ContentType contentType = charset != null ?
+                ContentType.TEXT_PLAIN.withCharset(charset) :
+                ContentType.DEFAULT_TEXT;
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
         for (Map.Entry<String, List<String> > entry : params.entrySet()) {
             for (String s : entry.getValue())
-                builder.addTextBody(entry.getKey(), s);
+                builder.addTextBody(entry.getKey(), s, contentType);
         }
 
         // add auth access key

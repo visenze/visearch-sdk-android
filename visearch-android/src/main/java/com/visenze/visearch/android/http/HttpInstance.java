@@ -17,6 +17,7 @@ import com.visenze.visearch.android.util.ViSearchUIDManager;
 
 import java.net.CookieHandler;
 import java.net.CookieManager;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -174,7 +175,7 @@ public class HttpInstance {
      */
     public void addMultipartRequestToQueue (
             final String url,
-            Map<String, List<String> > params,
+            Map<String, List<String> > params, Charset charset,
             byte[] bytes,
             final ViSearch.ResultListener resultListener) {
 
@@ -185,7 +186,7 @@ public class HttpInstance {
             params = new HashMap<String, List<String> >();
 
         MultiPartRequest multipartRequest = new MultiPartRequest(Request.Method.POST, url,
-                params, bytes,
+                params, charset, bytes,
                 accessKey, secretKey, userAgent,
                 responseListener,
                 new ResponseErrorListener(resultListener));
