@@ -479,9 +479,10 @@ User action can be sent in this way:
 ```java
 viSearch.track(new TrackParams().setAction(action).setImName(im_name).setReqid(reqid));
 ```
+The following fields could be used for tracking user events:
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-|`action`|String| The the action type of this event. We are currently able to support "click". More actions will be supported in the future.|
-|`im_name`|String| The imname of the image which the user has clicked on. im_name is the unique identifier of the indexed image.|
-|`reqid`|String| The request id of the search request. This reqid can be obtained from all the search result:```resultList.getTransId();```|
+Field | Description | Required
+--- | --- | ---
+reqid| The request id of the search request. This reqid can be obtained from all the search result:```resultList.getTransId();``` | Require
+action | The type of the action. Currently we support three types, `click`, `add_to_cart`, and `add_to_wishlist`. | Require
+imName | image id (im_name) for this behavior | Optional
