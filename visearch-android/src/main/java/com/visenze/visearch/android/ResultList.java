@@ -2,6 +2,7 @@ package com.visenze.visearch.android;
 
 import com.visenze.visearch.android.model.ImageResult;
 import com.visenze.visearch.android.model.ProductType;
+import com.visenze.visearch.android.model.TagGroup;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,6 +24,7 @@ public class ResultList {
 
     private String errorMessage;
 
+    // this is from header X-Log-ID
     private String transId;
 
     private List<ImageResult> imageResult;
@@ -33,7 +35,13 @@ public class ResultList {
 
     private List<ProductType> supportedProductTypeList;
 
+    // PS-827 for IR demo
+    private List<TagGroup> queryTags;
+
     private String imId;
+
+    // this is from API response
+    private String reqid;
 
     public ResultList() {
         imageResult = new ArrayList<ImageResult>();
@@ -166,11 +174,27 @@ public class ResultList {
         this.supportedProductTypeList = supportedProductTypeList;
     }
 
+    public List<TagGroup> getQueryTags() {
+        return queryTags;
+    }
+
+    public void setQueryTags(List<TagGroup> queryTags) {
+        this.queryTags = queryTags;
+    }
+
     public void setTransId(String transId) {
         this.transId = transId;
     }
 
     public void setImId(String imId) {
         this.imId = imId;
+    }
+
+    public String getReqid() {
+        return reqid;
+    }
+
+    public void setReqid(String reqid) {
+        this.reqid = reqid;
     }
 }

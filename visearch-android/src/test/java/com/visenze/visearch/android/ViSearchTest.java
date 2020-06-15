@@ -4,6 +4,9 @@ import android.os.Build;
 
 import com.visenze.visearch.android.api.impl.TrackOperationsImpl;
 import com.visenze.visearch.android.http.ResponseListener;
+import com.visenze.visearch.android.model.Tag;
+import com.visenze.visearch.android.model.TagGroup;
+import com.visenze.visearch.android.util.ResponseParser;
 
 import org.json.JSONObject;
 import org.junit.Test;
@@ -14,7 +17,10 @@ import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 
@@ -187,5 +193,284 @@ public class ViSearchTest {
         assertEquals(100, (int)argument.getValue().getProductTypes().get(0).getBox().getX2());
         assertEquals(100, (int)argument.getValue().getProductTypes().get(0).getBox().getY2());
         assertEquals(0.8f, argument.getValue().getProductTypes().get(0).getScore(), 0.000001f);
+    }
+
+    @Test
+    public void testQueryTagsParsing() {
+        String s = "{\n" +
+                "    \"status\": \"OK\",\n" +
+                "    \"method\": \"uploadsearch\",\n" +
+                "    \"error\": [],\n" +
+                "    \"page\": 1,\n" +
+                "    \"total\": 4,\n" +
+                "    \"product_types\": [\n" +
+                "        {\n" +
+                "            \"box\": [\n" +
+                "                50,\n" +
+                "                113,\n" +
+                "                233,\n" +
+                "                439\n" +
+                "            ],\n" +
+                "            \"type\": \"product_item\",\n" +
+                "            \"score\": 0.4035140872001648,\n" +
+                "            \"attributes\": {}\n" +
+                "        }\n" +
+                "    ],\n" +
+                "    \"product_types_list\": [\n" +
+                "        {\n" +
+                "            \"type\": \"bag\",\n" +
+                "            \"attributes_list\": {}\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\": \"belt\",\n" +
+                "            \"attributes_list\": {}\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\": \"bottle\",\n" +
+                "            \"attributes_list\": {}\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\": \"bottom\",\n" +
+                "            \"attributes_list\": {}\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\": \"dress\",\n" +
+                "            \"attributes_list\": {}\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\": \"ethnic_wear\",\n" +
+                "            \"attributes_list\": {}\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\": \"eyewear\",\n" +
+                "            \"attributes_list\": {}\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\": \"furniture\",\n" +
+                "            \"attributes_list\": {}\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\": \"gloves\",\n" +
+                "            \"attributes_list\": {}\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\": \"headwear\",\n" +
+                "            \"attributes_list\": {}\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\": \"jewelry\",\n" +
+                "            \"attributes_list\": {}\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\": \"onepiece\",\n" +
+                "            \"attributes_list\": {}\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\": \"outerwear\",\n" +
+                "            \"attributes_list\": {}\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\": \"package\",\n" +
+                "            \"attributes_list\": {}\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\": \"product_item\",\n" +
+                "            \"attributes_list\": {}\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\": \"scarf\",\n" +
+                "            \"attributes_list\": {}\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\": \"shoe\",\n" +
+                "            \"attributes_list\": {}\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\": \"skirt\",\n" +
+                "            \"attributes_list\": {}\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\": \"swimwear\",\n" +
+                "            \"attributes_list\": {}\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\": \"tie\",\n" +
+                "            \"attributes_list\": {}\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\": \"top\",\n" +
+                "            \"attributes_list\": {}\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\": \"underwear_bottom\",\n" +
+                "            \"attributes_list\": {}\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\": \"underwear_top\",\n" +
+                "            \"attributes_list\": {}\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\": \"watch\",\n" +
+                "            \"attributes_list\": {}\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\": \"other\",\n" +
+                "            \"attributes_list\": {}\n" +
+                "        }\n" +
+                "    ],\n" +
+                "    \"im_id\": \"20200615365321769aac79d380be92e7f3126c082f396dbc0cd.jpg\",\n" +
+                "    \"result\": [\n" +
+                "        {\n" +
+                "            \"im_name\": \"SHOPEE-DF-SG_438289555\",\n" +
+                "            \"score\": 1.0,\n" +
+                "            \"value_map\": {\n" +
+                "                \"store_id\": \"338660587\",\n" +
+                "                \"updated_time\": \"1589609171\",\n" +
+                "                \"original_price\": \"280.0\",\n" +
+                "                \"product_url\": \"https://shopee.sg/universal-link/product/31708369/438289555\",\n" +
+                "                \"gender\": \"\",\n" +
+                "                \"vi_category_ids\": \"\",\n" +
+                "                \"pgid\": \"22773b7509925e3286e1c0f78c2bb21e\",\n" +
+                "                \"source\": \"SHOPEE-DF-SG\",\n" +
+                "                \"title\": \"Tory Burch Robinson Mini Zip Continental Wallet\",\n" +
+                "                \"im_url\": \"http://cf.shopee.sg/file/ccd034ae6aace80917c3a167afa6cd0c\",\n" +
+                "                \"brand_id\": \"776655171.0\",\n" +
+                "                \"price_unit\": \"SGD\",\n" +
+                "                \"price\": \"280.0\",\n" +
+                "                \"category\": \"Women's Bags > Branded Bags > Wallets\",\n" +
+                "                \"brand\": \"josephinetss\",\n" +
+                "                \"desc\": \"\"\n" +
+                "            }\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"im_name\": \"AMAZON-UK_B07256CLNK\",\n" +
+                "            \"score\": 0.71846182816964,\n" +
+                "            \"value_map\": {\n" +
+                "                \"store_id\": \"1641533398\",\n" +
+                "                \"updated_time\": \"1588944185\",\n" +
+                "                \"original_price\": \"60.0\",\n" +
+                "                \"product_url\": \"https://www.amazon.co.uk/dp/B07256CLNK\",\n" +
+                "                \"gender\": \"\",\n" +
+                "                \"vi_category_ids\": \"\",\n" +
+                "                \"pgid\": \"09fc703b52855038a117124d6b886f9f\",\n" +
+                "                \"source\": \"AMAZON-UK\",\n" +
+                "                \"title\": \"Tommy Hilfiger Womens Honey Large Za Wallet Wallet\",\n" +
+                "                \"im_url\": \"https://m.media-amazon.com/images/I/91t1vb+YjZL.jpg\",\n" +
+                "                \"brand_id\": \"\",\n" +
+                "                \"price_unit\": \"GBP\",\n" +
+                "                \"price\": \"46.360001\",\n" +
+                "                \"category\": \"Luggage|Wallets, Card Cases & Money Organizers|Women's\",\n" +
+                "                \"brand\": \"\",\n" +
+                "                \"desc\": \"\"\n" +
+                "            }\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"im_name\": \"AMAZON-UK_B07V8YPQYX\",\n" +
+                "            \"score\": 0.6628711714411721,\n" +
+                "            \"value_map\": {\n" +
+                "                \"store_id\": \"1641533398\",\n" +
+                "                \"updated_time\": \"1588950491\",\n" +
+                "                \"original_price\": \"60.0\",\n" +
+                "                \"product_url\": \"https://www.amazon.co.uk/dp/B07V8YPQYX\",\n" +
+                "                \"gender\": \"\",\n" +
+                "                \"vi_category_ids\": \"\",\n" +
+                "                \"pgid\": \"09728d8edb4d5f1781f1ed09b4703754\",\n" +
+                "                \"source\": \"AMAZON-UK\",\n" +
+                "                \"title\": \"Tommy Hilfiger Women's Honey Lrg Za Wallet\",\n" +
+                "                \"im_url\": \"https://m.media-amazon.com/images/I/71mspFfzZOL.jpg\",\n" +
+                "                \"brand_id\": \"\",\n" +
+                "                \"price_unit\": \"GBP\",\n" +
+                "                \"price\": \"47.419998\",\n" +
+                "                \"category\": \"Luggage|Wallets, Card Cases & Money Organizers|Women's\",\n" +
+                "                \"brand\": \"\",\n" +
+                "                \"desc\": \"\"\n" +
+                "            }\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"im_name\": \"AMAZON-UK_B07K1Q6SF3\",\n" +
+                "            \"score\": 0.644561556319488,\n" +
+                "            \"value_map\": {\n" +
+                "                \"store_id\": \"1641533398\",\n" +
+                "                \"updated_time\": \"1588917928\",\n" +
+                "                \"original_price\": \"53.34\",\n" +
+                "                \"product_url\": \"https://www.amazon.co.uk/dp/B07K1Q6SF3\",\n" +
+                "                \"gender\": \"\",\n" +
+                "                \"vi_category_ids\": \"\",\n" +
+                "                \"pgid\": \"c03a2efbb2395c94bc3bda7bb4c8d6c0\",\n" +
+                "                \"source\": \"AMAZON-UK\",\n" +
+                "                \"title\": \"Tommy Hilfiger Women's Modern Hardware Lrg Za Wallet\",\n" +
+                "                \"im_url\": \"https://m.media-amazon.com/images/I/716DjSYs94L.jpg\",\n" +
+                "                \"brand_id\": \"\",\n" +
+                "                \"price_unit\": \"GBP\",\n" +
+                "                \"price\": \"53.34\",\n" +
+                "                \"category\": \"Luggage|Wallets, Card Cases & Money Organizers\",\n" +
+                "                \"brand\": \"\",\n" +
+                "                \"desc\": \"\"\n" +
+                "            }\n" +
+                "        }\n" +
+                "    ],\n" +
+                "    \"query_tags\": [\n" +
+                "        {\n" +
+                "            \"tag_group\": \"bqf_tagging\",\n" +
+                "            \"tags\": [\n" +
+                "                {\n" +
+                "                    \"tag\": \"category:product\",\n" +
+                "                    \"score\": 1.0\n" +
+                "                }\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"tag_group\": \"exact_match\",\n" +
+                "            \"tags\": [\n" +
+                "                {\n" +
+                "                    \"tag\": \"SHOPEE-DF-SG_438289555\",\n" +
+                "                    \"score\": 0.8512772793066337\n" +
+                "                }\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"tag_group\": \"category\",\n" +
+                "            \"tags\": [\n" +
+                "                {\n" +
+                "                    \"tag\": \"Bag|ClutchWallet\",\n" +
+                "                    \"score\": 0.8\n" +
+                "                }\n" +
+                "            ]\n" +
+                "        }\n" +
+                "    ],\n" +
+                "    \"recognition_reqid\": \"1039660405993140224\",\n" +
+                "    \"feature_extraction_reqid\": \"1039660407356180187\",\n" +
+                "    \"recalling_reqid\": \"1039660407356180187\",\n" +
+                "    \"reqid\": \"34462732626671404466192938475832783780\"\n" +
+                "    }\n" +
+                "}";
+
+        ResultList resultList = ResponseParser.parseResult(s);
+        assertEquals("34462732626671404466192938475832783780", resultList.getReqid());
+        List<TagGroup> tagGroupList = resultList.getQueryTags();
+        assertTrue(tagGroupList.size() == 3);
+
+        TagGroup bqf = tagGroupList.get(0);
+        assertEquals("bqf_tagging" , bqf.getName());
+        assertTrue( 1 == bqf.getTags().size());
+        Tag bqfTag = bqf.getTags().get(0);
+        assertEquals("category:product", bqfTag.getTag());
+        assertTrue(1.0 == bqfTag.getScore());
+
+        TagGroup exact = tagGroupList.get(1);
+        assertEquals("exact_match" , exact.getName());
+        assertTrue( 1 == exact.getTags().size());
+        Tag exactTag = exact.getTags().get(0);
+        assertEquals("SHOPEE-DF-SG_438289555", exactTag.getTag());
+        assertTrue(0.8512772793066337 == exactTag.getScore());
+
+        TagGroup category = tagGroupList.get(2);
+        assertEquals("category" , category.getName());
+        assertTrue( 1 == category.getTags().size());
+        Tag categoryTag = category.getTags().get(0);
+        assertEquals("Bag|ClutchWallet", categoryTag.getTag());
+        assertTrue(0.8 == categoryTag.getScore());
+
+
     }
 }

@@ -5,6 +5,8 @@ import com.visenze.visearch.android.ViSearchException;
 import com.visenze.visearch.android.model.Box;
 import com.visenze.visearch.android.model.ImageResult;
 import com.visenze.visearch.android.model.ProductType;
+import com.visenze.visearch.android.model.Tag;
+import com.visenze.visearch.android.model.TagGroup;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,11 +27,15 @@ public class ResponseParser {
             resultList.setErrorMessage(parseResponseError(resultObj));
 
             resultList.setTotal(resultObj.getInt("total"));
-            resultList.setPage(resultObj.getInt("page"));
-            resultList.setLimit(resultObj.getInt("limit"));
+            resultList.setPage(resultObj.optInt("page", 1));
+            resultList.setLimit(resultObj.optInt("limit", 10));
 
             if (resultObj.has("transId")) {
                 resultList.setTransId(resultObj.getString("transId"));
+            }
+
+            if (resultObj.has("reqid")) {
+                resultList.setReqid(resultObj.getString("reqid"));
             }
 
             if (resultObj.has("qinfo")) {
@@ -48,6 +54,12 @@ public class ResponseParser {
             if (resultObj.has("product_types_list")) {
                 JSONArray productTypeListArray = resultObj.getJSONArray("product_types_list");
                 resultList.setSupportedProductTypeList(parseSupportedProductTypeList(productTypeListArray));
+            }
+
+            if (resultObj.has("query_tags")) {
+                JSONArray queryTagArray =  resultObj.getJSONArray("query_tags");
+                resultList.setQueryTags(parseQueryTags(queryTagArray));
+
             }
 
             if (resultObj.has("im_id")) {
@@ -108,6 +120,37 @@ public class ResponseParser {
             }
         } catch (JSONException e) {
             throw new ViSearchException("Error parsing response result " + e.getMessage(), e);
+        }
+
+        return resultList;
+    }
+
+    private static List<TagGroup> parseQueryTags(JSONArray resultArray) {
+        List<TagGroup> resultList = new ArrayList<TagGroup>();
+        int size = resultArray.length();
+
+        try {
+            for (int i = 0; i < size; i++) {
+                JSONObject groupObject = resultArray.getJSONObject(i);
+
+                TagGroup tagGroup = new TagGroup(groupObject.optString("tag_group", ""));
+                if (groupObject.has("tags")) {
+                    JSONArray tagArrayObj = groupObject.getJSONArray("tags");
+
+                    for (int index = 0, length = tagArrayObj.length() ; index < length ; index++) {
+                        JSONObject item = tagArrayObj.getJSONObject(index);
+                        Tag tag = new Tag();
+                        tag.setTag(item.optString("tag", ""));
+                        tag.setScore(item.optDouble("score", 0.0));
+                        tagGroup.addTag(tag);
+                    }
+
+                }
+
+                resultList.add(tagGroup);
+            }
+        } catch (JSONException e) {
+            throw new ViSearchException("Error parsing response result " + e.getMessage(),e);
         }
 
         return resultList;
