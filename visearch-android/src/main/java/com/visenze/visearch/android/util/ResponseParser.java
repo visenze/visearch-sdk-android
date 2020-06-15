@@ -132,20 +132,7 @@ public class ResponseParser {
         try {
             for (int i = 0; i < size; i++) {
                 JSONObject groupObject = resultArray.getJSONObject(i);
-
-                TagGroup tagGroup = new TagGroup(groupObject.optString("tag_group", ""));
-                if (groupObject.has("tags")) {
-                    JSONArray tagArrayObj = groupObject.getJSONArray("tags");
-
-                    for (int index = 0, length = tagArrayObj.length() ; index < length ; index++) {
-                        JSONObject item = tagArrayObj.getJSONObject(index);
-                        Tag tag = new Tag();
-                        tag.setTag(item.optString("tag", ""));
-                        tag.setScore(item.optDouble("score", 0.0));
-                        tagGroup.addTag(tag);
-                    }
-
-                }
+                TagGroup tagGroup = parseTagGroup(groupObject);
 
                 resultList.add(tagGroup);
             }
@@ -154,6 +141,23 @@ public class ResponseParser {
         }
 
         return resultList;
+    }
+
+    private static TagGroup parseTagGroup(JSONObject groupObject) throws JSONException {
+        TagGroup tagGroup = new TagGroup(groupObject.optString("tag_group", ""));
+        if (groupObject.has("tags")) {
+            JSONArray tagArrayObj = groupObject.getJSONArray("tags");
+
+            for (int index = 0, length = tagArrayObj.length() ; index < length ; index++) {
+                JSONObject item = tagArrayObj.getJSONObject(index);
+                Tag tag = new Tag();
+                tag.setTag(item.optString("tag", ""));
+                tag.setScore(item.optDouble("score", 0.0));
+                tagGroup.addTag(tag);
+            }
+
+        }
+        return tagGroup;
     }
 
     private static List<ProductType> parseProductTypeList(JSONArray resultArray) throws ViSearchException {

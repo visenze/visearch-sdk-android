@@ -142,6 +142,10 @@ public class ResultList {
         return imId;
     }
 
+    public String getReqid() {
+        return reqid;
+    }
+
     public void setPage(Integer page) {
         this.page = page;
     }
@@ -188,10 +192,6 @@ public class ResultList {
 
     public void setImId(String imId) {
         this.imId = imId;
-    }
-
-    public String getReqid() {
-        return reqid;
     }
 
     public void setReqid(String reqid) {
