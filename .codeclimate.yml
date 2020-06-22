@@ -1,0 +1,54 @@
+version: "2"
+plugins:
+  # https://en.wikipedia.org/wiki/Rule_of_three_(computer_programming)
+  duplication:
+    enabled: true
+    config:
+      count_threshold: 3
+  # java
+  sonar-java:
+    config:
+      minimum_severity: critical
+    checks:
+      squid:S3516:
+        enabled: false
+    tests_patterns:
+      - "**/src/test/**"
+  # python
+  sonar-python:
+    enabled: false
+  # swift
+  tailor:
+    enabled: false
+# https://docs.codeclimate.com/docs/excluding-files-and-folders
+exclude_patterns:
+  - "**/vendor/"
+  - "**/3rdparty/"
+  - "**/*.conf.js"
+  - "**/*.config.js"
+  - "**/*.css"
+  - "visearch-android/src/test/java/"
+
+
+# https://docs.codeclimate.com/docs/maintainability
+checks:
+  argument-count:
+    enabled: false
+  complex-logic:
+    enabled: false
+  file-lines:
+    enabled: false
+  method-complexity:
+    enabled: false
+  method-count:
+    enabled: false
+  method-lines:
+    enabled: false
+  nested-control-flow:
+    enabled: false
+  return-statements:
+    enabled: false
+  similar-code:
+    enabled: false
+  identical-code:
+    enabled: true

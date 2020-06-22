@@ -15,6 +15,8 @@ public class ImageResult {
 
     private Map<String, String> fieldList;
 
+    private String s3Url;
+
     public ImageResult() {
         this.fieldList = new HashMap<String, String>();
     }
@@ -67,6 +69,10 @@ public class ImageResult {
         return fieldList;
     }
 
+    public String getS3Url() {
+        return s3Url;
+    }
+
     public void setImageName(String imageName) {
         this.imageName = imageName;
     }
@@ -86,4 +92,7 @@ public class ImageResult {
         this.fieldList = fieldList;
     }
 
+    public void setS3Url(String s3Url) {
+        this.s3Url = s3Url;
+    }
 }

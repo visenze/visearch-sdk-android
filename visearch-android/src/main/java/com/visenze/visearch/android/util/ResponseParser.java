@@ -116,6 +116,11 @@ public class ResponseParser {
                     imageResult.setFieldList(fieldList);
                 }
 
+                // add s3_url
+                if (imageObj.has("s3_url")) {
+                    imageResult.setS3Url(imageObj.getString("s3_url"));
+                }
+
                 resultList.add(imageResult);
             }
         } catch (JSONException e) {
