@@ -20,6 +20,7 @@ import org.robolectric.annotation.Config;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -323,6 +324,7 @@ public class ViSearchTest {
                 "        {\n" +
                 "            \"im_name\": \"SHOPEE-DF-SG_438289555\",\n" +
                 "            \"score\": 1.0,\n" +
+                "            \"s3_url\": \"s3.xxx\",\n" +
                 "            \"value_map\": {\n" +
                 "                \"store_id\": \"338660587\",\n" +
                 "                \"updated_time\": \"1589609171\",\n" +
@@ -470,6 +472,9 @@ public class ViSearchTest {
         Tag categoryTag = category.getTags().get(0);
         assertEquals("Bag|ClutchWallet", categoryTag.getTag());
         assertTrue(0.8 == categoryTag.getScore());
+
+        assertEquals("s3.xxx", resultList.getImageList().get(0).getS3Url());
+        assertNull(resultList.getImageList().get(1).getS3Url());
 
 
     }
