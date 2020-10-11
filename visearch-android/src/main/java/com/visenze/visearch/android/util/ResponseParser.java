@@ -42,7 +42,7 @@ public class ResponseParser {
 
             resultList.setErrorMessage(parseResponseError(resultObj));
 
-            resultList.setTotal(resultObj.getInt("total"));
+            resultList.setTotal(resultObj.optInt("total"));
             resultList.setPage(resultObj.optInt("page", 1));
             resultList.setLimit(resultObj.optInt("limit", 10));
 
@@ -105,6 +105,7 @@ public class ResponseParser {
                 objectResult.setType(objectJson.getString(TYPE));
                 objectResult.setScore(objectJson.getDouble(SCORE));
                 objectResult.setBox(parseBox(objectJson));
+                objectResult.setTotal(objectJson.optInt("total"));
 
                 if (objectJson.has(ATTRIBUTES)) {
                     Map attrsMapList = getAttributes(objectJson);
