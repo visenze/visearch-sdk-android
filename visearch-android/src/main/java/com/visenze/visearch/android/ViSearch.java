@@ -4,8 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import com.visenze.visearch.android.api.impl.SearchOperationsImpl;
-import com.visenze.visearch.android.api.impl.TrackOperationsImpl;
-import com.visenze.visearch.android.util.ViSearchUIDManager;
 
 import java.net.URL;
 
@@ -21,11 +19,7 @@ public class ViSearch {
 
     private SearchOperationsImpl searchOperations;
 
-    private TrackOperationsImpl trackOperations;
-
     private ResultListener mListener;
-
-    private String uid;
 
     /**
      * Initialise the ViSearcher with a valid access/secret key pair
@@ -40,12 +34,11 @@ public class ViSearch {
                      String searchApiEndPoint,
                      String userAgent) {
 
-        initTracking(context.getApplicationContext());
         searchOperations = new SearchOperationsImpl(
                 searchApiEndPoint,
                 context,
                 accessKey, secretKey, userAgent);
-        trackOperations = new TrackOperationsImpl(context, accessKey);
+
     }
 
     /**
@@ -115,18 +108,6 @@ public class ViSearch {
         } catch (ViSearchException e) {
             Log.e("ViSearch SDK", e.getMessage());
         }
-    }
-
-    public void track(final TrackParams trackParams) {
-        try {
-            trackOperations.track(trackParams);
-        } catch (ViSearchException e) {
-            Log.e("ViSearch SDK", e.getMessage());
-        }
-    }
-
-    private void initTracking(final Context context) {
-        ViSearchUIDManager.initUIDManager(context);
     }
 
     /**

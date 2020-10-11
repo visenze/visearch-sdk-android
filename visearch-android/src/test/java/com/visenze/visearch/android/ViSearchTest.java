@@ -2,7 +2,6 @@ package com.visenze.visearch.android;
 
 import android.os.Build;
 
-import com.visenze.visearch.android.api.impl.TrackOperationsImpl;
 import com.visenze.visearch.android.http.ResponseListener;
 import com.visenze.visearch.android.model.Tag;
 import com.visenze.visearch.android.model.TagGroup;
@@ -13,7 +12,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
-import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 

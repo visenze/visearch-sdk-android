@@ -1,7 +1,5 @@
 package com.visenze.visearch.android.http;
 
-import android.util.Base64;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
@@ -10,13 +8,11 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.visenze.visearch.android.util.AuthGenerator;
-import com.visenze.visearch.android.util.ViSearchUIDManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -60,21 +56,6 @@ public class JsonWithHeaderRequest extends JsonObjectRequest {
                     new String(response.data, HttpHeaderParser.parseCharset(response.headers));
 
             Map headers = response.headers;
-            if (headers.containsKey("Set-Cookie")) {
-                String value = (String)headers.get("Set-Cookie");
-                String[] cv = value.split(";");
-                String[] uid = new String[0];
-                for (String v : cv) {
-                    if (v.startsWith("uid")) {
-                        uid = v.split("=");
-                        break;
-                    }
-                }
-                if (uid.length > 0) {
-                    ViSearchUIDManager.updateUidFromCookie(uid[1]);
-                }
-            }
-
             JSONObject result = new JSONObject(jsonString);
 
             if (headers.containsKey("X-Log-ID")) {
@@ -82,8 +63,7 @@ public class JsonWithHeaderRequest extends JsonObjectRequest {
                 result.put("transId", transId);
             }
 
-            return Response.success(result,
-                    HttpHeaderParser.parseCacheHeaders(response));
+            return Response.success(result, HttpHeaderParser.parseCacheHeaders(response));
         } catch (UnsupportedEncodingException e) {
             return Response.error(new ParseError(e));
         } catch (JSONException je) {
