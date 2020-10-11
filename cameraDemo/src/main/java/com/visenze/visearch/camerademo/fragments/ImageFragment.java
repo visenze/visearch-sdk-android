@@ -25,7 +25,7 @@
 package com.visenze.visearch.camerademo.fragments;
 
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
+import androidx.fragment.app.DialogFragment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,7 +66,7 @@ public class ImageFragment extends DialogFragment {
         window.setLayout(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         window.setGravity(Gravity.CENTER);
 
-        setStyle(android.support.v4.app.DialogFragment.STYLE_NO_TITLE, R.style.Theme_TransparentDark);
+        setStyle(DialogFragment.STYLE_NO_TITLE, R.style.Theme_TransparentDark);
 
         //get parameters
         url = (String)getArguments().get("url");
