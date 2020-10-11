@@ -45,4 +45,13 @@ public interface SearchOperations {
      * @param resultListener result listener
      */
     public void uploadSearch(UploadSearchParams uploadSearchParams, final ViSearch.ResultListener resultListener);
+
+    /**
+     * Discover Search (POST /discoversearch)
+     * Multiple Products Search
+     *
+     * @param uploadSearchParams the index search parameter setting
+     * @param resultListener result listener
+     */
+    public void discoverSearch(UploadSearchParams uploadSearchParams, final ViSearch.ResultListener resultListener);
 }

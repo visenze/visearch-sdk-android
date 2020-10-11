@@ -1,6 +1,7 @@
 package com.visenze.visearch.android;
 
 import com.visenze.visearch.android.model.ImageResult;
+import com.visenze.visearch.android.model.ObjectResult;
 import com.visenze.visearch.android.model.ProductType;
 import com.visenze.visearch.android.model.TagGroup;
 
@@ -28,6 +29,9 @@ public class ResultList {
     private String transId;
 
     private List<ImageResult> imageResult;
+
+    // for discover search
+    private List<ObjectResult> objects;
 
     private Map<String, String> queryInfo;
 
@@ -196,5 +200,13 @@ public class ResultList {
 
     public void setReqid(String reqid) {
         this.reqid = reqid;
+    }
+
+    public List<ObjectResult> getObjects() {
+        return objects;
+    }
+
+    public void setObjects(List<ObjectResult> objects) {
+        this.objects = objects;
     }
 }

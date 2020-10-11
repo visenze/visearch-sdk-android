@@ -3,6 +3,7 @@ package com.visenze.visearch.android;
 import android.os.Build;
 
 import com.visenze.visearch.android.http.ResponseListener;
+import com.visenze.visearch.android.model.ImageResult;
 import com.visenze.visearch.android.model.Tag;
 import com.visenze.visearch.android.model.TagGroup;
 import com.visenze.visearch.android.util.ResponseParser;
@@ -16,6 +17,7 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -188,6 +190,8 @@ public class ViSearchTest {
         assertEquals(100, (int)argument.getValue().getProductTypes().get(0).getBox().getX2());
         assertEquals(100, (int)argument.getValue().getProductTypes().get(0).getBox().getY2());
         assertEquals(0.8f, argument.getValue().getProductTypes().get(0).getScore(), 0.000001f);
+
+        assertNull(argument.getValue().getObjects());
     }
 
     @Test
@@ -317,7 +321,7 @@ public class ViSearchTest {
                 "    \"result\": [\n" +
                 "        {\n" +
                 "            \"im_name\": \"SHOPEE-DF-SG_438289555\",\n" +
-                "            \"score\": 1.0,\n" +
+                "            \"score\": 0.9,\n" +
                 "            \"s3_url\": \"s3.xxx\",\n" +
                 "            \"value_map\": {\n" +
                 "                \"store_id\": \"338660587\",\n" +
@@ -470,6 +474,13 @@ public class ViSearchTest {
         assertEquals("s3.xxx", resultList.getImageList().get(0).getS3Url());
         assertNull(resultList.getImageList().get(1).getS3Url());
 
+        ImageResult image = resultList.getImageList().get(0);
+        assertEquals("SHOPEE-DF-SG_438289555", image.getImageName());
+        assertEquals("0.9", String.valueOf(image.getScore()) );
+        Map<String, String> map = image.getMetaData();
+        assertEquals("338660587", map.get("store_id"));
+        assertEquals("280.0", map.get("original_price"));
+        assertEquals("Tory Burch Robinson Mini Zip Continental Wallet", map.get("title"));
 
     }
 }
