@@ -46,8 +46,7 @@ public class ViSearchTest {
                 "}";
 
         ViSearch.ResultListener resultListener = Mockito.mock(ViSearch.ResultListener.class);
-        TrackOperationsImpl trackOperations = Mockito.mock(TrackOperationsImpl.class);
-        ResponseListener responseListener = new ResponseListener(resultListener, trackOperations, "search");
+        ResponseListener responseListener = new ResponseListener(resultListener);
 
         responseListener.onResponse(new JSONObject(errorSearchResponse));
 
@@ -76,9 +75,8 @@ public class ViSearchTest {
                 "}";
 
         ViSearch.ResultListener resultListener = Mockito.mock(ViSearch.ResultListener.class);
-        TrackOperationsImpl trackOperations = Mockito.mock(TrackOperationsImpl.class);
         ArgumentCaptor<ResultList> argument = ArgumentCaptor.forClass(ResultList.class);
-        ResponseListener responseListener = new ResponseListener(resultListener, trackOperations, "uploadsearch");
+        ResponseListener responseListener = new ResponseListener(resultListener);
 
         responseListener.onResponse(new JSONObject(searchResponse));
 
@@ -110,9 +108,8 @@ public class ViSearchTest {
                 "}";
 
         ViSearch.ResultListener resultListener = Mockito.mock(ViSearch.ResultListener.class);
-        TrackOperationsImpl trackOperations = Mockito.mock(TrackOperationsImpl.class);
         ArgumentCaptor<ResultList> argument = ArgumentCaptor.forClass(ResultList.class);
-        ResponseListener responseListener = new ResponseListener(resultListener, trackOperations, "uploadsearch");
+        ResponseListener responseListener = new ResponseListener(resultListener);
 
         responseListener.onResponse(new JSONObject(searchResponse));
 
@@ -166,9 +163,8 @@ public class ViSearchTest {
                 "}";
 
         ViSearch.ResultListener resultListener = Mockito.mock(ViSearch.ResultListener.class);
-        TrackOperationsImpl trackOperations = Mockito.mock(TrackOperationsImpl.class);
         ArgumentCaptor<ResultList> argument = ArgumentCaptor.forClass(ResultList.class);
-        ResponseListener responseListener = new ResponseListener(resultListener, trackOperations, "uploadsearch");
+        ResponseListener responseListener = new ResponseListener(resultListener);
 
         responseListener.onResponse(new JSONObject(searchWithDetectionResponse));
 

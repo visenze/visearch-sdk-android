@@ -8,8 +8,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.visenze.visearch.android.ViSearch;
 
-import java.net.CookieHandler;
-import java.net.CookieManager;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
@@ -52,8 +50,6 @@ public class HttpInstance {
      * @param context application context
      */
     private HttpInstance(Context context) {
-        CookieManager manager = new CookieManager();
-        CookieHandler.setDefault(manager);
         mContext = context;
         mRequestQueue = getRequestQueue();
     }
@@ -100,16 +96,14 @@ public class HttpInstance {
      *
      * @param url url to call
      * @param params parameters
-     * @param type search type
      * @param resultListener result listener
      */
     public void addGetRequestToQueue(
             final String url,
             Map<String, List<String>> params,
-            String type,
             final ViSearch.ResultListener resultListener) {
 
-        ResponseListener responseListener = new ResponseListener(resultListener, type);
+        ResponseListener responseListener = new ResponseListener(resultListener);
 
         if (null == params)
             params = new HashMap<String, List<String> >();
@@ -148,7 +142,7 @@ public class HttpInstance {
             byte[] bytes,
             final ViSearch.ResultListener resultListener) {
 
-        ResponseListener responseListener = new ResponseListener(resultListener, "uploadsearch");
+        ResponseListener responseListener = new ResponseListener(resultListener);
 
         if (null == params)
             params = new HashMap<String, List<String> >();

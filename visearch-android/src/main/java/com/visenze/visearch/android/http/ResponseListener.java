@@ -13,12 +13,9 @@ import org.json.JSONObject;
  */
 public class ResponseListener implements Response.Listener<JSONObject> {
     private ViSearch.ResultListener resultListener;
-    private String type;
 
-    public ResponseListener(ViSearch.ResultListener resultListener,
-                            String type) {
+    public ResponseListener(ViSearch.ResultListener resultListener) {
         this.resultListener = resultListener;
-        this.type = type;
     }
 
     @Override

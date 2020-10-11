@@ -3,6 +3,8 @@ package com.visenze.visearch.android;
 import android.content.Context;
 import android.util.Log;
 
+import com.visenze.datatracking.Tracker;
+import com.visenze.datatracking.VisenzeAnalytics;
 import com.visenze.visearch.android.api.impl.SearchOperationsImpl;
 
 import java.net.URL;
@@ -21,6 +23,10 @@ public class ViSearch {
 
     private ResultListener mListener;
 
+    private String uid;
+
+    private VisenzeAnalytics visenzeAnalytics;
+
     /**
      * Initialise the ViSearcher with a valid access/secret key pair
      *
@@ -32,12 +38,16 @@ public class ViSearch {
                      String accessKey,
                      String secretKey,
                      String searchApiEndPoint,
-                     String userAgent) {
+                     String userAgent,
+                     String uid) {
 
-        searchOperations = new SearchOperationsImpl(
+        this.searchOperations = new SearchOperationsImpl(
                 searchApiEndPoint,
                 context,
                 accessKey, secretKey, userAgent);
+
+        this.uid = uid;
+        this.visenzeAnalytics = VisenzeAnalytics.getInstance(context.getApplicationContext(), uid);
 
     }
 
@@ -110,6 +120,11 @@ public class ViSearch {
         }
     }
 
+    // tracking related
+    public Tracker newTracker(String code, boolean useCnEndpoint) {
+        return visenzeAnalytics.newTracker(code, useCnEndpoint);
+    }
+
     /**
      * Builder class for {@link ViSearch}
      */
@@ -118,6 +133,7 @@ public class ViSearch {
         private String mSecretKey;
         private String searchApiEndPoint;
         private String userAgent;
+        private String uid;
 
         public Builder(String appKey) {
             mAppKey = appKey;
@@ -161,12 +177,19 @@ public class ViSearch {
             return this;
         }
 
+        public Builder setUid(String uid) {
+            this.uid = uid;
+            return this;
+        }
+
         public ViSearch build(Context context) {
 
-            return new ViSearch(context,
+            ViSearch viSearch = new ViSearch(context,
                     mAppKey, mSecretKey,
                     searchApiEndPoint,
-                    userAgent);
+                    userAgent, uid);
+
+            return viSearch;
         }
     }
 
