@@ -3,8 +3,10 @@ package com.visenze.visearch.android;
 import android.content.Context;
 import android.util.Log;
 
+import com.visenze.datatracking.SessionManager;
 import com.visenze.datatracking.Tracker;
 import com.visenze.datatracking.VisenzeAnalytics;
+import com.visenze.datatracking.data.DataCollection;
 import com.visenze.visearch.android.api.impl.SearchOperationsImpl;
 
 import java.net.URL;
@@ -74,6 +76,8 @@ public class ViSearch {
      * @param idSearchParams index parameters.
      */
     public void idSearch(final IdSearchParams idSearchParams) {
+        addAnalyticsParams(idSearchParams);
+
         try {
             searchOperations.search(idSearchParams, mListener);
         } catch (ViSearchException e) {
@@ -87,6 +91,8 @@ public class ViSearch {
      * @param idSearchParams index parameters.
      */
     public void recommendation(final IdSearchParams idSearchParams) {
+        addAnalyticsParams(idSearchParams);
+
         try {
             searchOperations.recommendation(idSearchParams, mListener);
         } catch (ViSearchException e) {
@@ -100,6 +106,8 @@ public class ViSearch {
      * @param colorSearchParams color parameters.
      */
     public void colorSearch(final ColorSearchParams colorSearchParams) {
+        addAnalyticsParams(colorSearchParams);
+
         try {
             searchOperations.colorSearch(colorSearchParams, mListener);
         } catch (ViSearchException e) {
@@ -113,8 +121,20 @@ public class ViSearch {
      * @param uploadSearchParams upload parameters
      */
     public void uploadSearch(final UploadSearchParams uploadSearchParams) {
+        addAnalyticsParams(uploadSearchParams);
+
         try {
             searchOperations.uploadSearch(uploadSearchParams, mListener);
+        } catch (ViSearchException e) {
+            Log.e("ViSearch SDK", e.getMessage());
+        }
+    }
+
+    public void discoverSearch(final UploadSearchParams uploadSearchParams) {
+        addAnalyticsParams(uploadSearchParams);
+
+        try {
+            searchOperations.discoverSearch(uploadSearchParams, mListener);
         } catch (ViSearchException e) {
             Log.e("ViSearch SDK", e.getMessage());
         }
@@ -123,6 +143,58 @@ public class ViSearch {
     // tracking related
     public Tracker newTracker(String code, boolean useCnEndpoint) {
         return visenzeAnalytics.newTracker(code, useCnEndpoint);
+    }
+
+    private void addAnalyticsParams(SearchParams searchParams) {
+        if (searchParams == null) return;
+
+        SessionManager sessionManager = visenzeAnalytics.getSessionManager();
+        DataCollection dataCollection = visenzeAnalytics.getDataCollection();
+
+        if (searchParams.getUid() == null) {
+            searchParams.setUid(sessionManager.getUid());
+        }
+
+        if (searchParams.getSid() == null) {
+            searchParams.setSid(sessionManager.getSessionId());
+        }
+
+        if (searchParams.getAppId() == null) {
+            searchParams.setAppId(dataCollection.getAppId());
+        }
+
+        if (searchParams.getAppName() == null) {
+            searchParams.setAppName(dataCollection.getAppName());
+        }
+
+        if (searchParams.getAppVersion() == null) {
+            searchParams.setAppVersion(dataCollection.getAppVersion());
+        }
+
+        if (searchParams.getDeviceBrand() == null) {
+            searchParams.setDeviceBrand(dataCollection.getDeviceBrand());
+        }
+
+        if (searchParams.getDeviceModel() == null) {
+            searchParams.setDeviceModel(dataCollection.getDeviceModel());
+        }
+
+        if (searchParams.getLanguage() == null) {
+            searchParams.setLanguage(dataCollection.getLanguage());
+        }
+
+        if (searchParams.getOs() == null) {
+            searchParams.setOs(dataCollection.getOs());
+        }
+
+        if (searchParams.getOsv() == null) {
+            searchParams.setOsv(dataCollection.getOsv());
+        }
+
+        if (searchParams.getPlatform() == null) {
+            searchParams.setPlatform(dataCollection.getPlatform());
+        }
+
     }
 
     /**
