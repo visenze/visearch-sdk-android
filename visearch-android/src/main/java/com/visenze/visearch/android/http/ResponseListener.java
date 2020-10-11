@@ -22,11 +22,11 @@ public class ResponseListener implements Response.Listener<JSONObject> {
     public void onResponse(JSONObject jsonObject) {
         if (null != resultListener) {
             try {
-                ResultList resultList = getResult(jsonObject.toString());
+                ResultList resultList = getResult(jsonObject);
                 if (resultList.getErrorMessage() != null)
                     resultListener.onSearchError(resultList.getErrorMessage());
                 else {
-                    resultListener.onSearchResult(getResult(jsonObject.toString()));
+                    resultListener.onSearchResult(getResult(jsonObject));
                 }
             } catch (ViSearchException e) {
                 e.printStackTrace();
@@ -34,13 +34,7 @@ public class ResponseListener implements Response.Listener<JSONObject> {
         }
     }
 
-    /**
-     * pass the json response to result list
-     *
-     * @param jsonResponse json response
-     * @return result list
-     */
-    private ResultList getResult(String jsonResponse) {
-        return ResponseParser.parseResult(jsonResponse);
+    private ResultList getResult(JSONObject jsonObject) {
+        return ResponseParser.parseResult(jsonObject);
     }
 }

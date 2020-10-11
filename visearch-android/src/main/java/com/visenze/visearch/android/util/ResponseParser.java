@@ -19,11 +19,22 @@ import java.util.*;
  */
 public class ResponseParser {
 
-    public static ResultList parseResult(String jsonResponse) {
+    public static ResultList parseResult(String s) {
+        try {
+            return parseResult(new JSONObject(s));
+        } catch (JSONException e) {
+            throw new ViSearchException("JsonParse Error: " + e.toString());
+        }
+    }
+
+    public static ResultList parseResult(JSONObject resultObj) {
+        if (resultObj == null) {
+            return null;
+        }
+
         try {
             ResultList resultList = new ResultList();
 
-            JSONObject resultObj = new JSONObject(jsonResponse);
             resultList.setErrorMessage(parseResponseError(resultObj));
 
             resultList.setTotal(resultObj.getInt("total"));
