@@ -22,6 +22,7 @@ public class SearchOperationsImpl implements SearchOperations {
     private final static String RECOMMENDATION = "/recommendation";
     private final static String COLOR_SEARCH = "/colorsearch";
     private final static String UPLOAD_SEARCH = "/uploadsearch";
+    private static final String DISCOVER_SEARCH = "/discoversearch";
 
     /**
      * volley http instance
@@ -57,7 +58,7 @@ public class SearchOperationsImpl implements SearchOperations {
             throw new ViSearchException("Missing parameter, image name is empty");
         }
 
-        httpInstance.addGetRequestToQueue(apiBase + ID_SEARCH, idSearchParams.toMap(), "search", resultListener);
+        httpInstance.addGetRequestToQueue(apiBase + ID_SEARCH, idSearchParams.toMap(), resultListener);
     }
 
     /**
@@ -74,7 +75,7 @@ public class SearchOperationsImpl implements SearchOperations {
             throw new ViSearchException("Missing parameter, image name is empty");
         }
 
-        httpInstance.addGetRequestToQueue(apiBase + RECOMMENDATION, idSearchParams.toMap(), "recommendation", resultListener);
+        httpInstance.addGetRequestToQueue(apiBase + RECOMMENDATION, idSearchParams.toMap(), resultListener);
     }
 
     /**
@@ -93,7 +94,7 @@ public class SearchOperationsImpl implements SearchOperations {
             throw new ViSearchException("Invalid parameter, only accept hex color code");
         }
 
-        httpInstance.addGetRequestToQueue(apiBase + COLOR_SEARCH, colorSearchParams.toMap(), "colorsearch", resultListener);
+        httpInstance.addGetRequestToQueue(apiBase + COLOR_SEARCH, colorSearchParams.toMap(), resultListener);
     }
 
     /**
@@ -104,22 +105,33 @@ public class SearchOperationsImpl implements SearchOperations {
      */
     @Override
     public void uploadSearch(UploadSearchParams uploadSearchParams, final ViSearch.ResultListener resultListener) {
+        postImageSearch(uploadSearchParams, resultListener, UPLOAD_SEARCH);
+    }
+
+    @Override
+    public void discoverSearch(UploadSearchParams uploadSearchParams, final ViSearch.ResultListener resultListener) {
+        postImageSearch(uploadSearchParams, resultListener, DISCOVER_SEARCH);
+    }
+
+    private void postImageSearch(UploadSearchParams uploadSearchParams, ViSearch.ResultListener resultListener, String endpoint) {
         byte[] imageBytes = null;
+
         if (uploadSearchParams.getImage() != null) {
             imageBytes = uploadSearchParams.getImage().getByteArray();
         }
+
         String imageUrl = uploadSearchParams.getImageUrl();
         String imId = uploadSearchParams.getImId();
 
-        String response;
         if (imageBytes == null && (imageUrl == null || imageUrl.isEmpty()) && (imId == null || imId.isEmpty())) {
             throw new ViSearchException("Missing parameter, image empty");
+        }
 
-        } else if (imageBytes != null) {
-            httpInstance.addMultipartRequestToQueue(apiBase + UPLOAD_SEARCH, uploadSearchParams.toMap(),
+        if (imageBytes != null) {
+            httpInstance.addMultipartRequestToQueue(apiBase + endpoint, uploadSearchParams.toMap(),
                     uploadSearchParams.getBaseSearchParams().getCharset(),imageBytes, resultListener);
         } else {
-            httpInstance.addGetRequestToQueue(apiBase + UPLOAD_SEARCH, uploadSearchParams.toMap(), "uploadsearch", resultListener);
+            httpInstance.addGetRequestToQueue(apiBase + endpoint, uploadSearchParams.toMap(), resultListener);
         }
     }
 

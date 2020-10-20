@@ -27,7 +27,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,7 +40,6 @@ import android.widget.Toast;
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.visenze.visearch.android.ResultList;
-import com.visenze.visearch.android.TrackParams;
 import com.visenze.visearch.android.UploadSearchParams;
 import com.visenze.visearch.android.ViSearch;
 import com.visenze.visearch.android.model.Box;
@@ -361,7 +360,7 @@ public class PhotoEditFragment extends Fragment implements ViSearch.ResultListen
     }
 
     private void startDetailActivity(ImageResult imageResult) {
-        viSearch.track(new TrackParams().setAction("click").setReqid(resultList.getTransId()).setImName(imageResult.getImageName()));
+        //viSearch.track(new TrackParams().setAction("click").setReqid(resultList.getTransId()).setImName(imageResult.getImageName()));
 
         IntentHelper.addObjectForKey(imageResult.getImageName(), IntentHelper.SEARCH_RESULT_EXTRA);
         IntentHelper.addObjectForKey(imageResult.getImageUrl(), IntentHelper.SEARCH_IMAGE_PATH_EXTRA);

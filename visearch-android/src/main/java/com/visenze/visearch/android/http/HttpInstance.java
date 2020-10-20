@@ -2,23 +2,13 @@ package com.visenze.visearch.android.http;
 
 import android.content.Context;
 import android.net.Uri;
-import android.util.Base64;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.visenze.visearch.android.ViSearch;
-import com.visenze.visearch.android.api.impl.TrackOperationsImpl;
-import com.visenze.visearch.android.util.ViSearchUIDManager;
 
-import java.net.CookieHandler;
-import java.net.CookieManager;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,8 +50,6 @@ public class HttpInstance {
      * @param context application context
      */
     private HttpInstance(Context context) {
-        CookieManager manager = new CookieManager();
-        CookieHandler.setDefault(manager);
         mContext = context;
         mRequestQueue = getRequestQueue();
     }
@@ -103,44 +91,19 @@ public class HttpInstance {
         return mRequestQueue;
     }
 
-    public void addGetRequestToQueueWithoutResponse(
-            final String url,
-            Map<String, String> params) {
-        if (null == params) {
-            params = new HashMap<>();
-        }
-
-        Uri.Builder uri = new Uri.Builder();
-        for (String s : params.keySet()) {
-            uri.appendQueryParameter(s, params.get(s));
-        }
-
-        JsonWithUUIDRequest jsonObjectRequest = new JsonWithUUIDRequest(Request.Method.GET, url + uri.toString(),
-                null,
-                null,
-                null);
-
-        jsonObjectRequest.setTag(mContext);
-        getRequestQueue().add(jsonObjectRequest);
-
-    }
-
     /**
      * start a new request by passing the url, params and result listener
      *
      * @param url url to call
      * @param params parameters
-     * @param type search type
      * @param resultListener result listener
      */
     public void addGetRequestToQueue(
             final String url,
             Map<String, List<String>> params,
-            String type,
             final ViSearch.ResultListener resultListener) {
 
-        ResponseListener responseListener = new ResponseListener(resultListener,
-                new TrackOperationsImpl(mContext.getApplicationContext(), accessKey ), type);
+        ResponseListener responseListener = new ResponseListener(resultListener);
 
         if (null == params)
             params = new HashMap<String, List<String> >();
@@ -179,8 +142,7 @@ public class HttpInstance {
             byte[] bytes,
             final ViSearch.ResultListener resultListener) {
 
-        ResponseListener responseListener = new ResponseListener(resultListener,
-                new TrackOperationsImpl(mContext.getApplicationContext(), accessKey), "uploadsearch");
+        ResponseListener responseListener = new ResponseListener(resultListener);
 
         if (null == params)
             params = new HashMap<String, List<String> >();

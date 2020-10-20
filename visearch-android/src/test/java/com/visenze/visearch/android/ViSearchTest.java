@@ -2,8 +2,10 @@ package com.visenze.visearch.android;
 
 import android.os.Build;
 
-import com.visenze.visearch.android.api.impl.TrackOperationsImpl;
+import com.google.common.base.Joiner;
 import com.visenze.visearch.android.http.ResponseListener;
+import com.visenze.visearch.android.model.ImageResult;
+import com.visenze.visearch.android.model.ObjectResult;
 import com.visenze.visearch.android.model.Tag;
 import com.visenze.visearch.android.model.TagGroup;
 import com.visenze.visearch.android.util.ResponseParser;
@@ -13,11 +15,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
-import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -48,8 +50,7 @@ public class ViSearchTest {
                 "}";
 
         ViSearch.ResultListener resultListener = Mockito.mock(ViSearch.ResultListener.class);
-        TrackOperationsImpl trackOperations = Mockito.mock(TrackOperationsImpl.class);
-        ResponseListener responseListener = new ResponseListener(resultListener, trackOperations, "search");
+        ResponseListener responseListener = new ResponseListener(resultListener);
 
         responseListener.onResponse(new JSONObject(errorSearchResponse));
 
@@ -78,9 +79,8 @@ public class ViSearchTest {
                 "}";
 
         ViSearch.ResultListener resultListener = Mockito.mock(ViSearch.ResultListener.class);
-        TrackOperationsImpl trackOperations = Mockito.mock(TrackOperationsImpl.class);
         ArgumentCaptor<ResultList> argument = ArgumentCaptor.forClass(ResultList.class);
-        ResponseListener responseListener = new ResponseListener(resultListener, trackOperations, "uploadsearch");
+        ResponseListener responseListener = new ResponseListener(resultListener);
 
         responseListener.onResponse(new JSONObject(searchResponse));
 
@@ -112,9 +112,8 @@ public class ViSearchTest {
                 "}";
 
         ViSearch.ResultListener resultListener = Mockito.mock(ViSearch.ResultListener.class);
-        TrackOperationsImpl trackOperations = Mockito.mock(TrackOperationsImpl.class);
         ArgumentCaptor<ResultList> argument = ArgumentCaptor.forClass(ResultList.class);
-        ResponseListener responseListener = new ResponseListener(resultListener, trackOperations, "uploadsearch");
+        ResponseListener responseListener = new ResponseListener(resultListener);
 
         responseListener.onResponse(new JSONObject(searchResponse));
 
@@ -168,9 +167,8 @@ public class ViSearchTest {
                 "}";
 
         ViSearch.ResultListener resultListener = Mockito.mock(ViSearch.ResultListener.class);
-        TrackOperationsImpl trackOperations = Mockito.mock(TrackOperationsImpl.class);
         ArgumentCaptor<ResultList> argument = ArgumentCaptor.forClass(ResultList.class);
-        ResponseListener responseListener = new ResponseListener(resultListener, trackOperations, "uploadsearch");
+        ResponseListener responseListener = new ResponseListener(resultListener);
 
         responseListener.onResponse(new JSONObject(searchWithDetectionResponse));
 
@@ -194,6 +192,8 @@ public class ViSearchTest {
         assertEquals(100, (int)argument.getValue().getProductTypes().get(0).getBox().getX2());
         assertEquals(100, (int)argument.getValue().getProductTypes().get(0).getBox().getY2());
         assertEquals(0.8f, argument.getValue().getProductTypes().get(0).getScore(), 0.000001f);
+
+        assertNull(argument.getValue().getObjects());
     }
 
     @Test
@@ -323,7 +323,7 @@ public class ViSearchTest {
                 "    \"result\": [\n" +
                 "        {\n" +
                 "            \"im_name\": \"SHOPEE-DF-SG_438289555\",\n" +
-                "            \"score\": 1.0,\n" +
+                "            \"score\": 0.9,\n" +
                 "            \"s3_url\": \"s3.xxx\",\n" +
                 "            \"value_map\": {\n" +
                 "                \"store_id\": \"338660587\",\n" +
@@ -475,6 +475,229 @@ public class ViSearchTest {
 
         assertEquals("s3.xxx", resultList.getImageList().get(0).getS3Url());
         assertNull(resultList.getImageList().get(1).getS3Url());
+
+        ImageResult image = resultList.getImageList().get(0);
+        assertEquals("SHOPEE-DF-SG_438289555", image.getImageName());
+        assertEquals("0.9", String.valueOf(image.getScore()) );
+        Map<String, String> map = image.getMetaData();
+        assertEquals("338660587", map.get("store_id"));
+        assertEquals("280.0", map.get("original_price"));
+        assertEquals("Tory Burch Robinson Mini Zip Continental Wallet", map.get("title"));
+
+    }
+
+    @Test
+    public void testDiscoverSearch() throws Exception {
+        String s = "{\n" +
+                "    \"status\":\"OK\",\n" +
+                "    \"method\":\"discoversearch\",\n" +
+                "    \"error\":[\n" +
+                "        \n" +
+                "    ],\n" +
+                "    \"result_limit\":1,\n" +
+                "    \"detection_limit\":2,\n" +
+                "    \"page\":1,\n" +
+                "    \"objects\":[\n" +
+                "        {\n" +
+                "            \"type\":\"bottom\",\n" +
+                "            \"attributes\":{\n" +
+                "                \n" +
+                "            },\n" +
+                "            \"score\":0.8166874647140503,\n" +
+                "            \"box\":[\n" +
+                "                241,\n" +
+                "                381,\n" +
+                "                489,\n" +
+                "                894\n" +
+                "            ],\n" +
+                "            \"total\":1000,\n" +
+                "            \"result\":[\n" +
+                "                {\n" +
+                "                    \"im_name\":\"ZALORA-SG_053B7AA66DC684GS\",\n" +
+                "                    \"score\":1,\n" +
+                "                    \"value_map\":{\n" +
+                "                        \"title\":\"Buy Pomelo Cropped High Waist Button Slit Pants Online on ZALORA Singapore\",\n" +
+                "                        \"im_url\":\"http://static.sg.zalora.net/p/pomelo-2667-288219-1.jpg\"\n" +
+                "                    }\n" +
+                "                }\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\":\"top\",\n" +
+                "            \"attributes\":{\n" +
+                "                \n" +
+                "            },\n" +
+                "            \"score\":0.5112888216972351,\n" +
+                "            \"box\":[\n" +
+                "                272,\n" +
+                "                174,\n" +
+                "                546,\n" +
+                "                400\n" +
+                "            ],\n" +
+                "            \"total\":1000,\n" +
+                "            \"result\":[\n" +
+                "                {\n" +
+                "                    \"im_name\":\"ZALORA-SG_9A39AAA26CE98BGS\",\n" +
+                "                    \"score\":0.740113377571106,\n" +
+                "                    \"value_map\":{\n" +
+                "                        \"title\":\"Buy Pomelo Fighting The Patriarchy Graphic Tee\",\n" +
+                "                        \"im_url\":\"http://static.sg.zalora.net/p/pomelo-8263-742219-1.jpg\"\n" +
+                "                    }\n" +
+                "                }\n" +
+                "            ]\n" +
+                "        }\n" +
+                "    ],\n" +
+                "    \"object_types_list\":[\n" +
+                "        {\n" +
+                "            \"type\":\"bag\",\n" +
+                "            \"attributes_list\":{\n" +
+                "                \n" +
+                "            }\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\":\"belt\",\n" +
+                "            \"attributes_list\":{\n" +
+                "                \n" +
+                "            }\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\":\"bottom\",\n" +
+                "            \"attributes_list\":{\n" +
+                "                \n" +
+                "            }\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\":\"dress\",\n" +
+                "            \"attributes_list\":{\n" +
+                "                \n" +
+                "            }\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\":\"eyewear\",\n" +
+                "            \"attributes_list\":{\n" +
+                "                \n" +
+                "            }\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\":\"gloves\",\n" +
+                "            \"attributes_list\":{\n" +
+                "                \n" +
+                "            }\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\":\"headwear\",\n" +
+                "            \"attributes_list\":{\n" +
+                "                \n" +
+                "            }\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\":\"jewelry\",\n" +
+                "            \"attributes_list\":{\n" +
+                "                \n" +
+                "            }\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\":\"onepiece\",\n" +
+                "            \"attributes_list\":{\n" +
+                "                \n" +
+                "            }\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\":\"outerwear\",\n" +
+                "            \"attributes_list\":{\n" +
+                "                \n" +
+                "            }\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\":\"scarf\",\n" +
+                "            \"attributes_list\":{\n" +
+                "                \n" +
+                "            }\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\":\"shoe\",\n" +
+                "            \"attributes_list\":{\n" +
+                "                \n" +
+                "            }\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\":\"skirt\",\n" +
+                "            \"attributes_list\":{\n" +
+                "                \n" +
+                "            }\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\":\"swimwear\",\n" +
+                "            \"attributes_list\":{\n" +
+                "                \n" +
+                "            }\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\":\"tie\",\n" +
+                "            \"attributes_list\":{\n" +
+                "                \n" +
+                "            }\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\":\"top\",\n" +
+                "            \"attributes_list\":{\n" +
+                "                \n" +
+                "            }\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\":\"underwear_bottom\",\n" +
+                "            \"attributes_list\":{\n" +
+                "                \n" +
+                "            }\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\":\"underwear_top\",\n" +
+                "            \"attributes_list\":{\n" +
+                "                \n" +
+                "            }\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\":\"watch\",\n" +
+                "            \"attributes_list\":{\n" +
+                "                \n" +
+                "            }\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"type\":\"other\",\n" +
+                "            \"attributes_list\":{\n" +
+                "                \n" +
+                "            }\n" +
+                "        }\n" +
+                "    ],\n" +
+                "    \"im_id\":\"20201011365cfd51d3a6cfc1c1e9f4c5b0ef8201dd9c569b23a.jpg\",\n" +
+                "    \"reqid\":\"1082464812702743783\"\n" +
+                "}";
+
+        ResultList resultList = ResponseParser.parseResult(s);
+        assertNull(resultList.getImageList());
+        List<ObjectResult> objects = resultList.getObjects();
+        assertEquals( 2, objects.size());
+
+        ObjectResult object1 = objects.get(0);
+        ObjectResult object2 = objects.get(1);
+
+        assertEquals("bottom", object1.getType());
+        assertEquals("241,381,489,894",
+                object1.getBox().getX1() + "," +
+                object1.getBox().getY1() + ","
+                + object1.getBox().getX2() + "," + object1.getBox().getY2() );
+
+        assertEquals("ZALORA-SG_053B7AA66DC684GS", object1.getResult().get(0).getImageName());
+
+
+        assertEquals("top", object2.getType());
+        assertEquals("272,174,546,400",
+                object2.getBox().getX1() + "," +
+                        object2.getBox().getY1() + ","
+                        + object2.getBox().getX2() + "," + object2.getBox().getY2() );
+
+        assertEquals("ZALORA-SG_9A39AAA26CE98BGS", object2.getResult().get(0).getImageName());
+        assertEquals("0.7401134", String.valueOf(object2.getResult().get(0).getScore()));
 
 
     }

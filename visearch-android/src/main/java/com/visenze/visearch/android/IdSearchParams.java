@@ -52,10 +52,4 @@ public class IdSearchParams extends SearchParams {
         return map;
     }
 
-    private void putStringInMap(Map<String, List<String> > map, String key, String value) {
-        List<String> stringList = new ArrayList<>();
-        stringList.add(value);
-
-        map.put(key, stringList);
-    }
 }

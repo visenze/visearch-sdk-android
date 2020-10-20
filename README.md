@@ -3,7 +3,7 @@
 
 ---
 
-##Table of Contents
+## Table of Contents
  1. [Overview](#1-overview)
       - 1.1 [About ViSearch Android SDK](#11-about-visearch-android-sdk)
  2. [Setup](#2-setup)
@@ -17,6 +17,7 @@
 	    - 4.2.1 [Selection Box](#421-selection-box)
 	    - 4.2.2 [Resizing Settings](#422-resizing-settings)
 	  - 4.3 [Search by Color](#43-search-by-color)
+	  - 4.4 [Multiple Products Search](#44-multiple-products-search)
  5. [Search Results](#5-search-results)
  6. [Advanced Search Parameters](#6-advanced-search-parameters)
 	  - 6.1 [Retrieving Metadata](#61-retrieving-metadata)
@@ -25,7 +26,7 @@
       - 6.4 [Automatic Object Recognition Beta](#64-automatic-object-recognition-beta)
  7. [Event Tracking](#7-event-tracking)
       - 7.1 [Setup Tracking](#71-setup-tracking)
-      - 7.2 [Send Action for Tracking](#72-send-action-for-tracking)
+      - 7.2 [Send Events](#72-send-events)
       
 ---
 
@@ -35,9 +36,9 @@
 ### 1.1 About ViSearch Android SDK
 ViSearch is an API that provides accurate, reliable and scalable image search. ViSearch API provides two services ( Data API and Search API) to let the developers prepare image database and perform image searches efficiently. ViSearch API can be easily integrated into your web and mobile applications. For more details, see [ViSearch API Documentation](http://www.visenze.com/docs/overview/introduction).
 
-The ViSearch Androi SDK is an open source software to provide easy integration of ViSearch Search API with your Android mobile applications. It provides three search methods based on the ViSearch Search API - pre-indexed search, color search and upload search. For source code and references, please visit the [Github Repository](https://github.com/visenze/visearch-sdk-android).
+The ViSearch Android SDK is an open source software to provide easy integration of ViSearch Search API with your Android mobile applications. It provides three search methods based on the ViSearch Search API - pre-indexed search, color search and upload search. For source code and references, please visit the [Github Repository](https://github.com/visenze/visearch-sdk-android).
 
->Current stable version: 1.4.0
+>Current stable version: 1.5.0
 
 >Minimum Android SDK Version: API 9, Android 2.3
 
@@ -141,6 +142,17 @@ ViSearch viSearch = new ViSearch
                 .setApiEndPoint("https://custom-visearch.yourdomain.com")
                 .build(context);
 ```                
+
+To set a custom device ID for Analytics, you can init the SDK in this way:
+
+```java
+ViSearch viSearch = new ViSearch.Builder(APP_KEY).setUid("your device id such as random UUID").build(context);
+
+// custom tracker for Analytics
+// Tracking code can be viewed in ViSenze's dashboard
+Tracker tracker = viSearch.newTracker(code, false);
+
+```
 
 ## 4. Solution APIs
 
@@ -291,6 +303,19 @@ GET /colorsearch
 ```java
 ColorSearchParams colorSearchParams = new ColorSearchParams("9b351b");
 viSearch.colorSearch(colorSearchParams);
+```
+
+### 4.4 Multiple Products Search
+
+POST /discoversearch
+
+**Multiple Product Search** solution is to search similar images by uploading an image or providing an image url, similar to Search by Image. Multiple Product Search is able to detect all objects in the image and return similar images for each at one time.
+
+The parameter is the same as Search by Image solution. 
+
+```java
+UploadSearchParams uploadSearchParams = new UploadSearchParams(image);
+viSearch.discoversearch(uploadSearchParams);
 ```
 
 ## 5. Search Results
@@ -464,25 +489,60 @@ In addition, to improve subsequent search quality, it is recommended to send use
 
 ### 7.1 Setup Tracking
 
-It is important that a unique device ID is provided for user action tracking. ViSearch Android SDK uses [Google Adervertising ID](https://support.google.com/googleplay/android-developer/answer/6048248?hl=en) as the default unique id. Add this tag to your `<application>` in the `AndroidManifest.xml` to use Google Play Service:
-
-```xml
-<meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version">
-```
-
-In the case where Google Adervertising ID is not available, a server-generated UID will be returned. This UID is automatically stored with your app that integates with ViSearch Android SDK and will be refreshed only when the user uninstall your app.  
-
-### 7.2  Send Action for Tracking
-
-User action can be sent in this way:
+You can initialize ViSenze Analytics tracker for sending analytics events by providing the code (found in ViSenze Dashboard).
 
 ```java
-viSearch.track(new TrackParams().setAction(action).setImName(im_name).setReqid(reqid));
+Tracker tracker = visearch.newTracker(code, false);
 ```
-The following fields could be used for tracking user events:
+
+### 7.2  Send Events
+
+Currently we support the following event actions: `click`, `view`, `product_click`, `product_view`, `add_to_cart`, and `transaction`. The `action` parameter can be an arbitrary string and custom events can be sent.
+
+To send events, first retrieve the search query ID found in the search results listener:
+
+```
+@Override
+public void onSearchResult(ResultList resultList) {
+	String queryId = resultList.getReqid();
+}
+``` 
+
+Then, create the event using 1 of the helper methods Event.createXXXEvent(). 
+For `product_click`, `product_view` events, queryId, pid, imgUrl and pos are all required.
+
+
+```
+Event.createProductClickEvent(String queryId, String pid, String imgUrl, int pos)
+
+Event.createProductImpressionEvent(String queryId, String pid, String imgUrl, int pos)
+
+Event.createAddCartEvent(String queryId, String pid, String imgUrl, int pos)
+
+Event.createTransactionEvent(String queryId, String transactionId, double value) 
+
+// custom event with arbitray action
+Event.createCustomEvent(String action)
+ 
+```
+
+Finally send the event via the tracker:
+
+```
+tracker.sendEvent(event);
+```
+
+
+Below are the brief description for various parameters:
 
 Field | Description | Required
 --- | --- | ---
-reqid| The request id of the search request. This reqid can be obtained from all the search result:```resultList.getTransId();``` | Require
-action | The type of the action. Currently we support three types, `click`, `add_to_cart`, and `add_to_wishlist`. | Require
-imName | image id (im_name) for this behavior | Optional
+queryId| The request id of the search request. This reqid can be obtained from all the search result:```resultList.getReqid()``` | Yes
+action | Event action. Currently we support the following event actions: `click`, `view`, `product_click`, `product_view`, `add_to_cart`, and `transaction`. | Yes
+pid | Product ID ( generally this is the `im_name`) for this product. Can be retrieved via `ImageResult.getImageName()` | Required for product view, product click and add to cart events
+imgUrl | Image URL ( generally this is the `im_url`) for this product. Can be retrieved via `ImageResult.getImageUrl()` | Required for product view, product click and add to cart events
+pos | Position of the product in Search Results e.g. click position/ view position. Note that this start from 1 , not 0. | Required for product view, product click and add to cart events
+transactionId | Transaction ID | Required for transaction event.
+value | Transaction value e.g. order value | Required for transaction event.
+
+

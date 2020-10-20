@@ -4,6 +4,7 @@ import com.visenze.visearch.android.ResultList;
 import com.visenze.visearch.android.ViSearchException;
 import com.visenze.visearch.android.model.Box;
 import com.visenze.visearch.android.model.ImageResult;
+import com.visenze.visearch.android.model.ObjectResult;
 import com.visenze.visearch.android.model.ProductType;
 import com.visenze.visearch.android.model.Tag;
 import com.visenze.visearch.android.model.TagGroup;
@@ -19,14 +20,29 @@ import java.util.*;
  */
 public class ResponseParser {
 
-    public static ResultList parseResult(String jsonResponse) {
+    public static final String ATTRIBUTES = "attributes";
+    public static final String TYPE = "type";
+    public static final String SCORE = "score";
+
+    public static ResultList parseResult(String s) {
+        try {
+            return parseResult(new JSONObject(s));
+        } catch (JSONException e) {
+            throw new ViSearchException("JsonParse Error: " + e.toString());
+        }
+    }
+
+    public static ResultList parseResult(JSONObject resultObj) {
+        if (resultObj == null) {
+            return null;
+        }
+
         try {
             ResultList resultList = new ResultList();
 
-            JSONObject resultObj = new JSONObject(jsonResponse);
             resultList.setErrorMessage(parseResponseError(resultObj));
 
-            resultList.setTotal(resultObj.getInt("total"));
+            resultList.setTotal(resultObj.optInt("total"));
             resultList.setPage(resultObj.optInt("page", 1));
             resultList.setLimit(resultObj.optInt("limit", 10));
 
@@ -43,8 +59,11 @@ public class ResponseParser {
                 resultList.setQueryInfo(parseQueryInfo(qinfoObj));
             }
 
-            JSONArray resultArray = resultObj.getJSONArray("result");
+            JSONArray resultArray = resultObj.optJSONArray("result");
             resultList.setImageList(parseImageResultList(resultArray));
+
+            JSONArray objectArray = resultObj.optJSONArray("objects");
+            resultList.setObjects(parseObjects(objectArray));
 
             if (resultObj.has("product_types")) {
                 JSONArray productTypeArray = resultObj.getJSONArray("product_types");
@@ -59,7 +78,6 @@ public class ResponseParser {
             if (resultObj.has("query_tags")) {
                 JSONArray queryTagArray =  resultObj.getJSONArray("query_tags");
                 resultList.setQueryTags(parseQueryTags(queryTagArray));
-
             }
 
             if (resultObj.has("im_id")) {
@@ -70,6 +88,41 @@ public class ResponseParser {
         } catch (JSONException e) {
             throw new ViSearchException("Error parsing response " + e.getMessage(), e);
         }
+    }
+
+    private static List<ObjectResult> parseObjects(JSONArray objectArray) {
+        if (objectArray == null) return null;
+
+        List<ObjectResult> objects = new ArrayList<>();
+        int size = objectArray.length();
+
+        try {
+            for (int i = 0; i < size; i++) {
+                JSONObject objectJson = objectArray.getJSONObject(i);
+
+                ObjectResult objectResult = new ObjectResult();
+
+                objectResult.setType(objectJson.getString(TYPE));
+                objectResult.setScore(objectJson.getDouble(SCORE));
+                objectResult.setBox(parseBox(objectJson));
+                objectResult.setTotal(objectJson.optInt("total"));
+
+                if (objectJson.has(ATTRIBUTES)) {
+                    Map attrsMapList = getAttributes(objectJson);
+                    objectResult.setAttributeList(attrsMapList);
+                }
+
+                JSONArray resultArray = objectJson.optJSONArray("result");
+                objectResult.setResult(parseImageResultList(resultArray));
+
+                objects.add(objectResult);
+            }
+        } catch (JSONException e) {
+            throw new ViSearchException("Error parsing response result " + e.getMessage(), e);
+        }
+
+
+        return objects;
     }
 
     private static Map<String, String> parseQueryInfo(JSONObject qinfoObj) {
@@ -88,6 +141,8 @@ public class ResponseParser {
     }
 
     private static List<ImageResult> parseImageResultList(JSONArray resultArray) throws ViSearchException {
+        if (resultArray == null) return null;
+
         List<ImageResult> resultList = new ArrayList<ImageResult>();
         int size = resultArray.length();
 
@@ -172,28 +227,14 @@ public class ResponseParser {
         try {
             for (int i = 0; i < size; i++) {
                 JSONObject typeObj = resultArray.getJSONObject(i);
-                ProductType productType = new ProductType();
-                productType.setType(typeObj.getString("type"));
-                productType.setScore(typeObj.getDouble("score"));
-                JSONArray boxCoordinate = typeObj.getJSONArray("box");
-                Box box = new Box(boxCoordinate.getInt(0),
-                        boxCoordinate.getInt(1),
-                        boxCoordinate.getInt(2),
-                        boxCoordinate.getInt(3));
-                productType.setBox(box);
 
-                if (typeObj.has("attributes")) {
-                    JSONObject attrsArray = typeObj.getJSONObject("attributes");
-                    JSONArray attrsNames = attrsArray.names();
-                    Map attrsMapList = new HashMap<>();
-                    for (int j = 0; attrsNames != null && j < attrsNames.length(); j++) {
-                        JSONArray attrsItems = (JSONArray) attrsArray.get((String)attrsNames.get(j));
-                        List<String> attrs = new ArrayList<>();
-                        for (int k = 0; k < attrsItems.length(); k++) {
-                            attrs.add((String) attrsItems.get(k));
-                        }
-                        attrsMapList.put(attrsNames.get(j), attrs);
-                    }
+                ProductType productType = new ProductType();
+                productType.setType(typeObj.getString(TYPE));
+                productType.setScore(typeObj.getDouble(SCORE));
+                productType.setBox(parseBox(typeObj));
+
+                if (typeObj.has(ATTRIBUTES)) {
+                    Map attrsMapList = getAttributes(typeObj);
                     productType.setAttributeList(attrsMapList);
                 }
 
@@ -204,6 +245,37 @@ public class ResponseParser {
         }
 
         return resultList;
+    }
+
+    private static Map getAttributes(JSONObject typeObj) throws JSONException {
+        JSONObject attrsArray = typeObj.optJSONObject(ATTRIBUTES);
+        if (attrsArray == null) return new HashMap();
+
+        JSONArray attrsNames = attrsArray.names();
+        Map attrsMapList = new HashMap<>();
+        for (int j = 0; attrsNames != null && j < attrsNames.length(); j++) {
+            JSONArray attrsItems = (JSONArray) attrsArray.get((String)attrsNames.get(j));
+            List<String> attrs = new ArrayList<>();
+            for (int k = 0; k < attrsItems.length(); k++) {
+                attrs.add((String) attrsItems.get(k));
+            }
+            attrsMapList.put(attrsNames.get(j), attrs);
+        }
+        return attrsMapList;
+    }
+
+    private static Box parseBox(JSONObject typeObj) throws JSONException {
+        JSONArray boxCoordinate = typeObj.getJSONArray("box");
+
+        if (boxCoordinate!=null && boxCoordinate.length() > 3) {
+            Box box = new Box(boxCoordinate.getInt(0),
+                    boxCoordinate.getInt(1),
+                    boxCoordinate.getInt(2),
+                    boxCoordinate.getInt(3));
+            return box;
+        }
+
+        return null;
     }
 
     private static List<ProductType> parseSupportedProductTypeList(JSONArray resultArray) {

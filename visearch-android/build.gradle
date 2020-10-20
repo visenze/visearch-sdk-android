@@ -18,9 +18,9 @@ repositories {
 }
 
 def versionMajor = 1
-def versionMinor = 4
-def versionPatch = 1
-version = '1.4.1'
+def versionMinor = 5
+def versionPatch = 0
+version = '1.5.0'
 
 android {
     compileSdkVersion 28
@@ -47,7 +47,8 @@ configurations {
 }
 
 dependencies {
-   compile ('com.android.volley:volley:1.1.1')
+    implementation ('com.android.volley:volley:1.1.1')
+    implementation 'com.visenze.datatracking:tracking:0.1.7'
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.8.9'

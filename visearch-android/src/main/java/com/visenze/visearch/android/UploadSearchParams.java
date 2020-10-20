@@ -28,6 +28,8 @@ public class UploadSearchParams extends SearchParams {
 
     private Box uploadBox;
 
+    private Integer resultLimit;
+
     public UploadSearchParams() {
         super();
     }
@@ -197,13 +199,11 @@ public class UploadSearchParams extends SearchParams {
             }
         }
 
+        if (resultLimit != null) {
+            putStringInMap(map, "result_limit", resultLimit.toString());
+        }
+
         return map;
     }
 
-    private void putStringInMap(Map<String, List<String> > map, String key, String value) {
-        List<String> stringList = new ArrayList<>();
-        stringList.add(value);
-
-        map.put(key, stringList);
-    }
 }
