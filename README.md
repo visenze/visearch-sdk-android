@@ -74,7 +74,7 @@ You can play around with our demo app to see how we build up the cool image sear
 You can include the dependency in your project using gradle:
 
 ```
-implementation 'com.visenze:visearch-android:1.3.3'
+implementation 'com.visenze:visearch-android:1.5.0'
 ```
 
 In the `build.gradle` file under your app module, add the packaging options to ensure a successful compilation:
