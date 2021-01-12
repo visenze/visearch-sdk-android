@@ -7,6 +7,8 @@ import com.visenze.datatracking.SessionManager;
 import com.visenze.datatracking.Tracker;
 import com.visenze.datatracking.VisenzeAnalytics;
 import com.visenze.datatracking.data.DataCollection;
+import com.visenze.visearch.android.api.SearchOperations;
+import com.visenze.visearch.android.api.impl.SearchOperationsImpRetrofit;
 import com.visenze.visearch.android.api.impl.SearchOperationsImpl;
 
 import java.net.URL;
@@ -21,7 +23,7 @@ public class ViSearch {
     private static final String USER_AGENT = "visearch-android-sdk";
     private static final String SEARCH_URL = "https://visearch.visenze.com";
 
-    private SearchOperationsImpl searchOperations;
+    private SearchOperations searchOperations;
 
     private ResultListener mListener;
 
@@ -43,10 +45,13 @@ public class ViSearch {
                      String userAgent,
                      String uid) {
 
-        this.searchOperations = new SearchOperationsImpl(
-                searchApiEndPoint,
-                context,
-                accessKey, secretKey, userAgent);
+//        this.searchOperations = new SearchOperationsImpl(
+//                searchApiEndPoint,
+//                context,
+//                accessKey, secretKey, userAgent);
+        this .searchOperations = new SearchOperationsImpRetrofit(
+                searchApiEndPoint, accessKey, secretKey, userAgent
+        );
 
         this.uid = uid;
         this.visenzeAnalytics = VisenzeAnalytics.getInstance(context.getApplicationContext(), uid);

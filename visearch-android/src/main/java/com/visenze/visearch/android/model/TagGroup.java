@@ -1,11 +1,16 @@
 package com.visenze.visearch.android.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 import java.util.List;
 
 // PS-827 for IR demo
 public class TagGroup {
+    @SerializedName("tag_group")
     private String name;
+
+    @SerializedName("tags")
     private List<Tag> tags = new ArrayList<>();
 
     public TagGroup(String tagGroup) {

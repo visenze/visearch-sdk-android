@@ -3,11 +3,15 @@ package com.visenze.visearch.android;
 import android.os.Build;
 
 import com.google.common.base.Joiner;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.visenze.visearch.android.data.ResponseData;
 import com.visenze.visearch.android.http.ResponseListener;
 import com.visenze.visearch.android.model.ImageResult;
 import com.visenze.visearch.android.model.ObjectResult;
 import com.visenze.visearch.android.model.Tag;
 import com.visenze.visearch.android.model.TagGroup;
+import com.visenze.visearch.android.network.SearchService;
 import com.visenze.visearch.android.util.ResponseParser;
 
 import org.json.JSONObject;
@@ -33,6 +37,11 @@ import static org.mockito.Mockito.times;
 @Config(constants = BuildConfig.class, sdk = Build.VERSION_CODES.LOLLIPOP)
 @RunWith(RobolectricTestRunner.class)
 public class ViSearchTest {
+
+    SearchService searchService = new SearchService("https://visearch.visenze.com", "123", "456", "visearch-test");
+    Gson gson = new GsonBuilder()
+        .setLenient()
+        .create();
     @Test
     public void testErrorResponse() throws Exception {
         String errorSearchResponse = "{\n" +
@@ -49,10 +58,13 @@ public class ViSearchTest {
                 "    ]\n" +
                 "}";
 
-        ViSearch.ResultListener resultListener = Mockito.mock(ViSearch.ResultListener.class);
-        ResponseListener responseListener = new ResponseListener(resultListener);
 
-        responseListener.onResponse(new JSONObject(errorSearchResponse));
+        ViSearch.ResultListener resultListener = Mockito.mock(ViSearch.ResultListener.class);
+
+
+        ResponseData response = gson.fromJson(errorSearchResponse, ResponseData.class);
+        searchService.handleResponse(response, resultListener);
+
 
         Mockito.verify(resultListener, times(1)).onSearchError(Mockito.anyString());
         Mockito.verify(resultListener, never()).onSearchResult(Mockito.<ResultList>any());
@@ -78,11 +90,13 @@ public class ViSearchTest {
                 "    ]\n" +
                 "}";
 
-        ViSearch.ResultListener resultListener = Mockito.mock(ViSearch.ResultListener.class);
-        ArgumentCaptor<ResultList> argument = ArgumentCaptor.forClass(ResultList.class);
-        ResponseListener responseListener = new ResponseListener(resultListener);
 
-        responseListener.onResponse(new JSONObject(searchResponse));
+        ArgumentCaptor<ResultList> argument = ArgumentCaptor.forClass(ResultList.class);
+        ViSearch.ResultListener resultListener = Mockito.mock(ViSearch.ResultListener.class);
+
+
+        ResponseData response = gson.fromJson(searchResponse, ResponseData.class);
+        searchService.handleResponse(response, resultListener);
 
         Mockito.verify(resultListener, never()).onSearchError(Mockito.anyString());
         Mockito.verify(resultListener, never()).onSearchCanceled();
@@ -111,11 +125,14 @@ public class ViSearchTest {
                 "    ]\n" +
                 "}";
 
-        ViSearch.ResultListener resultListener = Mockito.mock(ViSearch.ResultListener.class);
-        ArgumentCaptor<ResultList> argument = ArgumentCaptor.forClass(ResultList.class);
-        ResponseListener responseListener = new ResponseListener(resultListener);
 
-        responseListener.onResponse(new JSONObject(searchResponse));
+        ArgumentCaptor<ResultList> argument = ArgumentCaptor.forClass(ResultList.class);
+        ViSearch.ResultListener resultListener = Mockito.mock(ViSearch.ResultListener.class);
+
+
+        ResponseData response = gson.fromJson(searchResponse, ResponseData.class);
+        searchService.handleResponse(response, resultListener);
+
 
         Mockito.verify(resultListener, times(1)).onSearchError(Mockito.anyString());
         Mockito.verify(resultListener, never()).onSearchCanceled();
@@ -166,11 +183,13 @@ public class ViSearchTest {
                 "]\n" +
                 "}";
 
-        ViSearch.ResultListener resultListener = Mockito.mock(ViSearch.ResultListener.class);
-        ArgumentCaptor<ResultList> argument = ArgumentCaptor.forClass(ResultList.class);
-        ResponseListener responseListener = new ResponseListener(resultListener);
 
-        responseListener.onResponse(new JSONObject(searchWithDetectionResponse));
+        ArgumentCaptor<ResultList> argument = ArgumentCaptor.forClass(ResultList.class);
+        ViSearch.ResultListener resultListener = Mockito.mock(ViSearch.ResultListener.class);
+
+
+        ResponseData response = gson.fromJson(searchWithDetectionResponse, ResponseData.class);
+        searchService.handleResponse(response, resultListener);
 
         Mockito.verify(resultListener, never()).onSearchError(Mockito.anyString());
         Mockito.verify(resultListener, never()).onSearchCanceled();
@@ -444,10 +463,10 @@ public class ViSearchTest {
                 "    \"feature_extraction_reqid\": \"1039660407356180187\",\n" +
                 "    \"recalling_reqid\": \"1039660407356180187\",\n" +
                 "    \"reqid\": \"34462732626671404466192938475832783780\"\n" +
-                "    }\n" +
                 "}";
 
-        ResultList resultList = ResponseParser.parseResult(s);
+        ResponseData response = gson.fromJson(s, ResponseData.class);
+        ResultList resultList = response.getResultList();
         assertEquals("34462732626671404466192938475832783780", resultList.getReqid());
         List<TagGroup> tagGroupList = resultList.getQueryTags();
         assertTrue(tagGroupList.size() == 3);
@@ -673,7 +692,9 @@ public class ViSearchTest {
                 "    \"reqid\":\"1082464812702743783\"\n" +
                 "}";
 
-        ResultList resultList = ResponseParser.parseResult(s);
+        ResponseData response = gson.fromJson(s, ResponseData.class);
+//        ResultList resultList = ResponseParser.parseResult(s);
+        ResultList resultList = response.getResultList();
         assertNull(resultList.getImageList());
         List<ObjectResult> objects = resultList.getObjects();
         assertEquals( 2, objects.size());

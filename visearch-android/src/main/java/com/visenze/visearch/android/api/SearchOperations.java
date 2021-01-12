@@ -54,4 +54,7 @@ public interface SearchOperations {
      * @param resultListener result listener
      */
     public void discoverSearch(UploadSearchParams uploadSearchParams, final ViSearch.ResultListener resultListener);
+
+
+    public void cancelSearch(ViSearch.ResultListener resultListener);
 }

@@ -1,8 +1,14 @@
 package com.visenze.visearch.android.model;
 
+import com.google.gson.annotations.SerializedName;
+
 // for Instance Recognition API response in /uploadsearch
 public class Tag {
+
+    @SerializedName("tag")
     private String tag;
+
+    @SerializedName("score")
     private double score;
 
     public Tag(String tag, float score) {

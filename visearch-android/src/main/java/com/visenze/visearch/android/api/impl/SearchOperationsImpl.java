@@ -9,6 +9,7 @@ import com.visenze.visearch.android.ViSearch;
 import com.visenze.visearch.android.ViSearchException;
 import com.visenze.visearch.android.api.SearchOperations;
 import com.visenze.visearch.android.http.HttpInstance;
+import com.visenze.visearch.android.network.SearchService;
 
 /**
  * Implementation of search operations interface.
@@ -42,6 +43,7 @@ public class SearchOperationsImpl implements SearchOperations {
         httpInstance = HttpInstance.getInstance(context.getApplicationContext());
         httpInstance.setKeys(accessKey, secretKey);
         httpInstance.setUserAgent(userAgent);
+
     }
 
     /**
