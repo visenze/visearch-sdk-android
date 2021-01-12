@@ -44,7 +44,7 @@ public class SearchOperationsImpRetrofit implements SearchOperations {
 
     @Override
     public void cancelSearch(ViSearch.ResultListener resultListener) {
-
+        resultListener.onSearchCanceled();
     }
 
 
