@@ -18,10 +18,30 @@ import retrofit2.http.QueryMap;
 
 public interface APIService {
 
+    @GET("search")
+    Call<ResponseData> search(@HeaderMap Map<String, String> headers, @QueryMap Map<String, String> query);
+
+    @GET("recommendation")
+    Call<ResponseData> recommendation(@HeaderMap Map<String, String> headers, @QueryMap Map<String, String> query);
+
+    @GET("colorsearch")
+    Call<ResponseData> colorSearch(@HeaderMap Map<String, String> headers, @QueryMap Map<String, String> query);
+
     @GET("uploadsearch")
-    Call<ResponseData> uploadSearch(@QueryMap Map<String, RequestBody> query);
+    Call<ResponseData> uploadSearch(@HeaderMap Map<String, String> headers, @QueryMap Map<String, String> query);
 
     @Multipart
     @POST("uploadsearch")
     Call<ResponseData> uploadSearch(@HeaderMap Map<String, String> headers, @Part MultipartBody.Part image, @PartMap Map<String, RequestBody> query);
+
+    // unlike uploadSearch accept GET method if im_url
+    // discoversearch accept post type if im_url is set...
+    @POST("discoversearch")
+    Call<ResponseData> discoverSearch(@HeaderMap Map<String, String> headers, @QueryMap Map<String, String> query);
+
+    @Multipart
+    @POST("discoversearch")
+    Call<ResponseData> discoverSearch(@HeaderMap Map<String, String> headers, @Part MultipartBody.Part image, @PartMap Map<String, RequestBody> query);
+
+
 }

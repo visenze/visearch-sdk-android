@@ -19,27 +19,27 @@ public class SearchOperationsImpRetrofit implements SearchOperations {
 
     @Override
     public void search(IdSearchParams idSearchParams, ViSearch.ResultListener resultListener) {
-
+        searchService.search(SearchService.ID_SEARCH, idSearchParams.toMap(), resultListener);
     }
 
     @Override
     public void recommendation(IdSearchParams idSearchParams, ViSearch.ResultListener resultListener) {
-
+        searchService.search(SearchService.RECOMMENDATION, idSearchParams.toMap(), resultListener);
     }
 
     @Override
     public void colorSearch(ColorSearchParams colorSearchParams, ViSearch.ResultListener resultListener) {
-
+        searchService.search(SearchService.COLOR_SEARCH, colorSearchParams.toMap(), resultListener);
     }
 
     @Override
     public void uploadSearch(UploadSearchParams uploadSearchParams, ViSearch.ResultListener resultListener) {
-        searchService.uploadSearch(uploadSearchParams, resultListener);
+        searchService.uploadSearch(SearchService.UPLOAD_SEARCH, uploadSearchParams, resultListener);
     }
 
     @Override
     public void discoverSearch(UploadSearchParams uploadSearchParams, ViSearch.ResultListener resultListener) {
-
+        searchService.uploadSearch(SearchService.DISCOVER_SEARCH, uploadSearchParams, resultListener);
     }
 
     @Override
