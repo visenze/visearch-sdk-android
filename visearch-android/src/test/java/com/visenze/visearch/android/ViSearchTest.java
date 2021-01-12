@@ -2,19 +2,15 @@ package com.visenze.visearch.android;
 
 import android.os.Build;
 
-import com.google.common.base.Joiner;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.visenze.visearch.android.data.ResponseData;
-import com.visenze.visearch.android.http.ResponseListener;
 import com.visenze.visearch.android.model.ImageResult;
 import com.visenze.visearch.android.model.ObjectResult;
 import com.visenze.visearch.android.model.Tag;
 import com.visenze.visearch.android.model.TagGroup;
 import com.visenze.visearch.android.network.SearchService;
-import com.visenze.visearch.android.util.ResponseParser;
 
-import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -693,7 +689,6 @@ public class ViSearchTest {
                 "}";
 
         ResponseData response = gson.fromJson(s, ResponseData.class);
-//        ResultList resultList = ResponseParser.parseResult(s);
         ResultList resultList = response.getResultList();
         assertNull(resultList.getImageList());
         List<ObjectResult> objects = resultList.getObjects();

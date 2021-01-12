@@ -68,6 +68,66 @@ public class ResponseData {
     @SerializedName("qinfo")
     private Map<String, String> qinfo;
 
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setImId(String imId) {
+        this.imId = imId;
+    }
+
+    public void setMethod(String method) {
+        this.method = method;
+    }
+
+    public void setError(String[] error) {
+        this.error = error;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
+    }
+
+    public void setLimit(int limit) {
+        this.limit = limit;
+    }
+
+    public void setTotal(int total) {
+        this.total = total;
+    }
+
+    public void setTransId(String transId) {
+        this.transId = transId;
+    }
+
+    public void setReqId(String reqId) {
+        this.reqId = reqId;
+    }
+
+    public void setResults(List<ResultData> results) {
+        this.results = results;
+    }
+
+    public void setProductTypes(List<ProductTypeData> productTypes) {
+        this.productTypes = productTypes;
+    }
+
+    public void setProductTypesList(List<ProductTypesListData> productTypesList) {
+        this.productTypesList = productTypesList;
+    }
+
+    public void setQueryTags(List<TagGroup> queryTags) {
+        this.queryTags = queryTags;
+    }
+
+    public void setObjects(List<ObjectData> objects) {
+        this.objects = objects;
+    }
+
+    public void setQinfo(Map<String, String> qinfo) {
+        this.qinfo = qinfo;
+    }
+
     public String getStatus() {
         return status;
     }

@@ -23,6 +23,24 @@ public class ProductTypeData {
     private Map attributes;
 
 
+    public void setBox(int[] box) {
+        this.box = box;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setScore(double score) {
+        this.score = score;
+    }
+
+    public void setAttributes(Map attributes) {
+        this.attributes = attributes;
+    }
+
+
+
     public int[] getBox() {
         return box;
     }

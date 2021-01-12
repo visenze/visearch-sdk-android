@@ -1,6 +1,5 @@
 package com.visenze.visearch.android.network;
 
-import com.android.volley.AuthFailureError;
 import com.visenze.visearch.android.ResultList;
 import com.visenze.visearch.android.UploadSearchParams;
 import com.visenze.visearch.android.ViSearch;
@@ -40,7 +39,6 @@ public class SearchService {
         this.secretKey = secretKey;
         this.userAgent = userAgent;
     }
-
 
     public void search(String endPoint, Map<String, List<String>> paramsMap, final ViSearch.ResultListener resultListener) {
         Map<String, String> headers = getHeaders();

@@ -14,6 +14,15 @@ public class ProductTypesListData {
 
     @SerializedName("attributes_list")
     private Map attributesList;
+    
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setAttributesList(Map attributesList) {
+        this.attributesList = attributesList;
+    }
 
     public String getType() {
         return type;

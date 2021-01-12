@@ -20,6 +20,24 @@ public class ResultData {
     @SerializedName("s3_url")
     private String s3Url;
 
+
+    public void setImName(String imName) {
+        this.imName = imName;
+    }
+
+    public void setScore(float score) {
+        this.score = score;
+    }
+
+    public void setValueMap(Map<String, String> valueMap) {
+        this.valueMap = valueMap;
+    }
+
+    public void setS3Url(String s3Url) {
+        this.s3Url = s3Url;
+    }
+
+
     public String getImName() {
         return imName;
     }
