@@ -1,8 +1,6 @@
 package com.visenze.visearch.android.network.retry;
 
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -21,10 +19,9 @@ public class RetryCallAdapterFactory extends CallAdapter.Factory {
     }
 
 
-    @Nullable
     @Override
-    public CallAdapter<?, ?> get(@NonNull Type returnType, @NonNull Annotation[] annotations,
-                                 @NonNull Retrofit retrofit) {
+    public CallAdapter<?, ?> get(Type returnType, Annotation[] annotations,
+                                 Retrofit retrofit) {
         /**
          * You can setup a default max retry count for all connections.
          */
@@ -38,7 +35,7 @@ public class RetryCallAdapterFactory extends CallAdapter.Factory {
                 itShouldRetry
         );
     }
-    private Retry getRetry(@NonNull Annotation[] annotations) {
+    private Retry getRetry(Annotation[] annotations) {
         for (Annotation annotation : annotations) {
             if (annotation instanceof Retry) {
                 return (Retry) annotation;
@@ -74,7 +71,7 @@ public class RetryCallAdapterFactory extends CallAdapter.Factory {
             return delegated.execute();
         }
         @Override
-        public void enqueue(@NonNull Callback<R> callback) {
+        public void enqueue(Callback<R> callback) {
             delegated.enqueue(new RetryCallback<>(delegated, callback, maxRetries));
         }
         @Override
@@ -109,7 +106,7 @@ public class RetryCallAdapterFactory extends CallAdapter.Factory {
         }
         private final AtomicInteger retryCount = new AtomicInteger(0);
         @Override
-        public void onResponse(@NonNull Call<T> call, @NonNull Response<T> response) {
+        public void onResponse(Call<T> call, Response<T> response) {
             if (!response.isSuccessful() && retryCount.incrementAndGet() <= maxRetries) {
                 retryCall();
             } else {
@@ -117,7 +114,7 @@ public class RetryCallAdapterFactory extends CallAdapter.Factory {
             }
         }
         @Override
-        public void onFailure(@NonNull Call<T> call, @NonNull Throwable t) {
+        public void onFailure(Call<T> call, Throwable t) {
             if (retryCount.incrementAndGet() <= maxRetries) {
                 retryCall();
             } else {
