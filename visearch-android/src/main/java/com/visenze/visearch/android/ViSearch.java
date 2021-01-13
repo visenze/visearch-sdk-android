@@ -8,7 +8,7 @@ import com.visenze.datatracking.Tracker;
 import com.visenze.datatracking.VisenzeAnalytics;
 import com.visenze.datatracking.data.DataCollection;
 import com.visenze.visearch.android.api.SearchOperations;
-import com.visenze.visearch.android.api.impl.SearchOperationsImpRetrofit;
+import com.visenze.visearch.android.api.impl.SearchOperationsImp;
 
 import java.net.URL;
 
@@ -44,7 +44,7 @@ public class ViSearch {
                      String userAgent,
                      String uid) {
 
-        this.searchOperations = new SearchOperationsImpRetrofit(
+        this.searchOperations = new SearchOperationsImp(
                 searchApiEndPoint, accessKey, secretKey, userAgent
         );
 

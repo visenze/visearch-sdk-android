@@ -4,7 +4,7 @@ import com.visenze.visearch.android.ResultList;
 import com.visenze.visearch.android.UploadSearchParams;
 import com.visenze.visearch.android.ViSearch;
 import com.visenze.visearch.android.ViSearchException;
-import com.visenze.visearch.android.data.ResponseData;
+import com.visenze.visearch.android.model.ResponseData;
 import com.visenze.visearch.android.util.AuthGenerator;
 
 import java.util.HashMap;
@@ -26,6 +26,7 @@ public class SearchService {
     public final static String UPLOAD_SEARCH = "uploadsearch";
     public final static String DISCOVER_SEARCH = "discoversearch";
 
+    private final static String ACCESS_KEY = "access_key";
     private String appKey;
     private String secretKey;
     private String userAgent;
@@ -54,23 +55,7 @@ public class SearchService {
             throw new ViSearchException("wrong API method");
         }
 
-        call.enqueue(new Callback<ResponseData>() {
-            @Override
-            public void onResponse(Call<ResponseData> call, Response<ResponseData> response) {
-
-                if(response.isSuccessful() && response.body() !=null) {
-                    ResponseData data = response.body();
-                    handleResponse(data, resultListener);
-                } else {
-                    resultListener.onSearchError("api failed");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseData> call, Throwable t) {
-                resultListener.onSearchError(t.getMessage());
-            }
-        });
+        handleCallback(call, resultListener);
     }
 
 
@@ -111,9 +96,13 @@ public class SearchService {
             } else {
                 throw new ViSearchException("wrong API method");
             }
-
         }
 
+        handleCallback(call, resultListener);
+    }
+
+
+    private void handleCallback(Call<ResponseData> call, final ViSearch.ResultListener resultListener) {
         call.enqueue(new Callback<ResponseData>() {
             @Override
             public void onResponse(Call<ResponseData> call, Response<ResponseData> response) {
@@ -156,7 +145,7 @@ public class SearchService {
         Map<String, RequestBody> ret = new HashMap<String, RequestBody>();
 
         if (secretKey == null)
-            ret.put("access_key", createRequestBody(appKey));
+            ret.put(ACCESS_KEY, createRequestBody(appKey));
         for (Map.Entry<String, List<String> > entry : params.entrySet()) {
             for (String s : entry.getValue()) {
                 ret.put(entry.getKey(), createRequestBody(s));
@@ -170,7 +159,7 @@ public class SearchService {
         Map<String, String> ret = new HashMap<String, String>();
 
         if (secretKey == null)
-            ret.put("access_key", appKey);
+            ret.put(ACCESS_KEY, appKey);
         for (Map.Entry<String, List<String> > entry : params.entrySet()) {
             for (String s : entry.getValue()) {
                 ret.put(entry.getKey(), s);

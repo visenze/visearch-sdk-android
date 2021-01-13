@@ -9,11 +9,11 @@ import com.visenze.visearch.android.ViSearch;
 import com.visenze.visearch.android.api.SearchOperations;
 import com.visenze.visearch.android.network.SearchService;
 
-public class SearchOperationsImpRetrofit implements SearchOperations {
+public class SearchOperationsImp implements SearchOperations {
 
     SearchService searchService;
 
-    public SearchOperationsImpRetrofit(String apiUrl, String accessKey, String secretKey, String userAgent) {
+    public SearchOperationsImp(String apiUrl, String accessKey, String secretKey, String userAgent) {
         searchService = new SearchService(apiUrl, accessKey, secretKey, userAgent);
     }
 

@@ -1,5 +1,8 @@
 package com.visenze.visearch.android.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,15 +10,25 @@ import java.util.Map;
  * Created by visenze on 14/9/15.
  */
 public class ImageResult {
+
+
+    @SerializedName("im_name")
     private String imageName;
 
+    @SerializedName("image_url")
+    @Expose(deserialize = false, serialize = false)
     private String imageUrl;
 
+    @SerializedName("score")
     private Float score;
 
+    @SerializedName("value_map")
     private Map<String, String> fieldList;
 
+    @SerializedName("s3_url")
     private String s3Url;
+
+
 
     public ImageResult() {
         this.fieldList = new HashMap<String, String>();
@@ -43,6 +56,11 @@ public class ImageResult {
      * @return image url
      */
     public String getImageUrl() {
+        if(imageUrl != null) return imageUrl;
+
+        if(fieldList !=null) {
+            imageUrl = fieldList.get("im_url");
+        }
         return imageUrl;
     }
 

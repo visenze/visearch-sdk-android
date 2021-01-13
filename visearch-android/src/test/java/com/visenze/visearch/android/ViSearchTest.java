@@ -4,7 +4,7 @@ import android.os.Build;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.visenze.visearch.android.data.ResponseData;
+import com.visenze.visearch.android.model.ResponseData;
 import com.visenze.visearch.android.model.ImageResult;
 import com.visenze.visearch.android.model.ObjectResult;
 import com.visenze.visearch.android.model.Tag;
@@ -30,7 +30,7 @@ import static org.mockito.Mockito.times;
 /**
  * Created by visenze on 30/11/15.
  */
-@Config(constants = BuildConfig.class, sdk = Build.VERSION_CODES.LOLLIPOP)
+@Config(constants = BuildConfig.class, sdk = Build.VERSION_CODES.LOLLIPOP, manifest = Config.NONE)
 @RunWith(RobolectricTestRunner.class)
 public class ViSearchTest {
 
