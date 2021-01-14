@@ -1,5 +1,8 @@
 package com.visenze.visearch.android.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Map;
 
 /**
@@ -8,10 +11,23 @@ import java.util.Map;
  * @author yulu
  */
 public class ProductType {
+
+    @SerializedName("box")
+    private int[] boxArray;
+
+    @SerializedName("type")
     private String type;
-    private Double score;
-    private Box box;
+
+    @SerializedName("score")
+    private double score;
+
+    @SerializedName("attributes")
     private Map attributeList;
+
+    @SerializedName("boxObj")
+    @Expose(deserialize = false, serialize = false)
+    private Box box;
+
 
     public ProductType() {
 
@@ -40,7 +56,10 @@ public class ProductType {
         this.score = score;
     }
 
+
     public Box getBox() {
+        if(box != null) return box;
+        box = parseBox(boxArray);
         return box;
     }
 
@@ -55,4 +74,16 @@ public class ProductType {
     public void setAttributeList(Map attributeList) {
         this.attributeList = attributeList;
     }
+
+
+    private Box parseBox(int[] boxData) {
+
+        if(boxData != null && boxData.length > 3) {
+            Box box = new Box(boxData[0], boxData[1], boxData[2], boxData[3]);
+            return box;
+        }
+
+        return null;
+    }
+
 }
