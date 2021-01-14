@@ -33,6 +33,12 @@ public class SearchService {
 
 
     private APIService apiService;
+
+    public SearchService(String endPoint, String appKey, String userAgent) {
+        this(endPoint, appKey, null, userAgent);
+    }
+
+
     public SearchService(String endPoint, String appKey, String secretKey, String userAgent) {
         apiService = Http.getRetrofitInstance(endPoint).create(APIService.class);
 
@@ -40,6 +46,7 @@ public class SearchService {
         this.secretKey = secretKey;
         this.userAgent = userAgent;
     }
+
 
     public void search(String endPoint, Map<String, List<String>> paramsMap, final ViSearch.ResultListener resultListener) {
         Map<String, String> headers = getHeaders();
@@ -74,31 +81,38 @@ public class SearchService {
         }
 
         Map<String, String> headers = getHeaders();
-        Call<ResponseData> call;
         if(imageBytes != null) {
             RequestBody imageBody = RequestBody.create(MediaType.parse("image/*"), imageBytes);
             MultipartBody.Part image = MultipartBody.Part.createFormData("image", "image", imageBody);
             Map<String, RequestBody> params = buildPostParams(uploadSearchParams.toMap());
-            if(UPLOAD_SEARCH.equals(endPoint)) {
-                call = apiService.uploadSearch(headers, image, params);
-            } else if (DISCOVER_SEARCH.equals(endPoint)) {
-                call = apiService.discoverSearch(headers, image, params);
-            } else {
-                throw new ViSearchException("wrong API method");
-            }
+            Call<ResponseData> call = getCall(endPoint, headers, params, image);
+            handleCallback(call, resultListener);
 
         } else {
             Map<String, String> params = buildGetParams(uploadSearchParams.toMap());
-            if(UPLOAD_SEARCH.equals(endPoint)) {
+            Call<ResponseData> call = getCall(endPoint, headers, params, null);
+            handleCallback(call, resultListener);
+        }
+    }
+
+    private Call<ResponseData> getCall(String endPoint, Map headers, Map params, MultipartBody.Part image) {
+        Call<ResponseData> call;
+        if(UPLOAD_SEARCH.equals(endPoint)) {
+            if(image == null) {
                 call = apiService.uploadSearch(headers, params);
-            } else if(DISCOVER_SEARCH.equals(endPoint)) {
+            } else {
+                call = apiService.uploadSearch(headers, image, params);
+            }
+        } else if(DISCOVER_SEARCH.equals(endPoint)) {
+            if(image == null) {
                 call = apiService.discoverSearch(headers, params);
             } else {
-                throw new ViSearchException("wrong API method");
+                call = apiService.discoverSearch(headers, image, params);
             }
+        } else {
+            throw new ViSearchException("wrong API method");
         }
-
-        handleCallback(call, resultListener);
+        return call;
     }
 
 
