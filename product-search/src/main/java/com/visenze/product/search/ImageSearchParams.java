@@ -18,7 +18,7 @@ public class ImageSearchParams extends BaseSearchParams {
     private Image image;
 
     @SerializedName("box")
-    private List<Integer> box;
+    private int[] box;
 
     @SerializedName("detection")
     private String detection;
@@ -53,11 +53,11 @@ public class ImageSearchParams extends BaseSearchParams {
         this.image = image;
     }
 
-    public List<Integer> getBox() {
+    public int[] getBox() {
         return box;
     }
 
-    public void setBox(List<Integer> box) {
+    public void setBox(int[] box) {
         this.box = box;
     }
 

@@ -5,6 +5,7 @@ import android.content.Context;
 import com.visenze.datatracking.SessionManager;
 import com.visenze.datatracking.VisenzeAnalytics;
 import com.visenze.datatracking.data.DataCollection;
+import com.visenze.product.search.model.ResponseData;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -122,6 +123,11 @@ public class ProductSearch {
 
             return viSearch;
         }
+    }
+
+    public static interface ResultListener {
+        public void onSearchResult(final ResponseData response, String errorMsg);
+
     }
 
 }
