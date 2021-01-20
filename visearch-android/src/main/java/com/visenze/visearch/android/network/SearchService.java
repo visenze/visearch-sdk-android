@@ -7,6 +7,7 @@ import com.visenze.visearch.android.ViSearchException;
 import com.visenze.visearch.android.model.ResponseData;
 import com.visenze.visearch.android.util.AuthGenerator;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +51,7 @@ public class SearchService {
 
     public void search(String endPoint, Map<String, List<String>> paramsMap, final ViSearch.ResultListener resultListener) {
         Map<String, String> headers = getHeaders();
-        Map<String, String> params = buildGetParams(paramsMap);
+        RetrofitQueryMap params = buildParams(paramsMap);
         Call<ResponseData> call;
         if(ID_SEARCH.equals(endPoint)) {
             call = apiService.search(headers, params);
@@ -81,21 +82,19 @@ public class SearchService {
         }
 
         Map<String, String> headers = getHeaders();
+        Call<ResponseData> call;
+        RetrofitQueryMap params = buildParams(uploadSearchParams.toMap());
         if(imageBytes != null) {
             RequestBody imageBody = RequestBody.create(MediaType.parse("image/*"), imageBytes);
             MultipartBody.Part image = MultipartBody.Part.createFormData("image", "image", imageBody);
-            Map<String, RequestBody> params = buildPostParams(uploadSearchParams.toMap());
-            Call<ResponseData> call = getCall(endPoint, headers, params, image);
-            handleCallback(call, resultListener);
-
+            call = getCall(endPoint, headers, params, image);
         } else {
-            Map<String, String> params = buildGetParams(uploadSearchParams.toMap());
-            Call<ResponseData> call = getCall(endPoint, headers, params, null);
-            handleCallback(call, resultListener);
+            call = getCall(endPoint, headers, params, null);
         }
+        handleCallback(call, resultListener);
     }
 
-    private Call<ResponseData> getCall(String endPoint, Map headers, Map params, MultipartBody.Part image) {
+    private Call<ResponseData> getCall(String endPoint, Map<String, String> headers, RetrofitQueryMap params, MultipartBody.Part image) {
         Call<ResponseData> call;
         if(UPLOAD_SEARCH.equals(endPoint)) {
             if(image == null) {
@@ -114,7 +113,6 @@ public class SearchService {
         }
         return call;
     }
-
 
     private void handleCallback(Call<ResponseData> call, final ViSearch.ResultListener resultListener) {
         call.enqueue(new Callback<ResponseData>() {
@@ -151,36 +149,24 @@ public class SearchService {
         return AuthGenerator.generateHeaderParams(appKey, secretKey, userAgent);
     }
 
-    private RequestBody createRequestBody(String value) {
-        return RequestBody.create(MediaType.parse("text/plain"), value);
-    }
 
-    private Map<String, RequestBody> buildPostParams(Map<String, List<String>> params) {
-        Map<String, RequestBody> ret = new HashMap<String, RequestBody>();
+    public RetrofitQueryMap buildParams(Map<String, List<String>> params) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        RetrofitQueryMap ret = new RetrofitQueryMap(map);
 
-        if (secretKey == null)
-            ret.put(ACCESS_KEY, createRequestBody(appKey));
-        for (Map.Entry<String, List<String> > entry : params.entrySet()) {
-            for (String s : entry.getValue()) {
-                ret.put(entry.getKey(), createRequestBody(s));
-            }
-        }
-        return ret;
-    }
-
-    private Map<String, String> buildGetParams(Map<String, List<String>> params) {
-
-        Map<String, String> ret = new HashMap<String, String>();
-
-        if (secretKey == null)
+        if (secretKey == null) {
             ret.put(ACCESS_KEY, appKey);
-        for (Map.Entry<String, List<String> > entry : params.entrySet()) {
-            for (String s : entry.getValue()) {
-                ret.put(entry.getKey(), s);
+        }
+        for(Map.Entry<String, List<String>> entry : params.entrySet()) {
+            String key = entry.getKey();
+            List<String> val = entry.getValue();
+            if(val.size() == 1) {
+                ret.put(key, val.get(0));
+            } else if(val.size() > 1){
+                ret.put(key, val);
             }
         }
         return ret;
-
     }
 
 
