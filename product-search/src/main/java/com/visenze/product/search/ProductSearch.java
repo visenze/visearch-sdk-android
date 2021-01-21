@@ -34,6 +34,11 @@ public class ProductSearch {
         searchService.similarSearch(imageSearchParams, listener);
     }
 
+    public void visualSimilarSearch(VisualSimilarParams visualSimilarParams, ResultListener listener) {
+        addAnalyticsParams(visualSimilarParams);
+        searchService.visualSimilarSearch(visualSimilarParams, listener);
+    }
+
 
     private void addAnalyticsParams(BaseSearchParams searchParams) {
         if (searchParams == null) return;

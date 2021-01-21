@@ -3,6 +3,7 @@ package com.visenze.product.search.network;
 import com.visenze.product.search.BaseSearchParams;
 import com.visenze.product.search.ImageSearchParams;
 import com.visenze.product.search.ProductSearch;
+import com.visenze.product.search.VisualSimilarParams;
 import com.visenze.product.search.model.Error;
 import com.visenze.product.search.model.ResponseData;
 
@@ -14,8 +15,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SearchService {
-
-    public final static String SIMILAR_PRODUCTS = "similar-products";
+    
 
     private final static String APP_KEY = "app_key";
     private final static String PLACEMENT_ID = "placement_id";
@@ -31,6 +31,13 @@ public class SearchService {
         this.appKey = appKey;
         this.placementId = placementId;
         this.userAgent = userAgent;
+    }
+
+    public void visualSimilarSearch(VisualSimilarParams visualSimilarParams, final ProductSearch.ResultListener listener) {
+        String productId = visualSimilarParams.getProductId();
+        RetrofitQueryMap params = buildQueryMap(visualSimilarParams);
+        Call<ResponseData> call = apiService.similarProducts(productId, params);
+        handleCallback(call, listener);
     }
 
 
@@ -54,12 +61,14 @@ public class SearchService {
         if(imageBytes != null) {
             RequestBody imageBody = RequestBody.create(MediaType.parse("image/*"), imageBytes);
             MultipartBody.Part image = MultipartBody.Part.createFormData("image", "image", imageBody);
-            call = apiService.similarProducts(image, params);
+             call = apiService.similarProducts(image, params);
         } else {
-            call = apiService.similarProducts(params);
+             call = apiService.similarProducts(params);
         }
         handleCallback(call, listener);
     }
+
+
 
     private RetrofitQueryMap buildQueryMap(BaseSearchParams params) {
         RetrofitQueryMap map = params.getQueryMap();
