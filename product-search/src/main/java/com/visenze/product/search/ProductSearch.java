@@ -6,24 +6,33 @@ import com.visenze.datatracking.SessionManager;
 import com.visenze.datatracking.VisenzeAnalytics;
 import com.visenze.datatracking.data.DataCollection;
 import com.visenze.product.search.model.ResponseData;
+import com.visenze.product.search.network.SearchService;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
 public class ProductSearch {
     private static final String USER_AGENT = "productsearch-android-sdk";
-    private static final String SEARCH_URL = "https://visearch.visenze.com";
+    private static final String SEARCH_URL = "https://search-dev.visenze.com/v1";
+//    private static final String SEARCH_URL = "https://search.visenze.com/v1";
+
 
     private String uid;
     private VisenzeAnalytics visenzeAnalytics;
+    private SearchService searchService;
 
-    private ProductSearch(Context context, String appKey, String placement, String endPoint, String userAgent, String uid) {
+    private ProductSearch(Context context, String appKey, String placementId, String endPoint, String userAgent, String uid) {
 
         this.uid = uid;
         this.visenzeAnalytics = VisenzeAnalytics.getInstance(context.getApplicationContext(), uid);
+        this.searchService = new SearchService(endPoint, appKey, placementId, userAgent);
     }
 
 
+    public void similarSearch(ImageSearchParams imageSearchParams, ResultListener listener) {
+        addAnalyticsParams(imageSearchParams);
+        searchService.similarSearch(imageSearchParams, listener);
+    }
 
 
     private void addAnalyticsParams(BaseSearchParams searchParams) {
@@ -32,50 +41,43 @@ public class ProductSearch {
         SessionManager sessionManager = visenzeAnalytics.getSessionManager();
         DataCollection dataCollection = visenzeAnalytics.getDataCollection();
 
-//        if (searchParams.getUid() == null) {
-//            searchParams.setUid(sessionManager.getUid());
-//        }
-//
-//        if (searchParams.getSid() == null) {
-//            searchParams.setSid(sessionManager.getSessionId());
-//        }
-//
-//        if (searchParams.getAppId() == null) {
-//            searchParams.setAppId(dataCollection.getAppId());
-//        }
-//
-//        if (searchParams.getAppName() == null) {
-//            searchParams.setAppName(dataCollection.getAppName());
-//        }
-//
-//        if (searchParams.getAppVersion() == null) {
-//            searchParams.setAppVersion(dataCollection.getAppVersion());
-//        }
-//
-//        if (searchParams.getDeviceBrand() == null) {
-//            searchParams.setDeviceBrand(dataCollection.getDeviceBrand());
-//        }
-//
-//        if (searchParams.getDeviceModel() == null) {
-//            searchParams.setDeviceModel(dataCollection.getDeviceModel());
-//        }
-//
-//        if (searchParams.getLanguage() == null) {
-//            searchParams.setLanguage(dataCollection.getLanguage());
-//        }
-//
-//        if (searchParams.getOs() == null) {
-//            searchParams.setOs(dataCollection.getOs());
-//        }
-//
-//        if (searchParams.getOsv() == null) {
-//            searchParams.setOsv(dataCollection.getOsv());
-//        }
-//
-//        if (searchParams.getPlatform() == null) {
-//            searchParams.setPlatform(dataCollection.getPlatform());
-//        }
 
+
+        if (searchParams.getVaUid() == null) {
+            searchParams.setVaUid(sessionManager.getUid());
+        }
+
+        if (searchParams.getVaSid() == null) {
+            searchParams.setVaSid(sessionManager.getSessionId());
+        }
+
+        if (searchParams.getVaAppBundleId() == null) {
+            searchParams.setVaAppBundleId(dataCollection.getAppId());
+        }
+
+        if (searchParams.getVaAppName() == null) {
+            searchParams.setVaAppName(dataCollection.getAppName());
+        }
+
+        if (searchParams.getVaAppVersion() == null) {
+            searchParams.setVaAppVersion(dataCollection.getAppVersion());
+        }
+
+        if (searchParams.getVaDeviceBrand() == null) {
+            searchParams.setVaDeviceBrand(dataCollection.getDeviceBrand());
+        }
+
+        if (searchParams.getVaDeviceModel() == null) {
+            searchParams.setVaDeviceModel(dataCollection.getDeviceModel());
+        }
+
+        if (searchParams.getVaOs() == null) {
+            searchParams.setVaOs(dataCollection.getOs());
+        }
+
+        if (searchParams.getVaOsv() == null) {
+            searchParams.setVaOsv(dataCollection.getOsv());
+        }
     }
 
 
@@ -90,6 +92,7 @@ public class ProductSearch {
         public Builder(String appKey, String placement) {
             mAppKey = appKey;
             mPlacement = placement;
+            searchApiEndPoint = SEARCH_URL;
             userAgent = USER_AGENT + "/" + BuildConfig.VERSION_NAME;
         }
 

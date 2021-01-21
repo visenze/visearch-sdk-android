@@ -1,9 +1,14 @@
 package com.visenze.product.search.network;
 
+import com.visenze.product.search.BaseSearchParams;
+import com.visenze.product.search.ImageSearchParams;
 import com.visenze.product.search.ProductSearch;
 import com.visenze.product.search.model.Error;
 import com.visenze.product.search.model.ResponseData;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -13,7 +18,7 @@ public class SearchService {
     public final static String SIMILAR_PRODUCTS = "similar-products";
 
     private final static String APP_KEY = "app_key";
-    private final static String placement_id = "placement_id";
+    private final static String PLACEMENT_ID = "placement_id";
     private String appKey;
     private String placementId;
     private String userAgent;
@@ -28,6 +33,40 @@ public class SearchService {
         this.userAgent = userAgent;
     }
 
+
+    public void similarSearch(ImageSearchParams imageSearchParams, final ProductSearch.ResultListener listener) {
+        byte[] imageBytes = null;
+
+        if (imageSearchParams.getImage() != null) {
+            imageBytes = imageSearchParams.getImage().getByteArray();
+        }
+
+        String imageUrl = imageSearchParams.getImUrl();
+        String imId = imageSearchParams.getImId();
+
+        if (imageBytes == null && (imageUrl == null || imageUrl.isEmpty()) && (imId == null || imId.isEmpty())) {
+            throw new IllegalArgumentException("Missing parameter, image empty");
+        }
+
+        RetrofitQueryMap params = buildQueryMap(imageSearchParams);
+
+        Call<ResponseData> call;
+        if(imageBytes != null) {
+            RequestBody imageBody = RequestBody.create(MediaType.parse("image/*"), imageBytes);
+            MultipartBody.Part image = MultipartBody.Part.createFormData("image", "image", imageBody);
+            call = apiService.similarProducts(image, params);
+        } else {
+            call = apiService.similarProducts(params);
+        }
+        handleCallback(call, listener);
+    }
+
+    private RetrofitQueryMap buildQueryMap(BaseSearchParams params) {
+        RetrofitQueryMap map = params.getQueryMap();
+        map.put(APP_KEY, appKey);
+        map.put(PLACEMENT_ID, placementId);
+        return map;
+    }
 
     private void handleCallback(Call<ResponseData> call, final ProductSearch.ResultListener resultListener) {
         call.enqueue(new Callback<ResponseData>() {

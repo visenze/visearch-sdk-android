@@ -4,7 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.visenze.product.search.model.Box;
 import com.visenze.product.search.network.RetrofitQueryMap;
 
 import java.util.ArrayList;
@@ -60,9 +62,6 @@ public class BaseSearchParams {
 
     @SerializedName("return_image_s3_url")
     private Boolean returnImageS3Url;
-
-    @SerializedName("placement_id")
-    private String placementId;
 
     @SerializedName("debug")
     private Boolean debug;
@@ -235,13 +234,6 @@ public class BaseSearchParams {
         this.returnImageS3Url = returnImageS3Url;
     }
 
-    public String getPlacementId() {
-        return placementId;
-    }
-
-    public void setPlacementId(String placementId) {
-        this.placementId = placementId;
-    }
 
     public Boolean getDebug() {
         return debug;
@@ -393,6 +385,12 @@ public class BaseSearchParams {
     private List<String> facets;
 
 
+    @SerializedName("custom_map")
+    @Expose(deserialize = false, serialize = false)
+    private Map<String, String> customMap;
+
+
+
     public List<String> getFilters() {
         return filters;
     }
@@ -425,6 +423,13 @@ public class BaseSearchParams {
         this.facets = facets;
     }
 
+    public Map<String, String> getCustomMap() {
+        return customMap;
+    }
+
+    public void setCustomMap(Map<String, String> customMap) {
+        this.customMap = customMap;
+    }
 
     public RetrofitQueryMap getQueryMap() {
 
@@ -448,6 +453,15 @@ public class BaseSearchParams {
                 ret.put(key, list);
             } else if (val.isJsonPrimitive()) {
                 ret.put(key, val.getAsString());
+            }
+        }
+
+        if(customMap != null) {
+            Set<Map.Entry<String, String>> set = customMap.entrySet();
+            for(Map.Entry<String, String> entry : set) {
+                String key = entry.getKey();
+                String val = entry.getValue();
+                ret.put(key, val);
             }
         }
 
