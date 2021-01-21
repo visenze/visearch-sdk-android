@@ -15,7 +15,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SearchService {
-    
+
 
     private final static String APP_KEY = "app_key";
     private final static String PLACEMENT_ID = "placement_id";

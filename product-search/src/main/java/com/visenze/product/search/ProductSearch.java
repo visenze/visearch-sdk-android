@@ -13,8 +13,8 @@ import java.net.URL;
 
 public class ProductSearch {
     private static final String USER_AGENT = "productsearch-android-sdk";
-    private static final String SEARCH_URL = "https://search-dev.visenze.com/v1/";
-//    private static final String SEARCH_URL = "https://search.visenze.com/v1/";
+//    private static final String SEARCH_URL = "https://search-dev.visenze.com/v1/";
+    private static final String SEARCH_URL = "https://search.visenze.com/v1/";
 
 
     private String uid;
