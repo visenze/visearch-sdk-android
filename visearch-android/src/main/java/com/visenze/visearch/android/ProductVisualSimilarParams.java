@@ -1,9 +1,8 @@
-package com.visenze.product.search;
+package com.visenze.visearch.android;
 
 import com.google.gson.annotations.Expose;
 
-public class VisualSimilarParams extends BaseSearchParams{
-
+public class ProductVisualSimilarParams extends ProductBaseSearchParams {
 
     @Expose(deserialize = false, serialize = false)
     private String productId;
@@ -12,9 +11,8 @@ public class VisualSimilarParams extends BaseSearchParams{
         return productId;
     }
 
-    public VisualSimilarParams(String productId) {
+    public ProductVisualSimilarParams(String productId) {
         this.productId = productId;
     }
-
 
 }

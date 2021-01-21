@@ -1,10 +1,11 @@
-package com.visenze.product.search.model;
+package com.visenze.visearch.android.model;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
 public class Facet {
+
     @SerializedName("key")
     private String key;
 

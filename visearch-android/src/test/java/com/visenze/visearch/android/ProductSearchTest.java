@@ -1,31 +1,31 @@
-package com.visenze.product.search;
+package com.visenze.visearch.android;
+
+
+import android.os.Build;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.visenze.product.search.model.ImageResult;
-import com.visenze.product.search.model.ProductType;
-import com.visenze.product.search.model.ResponseData;
-import com.visenze.product.search.network.RetrofitQueryMap;
-import com.visenze.product.search.network.SearchService;
+import com.visenze.visearch.android.model.ProductResponse;
+import com.visenze.visearch.android.model.ProductResult;
+import com.visenze.visearch.android.model.ProductType;
+import com.visenze.visearch.android.network.ProductSearchService;
+import com.visenze.visearch.android.network.RetrofitQueryMap;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
-/**
- * Example local unit test, which will execute on the development machine (host).
- *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
- */
+@Config(constants = BuildConfig.class, sdk = Build.VERSION_CODES.LOLLIPOP, manifest = Config.NONE)
+@RunWith(RobolectricTestRunner.class)
 public class ProductSearchTest {
-
-    SearchService searchService = new SearchService("https://visearch.visenze.com", "123", "456", "visearch-test");
+    ProductSearchService searchService = new ProductSearchService("https://visearch.visenze.com", "123", "456", "visearch-test");
     Gson gson = new GsonBuilder()
             .setLenient()
             .create();
@@ -33,7 +33,7 @@ public class ProductSearchTest {
 
     @Test
     public void testBaseSearchParams_parsing() {
-        ImageSearchParams params = new ImageSearchParams();
+        ProductImageSearchParams params = new ProductImageSearchParams();
         params.setFacetLimit(10);
         params.setDebug(true);
         params.setImId("1234555");
@@ -53,6 +53,7 @@ public class ProductSearchTest {
         assertEquals("1234555", map.get("im_id"));
     }
 
+
     @Test
     public void testErrorResponse() {
         String errorResp = "{\n" +
@@ -65,15 +66,16 @@ public class ProductSearchTest {
                 "    }\n" +
                 "}";
 
-        ResponseData response = gson.fromJson(errorResp, ResponseData.class);
+        ProductResponse response = gson.fromJson(errorResp, ProductResponse.class);
         searchService.handleResponse(response, new ProductSearch.ResultListener() {
             @Override
-            public void onSearchResult(ResponseData response, String errorMsg) {
+            public void onSearchResult(ProductResponse response, String errorMsg) {
                 assertNull(response);
                 assertEquals("Please provide ''image'', ''im_url'' or ''im_id'' parameter.", errorMsg);
             }
         });
     }
+
 
     @Test
     public void testSimilarProductResponse() {
@@ -213,10 +215,10 @@ public class ProductSearchTest {
                 "    \"total\": 1000\n" +
                 "}";
 
-        ResponseData response = gson.fromJson(successResp, ResponseData.class);
+        ProductResponse response = gson.fromJson(successResp, ProductResponse.class);
         searchService.handleResponse(response, new ProductSearch.ResultListener() {
             @Override
-            public void onSearchResult(ResponseData response, String errorMsg) {
+            public void onSearchResult(ProductResponse response, String errorMsg) {
                 assertNull(errorMsg);
                 assertEquals("202101213651d741543e7d0145167566a37d3dbf340a4e2c514.jpg", response.getImId());
                 assertEquals("017722d8b9cfcda58402b1f1b4c1e6", response.getReqId());
@@ -233,8 +235,8 @@ public class ProductSearchTest {
                 assertEquals(1420, type.getBox().getX2().intValue());
                 assertEquals(1889, type.getBox().getY2().intValue());
 
-                assertEquals(10, response.getImageResults().size());
-                ImageResult result = response.getImageResults().get(0);
+                assertEquals(10, response.getProductResults().size());
+                ProductResult result = response.getProductResults().get(0);
 
                 assertEquals("YOOX-AF-US_159390.1.5EDD.78059CB19EE49440.12339652SL_2", result.getProductId());
                 assertEquals("https://cdn.yoox.biz/12/12339652SL_14_F.JPG", result.getImageUrl());
@@ -250,6 +252,7 @@ public class ProductSearchTest {
 
 
     }
+
 
 
 }

@@ -1,4 +1,4 @@
-package com.visenze.product.search;
+package com.visenze.visearch.android;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -6,17 +6,15 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.visenze.product.search.model.Box;
-import com.visenze.product.search.network.RetrofitQueryMap;
+import com.visenze.visearch.android.network.RetrofitQueryMap;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class BaseSearchParams {
+public class ProductBaseSearchParams {
 
     @SerializedName("page")
     private Integer page;

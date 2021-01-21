@@ -1,11 +1,11 @@
-package com.visenze.product.search.network;
+package com.visenze.visearch.android.network;
 
-import com.visenze.product.search.BaseSearchParams;
-import com.visenze.product.search.ImageSearchParams;
-import com.visenze.product.search.ProductSearch;
-import com.visenze.product.search.VisualSimilarParams;
-import com.visenze.product.search.model.Error;
-import com.visenze.product.search.model.ResponseData;
+import com.visenze.visearch.android.ProductBaseSearchParams;
+import com.visenze.visearch.android.ProductImageSearchParams;
+import com.visenze.visearch.android.ProductSearch;
+import com.visenze.visearch.android.ProductVisualSimilarParams;
+import com.visenze.visearch.android.model.Error;
+import com.visenze.visearch.android.model.ProductResponse;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -14,34 +14,32 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SearchService {
-
-
+public class ProductSearchService {
     private final static String APP_KEY = "app_key";
     private final static String PLACEMENT_ID = "placement_id";
     private String appKey;
     private String placementId;
     private String userAgent;
 
-    private APIService apiService;
+    private APIProductService apiService;
 
-    public SearchService(String endPoint, String appKey, String placementId, String userAgent) {
-        apiService = Http.getRetrofitInstance(endPoint).create(APIService.class);
+    public ProductSearchService(String endPoint, String appKey, String placementId, String userAgent) {
+        apiService = Http.getRetrofitInstance(endPoint).create(APIProductService.class);
 
         this.appKey = appKey;
         this.placementId = placementId;
         this.userAgent = userAgent;
     }
 
-    public void visualSimilarSearch(VisualSimilarParams visualSimilarParams, final ProductSearch.ResultListener listener) {
+    public void visualSimilarSearch(ProductVisualSimilarParams visualSimilarParams, final ProductSearch.ResultListener listener) {
         String productId = visualSimilarParams.getProductId();
         RetrofitQueryMap params = buildQueryMap(visualSimilarParams);
-        Call<ResponseData> call = apiService.similarProducts(productId, params);
+        Call<ProductResponse> call = apiService.similarProducts(productId, params);
         handleCallback(call, listener);
     }
 
 
-    public void similarSearch(ImageSearchParams imageSearchParams, final ProductSearch.ResultListener listener) {
+    public void similarSearch(ProductImageSearchParams imageSearchParams, final ProductSearch.ResultListener listener) {
         byte[] imageBytes = null;
 
         if (imageSearchParams.getImage() != null) {
@@ -57,33 +55,33 @@ public class SearchService {
 
         RetrofitQueryMap params = buildQueryMap(imageSearchParams);
 
-        Call<ResponseData> call;
+        Call<ProductResponse> call;
         if(imageBytes != null) {
             RequestBody imageBody = RequestBody.create(MediaType.parse("image/*"), imageBytes);
             MultipartBody.Part image = MultipartBody.Part.createFormData("image", "image", imageBody);
-             call = apiService.similarProducts(image, params);
+            call = apiService.similarProducts(image, params);
         } else {
-             call = apiService.similarProducts(params);
+            call = apiService.similarProducts(params);
         }
         handleCallback(call, listener);
     }
 
 
 
-    private RetrofitQueryMap buildQueryMap(BaseSearchParams params) {
+    private RetrofitQueryMap buildQueryMap(ProductBaseSearchParams params) {
         RetrofitQueryMap map = params.getQueryMap();
         map.put(APP_KEY, appKey);
         map.put(PLACEMENT_ID, placementId);
         return map;
     }
 
-    private void handleCallback(Call<ResponseData> call, final ProductSearch.ResultListener resultListener) {
-        call.enqueue(new Callback<ResponseData>() {
+    private void handleCallback(Call<ProductResponse> call, final ProductSearch.ResultListener resultListener) {
+        call.enqueue(new Callback<ProductResponse>() {
             @Override
-            public void onResponse(Call<ResponseData> call, Response<ResponseData> response) {
+            public void onResponse(Call<ProductResponse> call, Response<ProductResponse> response) {
 
                 if(response.isSuccessful() && response.body() !=null) {
-                    ResponseData data = response.body();
+                    ProductResponse data = response.body();
                     handleResponse(data, resultListener);
                 } else {
                     resultListener.onSearchResult(null, "api failed");
@@ -91,7 +89,7 @@ public class SearchService {
             }
 
             @Override
-            public void onFailure(Call<ResponseData> call, Throwable t) {
+            public void onFailure(Call<ProductResponse> call, Throwable t) {
                 resultListener.onSearchResult(null, t.getMessage());
             }
 
@@ -99,7 +97,7 @@ public class SearchService {
     }
 
 
-    public void handleResponse(ResponseData response, final ProductSearch.ResultListener resultListener) {
+    public void handleResponse(ProductResponse response, final ProductSearch.ResultListener resultListener) {
         Error error = response.getError();
         if(error != null) {
             resultListener.onSearchResult(null, error.getMessage());
@@ -107,7 +105,5 @@ public class SearchService {
             resultListener.onSearchResult(response, null);
         }
     }
-
-
 
 }

@@ -1,11 +1,11 @@
-package com.visenze.product.search.model;
+package com.visenze.visearch.android.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Map;
 
-public class ImageResult {
+public class ProductResult {
 
     @SerializedName("product_id")
     private String productId;
@@ -112,5 +112,4 @@ public class ImageResult {
 
         return null;
     }
-
 }

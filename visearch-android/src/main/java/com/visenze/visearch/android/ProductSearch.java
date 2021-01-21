@@ -1,46 +1,45 @@
-package com.visenze.product.search;
+package com.visenze.visearch.android;
 
 import android.content.Context;
 
 import com.visenze.datatracking.SessionManager;
 import com.visenze.datatracking.VisenzeAnalytics;
 import com.visenze.datatracking.data.DataCollection;
-import com.visenze.product.search.model.ResponseData;
-import com.visenze.product.search.network.SearchService;
+import com.visenze.visearch.android.model.ProductResponse;
+import com.visenze.visearch.android.network.ProductSearchService;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 
 public class ProductSearch {
     private static final String USER_AGENT = "productsearch-android-sdk";
-//    private static final String SEARCH_URL = "https://search-dev.visenze.com/v1/";
+    //    private static final String SEARCH_URL = "https://search-dev.visenze.com/v1/";
     private static final String SEARCH_URL = "https://search.visenze.com/v1/";
 
 
     private String uid;
     private VisenzeAnalytics visenzeAnalytics;
-    private SearchService searchService;
+    private ProductSearchService productSearchService;
 
     private ProductSearch(Context context, String appKey, String placementId, String endPoint, String userAgent, String uid) {
 
         this.uid = uid;
         this.visenzeAnalytics = VisenzeAnalytics.getInstance(context.getApplicationContext(), uid);
-        this.searchService = new SearchService(endPoint, appKey, placementId, userAgent);
+        this.productSearchService = new ProductSearchService(endPoint, appKey, placementId, userAgent);
     }
 
 
-    public void similarSearch(ImageSearchParams imageSearchParams, ResultListener listener) {
+    public void similarSearch(ProductImageSearchParams imageSearchParams, ResultListener listener) {
         addAnalyticsParams(imageSearchParams);
-        searchService.similarSearch(imageSearchParams, listener);
+        productSearchService.similarSearch(imageSearchParams, listener);
     }
 
-    public void visualSimilarSearch(VisualSimilarParams visualSimilarParams, ResultListener listener) {
+    public void visualSimilarSearch(ProductVisualSimilarParams visualSimilarParams, ResultListener listener) {
         addAnalyticsParams(visualSimilarParams);
-        searchService.visualSimilarSearch(visualSimilarParams, listener);
+        productSearchService.visualSimilarSearch(visualSimilarParams, listener);
     }
 
 
-    private void addAnalyticsParams(BaseSearchParams searchParams) {
+    private void addAnalyticsParams(ProductBaseSearchParams searchParams) {
         if (searchParams == null) return;
 
         SessionManager sessionManager = visenzeAnalytics.getSessionManager();
@@ -124,17 +123,17 @@ public class ProductSearch {
 
         public ProductSearch build(Context context) {
 
-            ProductSearch viSearch = new ProductSearch(context,
+            ProductSearch productSearch = new ProductSearch(context,
                     mAppKey, mPlacement,
                     searchApiEndPoint,
                     userAgent, uid);
 
-            return viSearch;
+            return productSearch;
         }
     }
 
     public static interface ResultListener {
-        public void onSearchResult(final ResponseData response, String errorMsg);
+        public void onSearchResult(final ProductResponse response, String errorMsg);
 
     }
 

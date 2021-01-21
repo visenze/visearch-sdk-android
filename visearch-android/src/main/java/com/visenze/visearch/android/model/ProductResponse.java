@@ -1,11 +1,11 @@
-package com.visenze.product.search.model;
+package com.visenze.visearch.android.model;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 import java.util.Map;
 
-public class ResponseData {
+public class ProductResponse {
 
     @SerializedName("status")
     private String status;
@@ -23,7 +23,7 @@ public class ResponseData {
     private List<ProductType> productTypes;
 
     @SerializedName("result")
-    private List<ImageResult> imageResults;
+    private List<ProductResult> productResults;
 
     @SerializedName("catalog_fields_mapping")
     private Map<String, String> catalogFieldsMapping;
@@ -83,12 +83,12 @@ public class ResponseData {
         this.productTypes = productTypes;
     }
 
-    public List<ImageResult> getImageResults() {
-        return imageResults;
+    public List<ProductResult> getProductResults() {
+        return productResults;
     }
 
-    public void setImageResults(List<ImageResult> imageResults) {
-        this.imageResults = imageResults;
+    public void setImageResults(List<ProductResult> productResults) {
+        this.productResults = productResults;
     }
 
     public Map<String, String> getCatalogFieldsMapping() {

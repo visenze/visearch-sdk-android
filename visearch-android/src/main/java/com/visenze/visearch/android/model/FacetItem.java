@@ -1,8 +1,9 @@
-package com.visenze.product.search.model;
+package com.visenze.visearch.android.model;
 
 import com.google.gson.annotations.SerializedName;
 
 public class FacetItem {
+
     @SerializedName("value")
     private String value;
 
@@ -25,7 +26,6 @@ public class FacetItem {
     public void setCount(String count) {
         this.count = count;
     }
-
 
 
 }

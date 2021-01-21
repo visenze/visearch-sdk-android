@@ -1,12 +1,11 @@
-package com.visenze.product.search;
+package com.visenze.visearch.android;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.visenze.product.search.model.Image;
+import com.visenze.visearch.android.model.Image;
 
-import java.util.List;
+public class ProductImageSearchParams extends ProductBaseSearchParams {
 
-public class ImageSearchParams extends BaseSearchParams {
     @SerializedName("im_url")
     private String imUrl;
 
@@ -85,16 +84,16 @@ public class ImageSearchParams extends BaseSearchParams {
         this.detectionSensitivity = detectionSensitivity;
     }
 
-    public ImageSearchParams() {
+    public ProductImageSearchParams() {
         super();
     }
 
-    public ImageSearchParams(String imUrl) {
+    public ProductImageSearchParams(String imUrl) {
         super();
         this.imUrl = imUrl;
     }
 
-    public ImageSearchParams(Image image) {
+    public ProductImageSearchParams(Image image) {
         super();
         this.image = image;
     }

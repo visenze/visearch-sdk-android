@@ -1,8 +1,9 @@
-package com.visenze.product.search.model;
+package com.visenze.visearch.android.model;
 
 import com.google.gson.annotations.SerializedName;
 
 public class Error {
+
     @SerializedName("code")
     private int status;
 
@@ -25,5 +26,6 @@ public class Error {
     public void setMessage(String message) {
         this.message = message;
     }
+
 
 }
