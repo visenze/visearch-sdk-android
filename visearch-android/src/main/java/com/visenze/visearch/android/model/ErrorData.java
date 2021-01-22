@@ -2,21 +2,21 @@ package com.visenze.visearch.android.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Error {
+public class ErrorData {
 
     @SerializedName("code")
-    private int status;
+    private int code;
 
     @SerializedName("message")
     private String message;
 
 
-    public int getStatus() {
-        return status;
+    public int getCode() {
+        return code;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
+    public void setCode(int code) {
+        this.code = code;
     }
 
     public String getMessage() {

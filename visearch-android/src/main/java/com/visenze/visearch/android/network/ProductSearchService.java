@@ -1,10 +1,10 @@
 package com.visenze.visearch.android.network;
 
-import com.visenze.visearch.android.ProductBaseSearchParams;
-import com.visenze.visearch.android.ProductImageSearchParams;
+import com.visenze.visearch.android.BaseProductSearchParams;
+import com.visenze.visearch.android.ProductSearchByImageParams;
 import com.visenze.visearch.android.ProductSearch;
-import com.visenze.visearch.android.ProductVisualSimilarParams;
-import com.visenze.visearch.android.model.Error;
+import com.visenze.visearch.android.ProductSearchByIdParams;
+import com.visenze.visearch.android.model.ErrorData;
 import com.visenze.visearch.android.model.ProductResponse;
 
 import okhttp3.MediaType;
@@ -18,12 +18,12 @@ public class ProductSearchService {
     private final static String APP_KEY = "app_key";
     private final static String PLACEMENT_ID = "placement_id";
     private String appKey;
-    private String placementId;
+    private int placementId;
     private String userAgent;
 
     private APIProductService apiService;
 
-    public ProductSearchService(String endPoint, String appKey, String placementId, String userAgent) {
+    public ProductSearchService(String endPoint, String appKey, int placementId, String userAgent) {
         apiService = Http.getRetrofitInstance(endPoint).create(APIProductService.class);
 
         this.appKey = appKey;
@@ -31,15 +31,15 @@ public class ProductSearchService {
         this.userAgent = userAgent;
     }
 
-    public void visualSimilarSearch(ProductVisualSimilarParams visualSimilarParams, final ProductSearch.ResultListener listener) {
+    public void searchById(ProductSearchByIdParams visualSimilarParams, final ProductSearch.ResultListener listener) {
         String productId = visualSimilarParams.getProductId();
         RetrofitQueryMap params = buildQueryMap(visualSimilarParams);
-        Call<ProductResponse> call = apiService.similarProducts(productId, params);
+        Call<ProductResponse> call = apiService.searchById(productId, params);
         handleCallback(call, listener);
     }
 
 
-    public void similarSearch(ProductImageSearchParams imageSearchParams, final ProductSearch.ResultListener listener) {
+    public void searchByImage(ProductSearchByImageParams imageSearchParams, final ProductSearch.ResultListener listener) {
         byte[] imageBytes = null;
 
         if (imageSearchParams.getImage() != null) {
@@ -50,7 +50,7 @@ public class ProductSearchService {
         String imId = imageSearchParams.getImId();
 
         if (imageBytes == null && (imageUrl == null || imageUrl.isEmpty()) && (imId == null || imId.isEmpty())) {
-            throw new IllegalArgumentException("Missing parameter, image empty");
+            throw new IllegalArgumentException("Please provide imUrl , imId or image parameter");
         }
 
         RetrofitQueryMap params = buildQueryMap(imageSearchParams);
@@ -59,16 +59,16 @@ public class ProductSearchService {
         if(imageBytes != null) {
             RequestBody imageBody = RequestBody.create(MediaType.parse("image/*"), imageBytes);
             MultipartBody.Part image = MultipartBody.Part.createFormData("image", "image", imageBody);
-            call = apiService.similarProducts(image, params);
+            call = apiService.searchByImage(image, params);
         } else {
-            call = apiService.similarProducts(params);
+            call = apiService.searchByImage(params);
         }
         handleCallback(call, listener);
     }
 
 
 
-    private RetrofitQueryMap buildQueryMap(ProductBaseSearchParams params) {
+    private RetrofitQueryMap buildQueryMap(BaseProductSearchParams params) {
         RetrofitQueryMap map = params.getQueryMap();
         map.put(APP_KEY, appKey);
         map.put(PLACEMENT_ID, placementId);
@@ -84,13 +84,20 @@ public class ProductSearchService {
                     ProductResponse data = response.body();
                     handleResponse(data, resultListener);
                 } else {
-                    resultListener.onSearchResult(null, "api failed");
+                    ErrorData error = new ErrorData();
+                    error.setMessage("api failed");
+                    error.setCode(-1);
+                    resultListener.onSearchResult(null, error);
                 }
             }
 
             @Override
             public void onFailure(Call<ProductResponse> call, Throwable t) {
-                resultListener.onSearchResult(null, t.getMessage());
+
+                ErrorData error = new ErrorData();
+                error.setMessage(t.getMessage());
+                error.setCode(-1);
+                resultListener.onSearchResult(null, error);
             }
 
         });
@@ -98,9 +105,9 @@ public class ProductSearchService {
 
 
     public void handleResponse(ProductResponse response, final ProductSearch.ResultListener resultListener) {
-        Error error = response.getError();
+        ErrorData error = response.getError();
         if(error != null) {
-            resultListener.onSearchResult(null, error.getMessage());
+            resultListener.onSearchResult(null, error);
         } else {
             resultListener.onSearchResult(response, null);
         }

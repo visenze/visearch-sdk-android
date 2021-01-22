@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.visenze.visearch.android.model.Image;
 
-public class ProductImageSearchParams extends ProductBaseSearchParams {
+public class ProductSearchByImageParams extends BaseProductSearchParams {
 
     @SerializedName("im_url")
     private String imUrl;
@@ -56,8 +56,8 @@ public class ProductImageSearchParams extends ProductBaseSearchParams {
         return box;
     }
 
-    public void setBox(int[] box) {
-        this.box = box;
+    public void setBox(int x1, int y1, int x2, int y2) {
+        int[] box = new int[] {x1, y1, x2, y2};
     }
 
     public String getDetection() {
@@ -84,16 +84,16 @@ public class ProductImageSearchParams extends ProductBaseSearchParams {
         this.detectionSensitivity = detectionSensitivity;
     }
 
-    public ProductImageSearchParams() {
+    public ProductSearchByImageParams() {
         super();
     }
 
-    public ProductImageSearchParams(String imUrl) {
+    public ProductSearchByImageParams(String imUrl) {
         super();
         this.imUrl = imUrl;
     }
 
-    public ProductImageSearchParams(Image image) {
+    public ProductSearchByImageParams(Image image) {
         super();
         this.image = image;
     }

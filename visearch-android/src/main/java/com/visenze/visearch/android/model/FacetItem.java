@@ -8,7 +8,7 @@ public class FacetItem {
     private String value;
 
     @SerializedName("count")
-    private String count;
+    private Integer count;
 
 
     public String getValue() {
@@ -19,11 +19,11 @@ public class FacetItem {
         this.value = value;
     }
 
-    public String getCount() {
+    public int getCount() {
         return count;
     }
 
-    public void setCount(String count) {
+    public void setCount(int count) {
         this.count = count;
     }
 

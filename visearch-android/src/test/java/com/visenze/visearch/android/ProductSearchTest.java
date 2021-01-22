@@ -5,8 +5,9 @@ import android.os.Build;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.visenze.visearch.android.model.ErrorData;
 import com.visenze.visearch.android.model.ProductResponse;
-import com.visenze.visearch.android.model.ProductResult;
+import com.visenze.visearch.android.model.Product;
 import com.visenze.visearch.android.model.ProductType;
 import com.visenze.visearch.android.network.ProductSearchService;
 import com.visenze.visearch.android.network.RetrofitQueryMap;
@@ -25,7 +26,7 @@ import static org.junit.Assert.assertNull;
 @Config(constants = BuildConfig.class, sdk = Build.VERSION_CODES.LOLLIPOP, manifest = Config.NONE)
 @RunWith(RobolectricTestRunner.class)
 public class ProductSearchTest {
-    ProductSearchService searchService = new ProductSearchService("https://visearch.visenze.com", "123", "456", "visearch-test");
+    ProductSearchService searchService = new ProductSearchService("https://visearch.visenze.com", "123", 456, "visearch-test");
     Gson gson = new GsonBuilder()
             .setLenient()
             .create();
@@ -33,16 +34,16 @@ public class ProductSearchTest {
 
     @Test
     public void testBaseSearchParams_parsing() {
-        ProductImageSearchParams params = new ProductImageSearchParams();
+        ProductSearchByImageParams params = new ProductSearchByImageParams();
         params.setFacetLimit(10);
-        params.setDebug(true);
         params.setImId("1234555");
 
 
         Map<String, String> customMap = new HashMap<String, String>();
         customMap.put("testParam", "testParamVal");
         customMap.put("testParam2", "testParamVal2");
-        params.setCustomMap(customMap);
+        customMap.put("debug", "true");
+        params.setCustomParam(customMap);
 
         RetrofitQueryMap map = params.getQueryMap();
 
@@ -69,9 +70,9 @@ public class ProductSearchTest {
         ProductResponse response = gson.fromJson(errorResp, ProductResponse.class);
         searchService.handleResponse(response, new ProductSearch.ResultListener() {
             @Override
-            public void onSearchResult(ProductResponse response, String errorMsg) {
+            public void onSearchResult(ProductResponse response, ErrorData error) {
                 assertNull(response);
-                assertEquals("Please provide ''image'', ''im_url'' or ''im_id'' parameter.", errorMsg);
+                assertEquals("Please provide ''image'', ''im_url'' or ''im_id'' parameter.", error.getMessage());
             }
         });
     }
@@ -218,8 +219,8 @@ public class ProductSearchTest {
         ProductResponse response = gson.fromJson(successResp, ProductResponse.class);
         searchService.handleResponse(response, new ProductSearch.ResultListener() {
             @Override
-            public void onSearchResult(ProductResponse response, String errorMsg) {
-                assertNull(errorMsg);
+            public void onSearchResult(ProductResponse response, ErrorData error) {
+                assertNull(error);
                 assertEquals("202101213651d741543e7d0145167566a37d3dbf340a4e2c514.jpg", response.getImId());
                 assertEquals("017722d8b9cfcda58402b1f1b4c1e6", response.getReqId());
                 assertEquals(1, response.getProductTypes().size());
@@ -235,8 +236,8 @@ public class ProductSearchTest {
                 assertEquals(1420, type.getBox().getX2().intValue());
                 assertEquals(1889, type.getBox().getY2().intValue());
 
-                assertEquals(10, response.getProductResults().size());
-                ProductResult result = response.getProductResults().get(0);
+                assertEquals(10, response.getProducts().size());
+                Product result = response.getProducts().get(0);
 
                 assertEquals("YOOX-AF-US_159390.1.5EDD.78059CB19EE49440.12339652SL_2", result.getProductId());
                 assertEquals("https://cdn.yoox.biz/12/12339652SL_14_F.JPG", result.getImageUrl());

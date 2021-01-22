@@ -16,17 +16,17 @@ public interface APIProductService {
 
     @Retry
     @GET("similar-products/{product_id}")
-    Call<ProductResponse> similarProducts(@Path("product_id") String productId, @QueryMap RetrofitQueryMap query);
+    Call<ProductResponse> searchById(@Path("product_id") String productId, @QueryMap RetrofitQueryMap query);
 
 
     @Retry
     @POST("similar-products")
-    Call<ProductResponse> similarProducts(@QueryMap RetrofitQueryMap query);
+    Call<ProductResponse> searchByImage(@QueryMap RetrofitQueryMap query);
 
     @Retry
     @Multipart
     @POST("similar-products")
-    Call<ProductResponse> similarProducts(@Part MultipartBody.Part image, @QueryMap RetrofitQueryMap query);
+    Call<ProductResponse> searchByImage(@Part MultipartBody.Part image, @QueryMap RetrofitQueryMap query);
 
 
 }

@@ -17,13 +17,13 @@ public class ProductResponse {
     private String method;
 
     @SerializedName("error")
-    private Error error;
+    private ErrorData error;
 
     @SerializedName("product_types")
     private List<ProductType> productTypes;
 
     @SerializedName("result")
-    private List<ProductResult> productResults;
+    private List<Product> products;
 
     @SerializedName("catalog_fields_mapping")
     private Map<String, String> catalogFieldsMapping;
@@ -67,11 +67,11 @@ public class ProductResponse {
         this.method = method;
     }
 
-    public Error getError() {
+    public ErrorData getError() {
         return error;
     }
 
-    public void setError(Error error) {
+    public void setError(ErrorData error) {
         this.error = error;
     }
 
@@ -83,12 +83,12 @@ public class ProductResponse {
         this.productTypes = productTypes;
     }
 
-    public List<ProductResult> getProductResults() {
-        return productResults;
+    public List<Product> getProducts() {
+        return products;
     }
 
-    public void setImageResults(List<ProductResult> productResults) {
-        this.productResults = productResults;
+    public void setImageResults(List<Product> products) {
+        this.products = products;
     }
 
     public Map<String, String> getCatalogFieldsMapping() {

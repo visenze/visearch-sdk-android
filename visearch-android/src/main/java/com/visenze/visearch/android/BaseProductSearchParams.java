@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class ProductBaseSearchParams {
+public class BaseProductSearchParams {
 
     @SerializedName("page")
     private Integer page;
@@ -61,12 +61,6 @@ public class ProductBaseSearchParams {
     @SerializedName("return_image_s3_url")
     private Boolean returnImageS3Url;
 
-    @SerializedName("debug")
-    private Boolean debug;
-
-    @SerializedName("vtt_source")
-    private String vttSource;
-
     @SerializedName("va_sdk")
     private String vaSdk;
 
@@ -101,16 +95,18 @@ public class ProductBaseSearchParams {
     private String vaDidmd5;
 
     @SerializedName("va_n1")
-    private String vaN1;
+    private Double vaN1;
 
     @SerializedName("va_n2")
-    private String vaN2;
+    private Double vaN2;
 
     @SerializedName("va_s1")
     private String vaS1;
 
     @SerializedName("va_s2")
     private String vaS2;
+
+    private static final Gson gson = new Gson();
 
     public Integer getPage() {
         return page;
@@ -233,22 +229,6 @@ public class ProductBaseSearchParams {
     }
 
 
-    public Boolean getDebug() {
-        return debug;
-    }
-
-    public void setDebug(Boolean debug) {
-        this.debug = debug;
-    }
-
-    public String getVttSource() {
-        return vttSource;
-    }
-
-    public void setVttSource(String vttSource) {
-        this.vttSource = vttSource;
-    }
-
     public String getVaSdk() {
         return vaSdk;
     }
@@ -337,19 +317,19 @@ public class ProductBaseSearchParams {
         this.vaDidmd5 = vaDidmd5;
     }
 
-    public String getVaN1() {
+    public Double getVaN1() {
         return vaN1;
     }
 
-    public void setVaN1(String vaN1) {
+    public void setVaN1(double vaN1) {
         this.vaN1 = vaN1;
     }
 
-    public String getVaN2() {
+    public Double getVaN2() {
         return vaN2;
     }
 
-    public void setVaN2(String vaN2) {
+    public void setVaN2(double vaN2) {
         this.vaN2 = vaN2;
     }
 
@@ -385,7 +365,7 @@ public class ProductBaseSearchParams {
 
     @SerializedName("custom_map")
     @Expose(deserialize = false, serialize = false)
-    private Map<String, String> customMap;
+    private Map<String, String> customParam;
 
 
 
@@ -421,12 +401,12 @@ public class ProductBaseSearchParams {
         this.facets = facets;
     }
 
-    public Map<String, String> getCustomMap() {
-        return customMap;
+    public Map<String, String> getCustomParam() {
+        return customParam;
     }
 
-    public void setCustomMap(Map<String, String> customMap) {
-        this.customMap = customMap;
+    public void setCustomParam(Map<String, String> customMap) {
+        this.customParam = customMap;
     }
 
     public RetrofitQueryMap getQueryMap() {
@@ -434,7 +414,7 @@ public class ProductBaseSearchParams {
         Map<String, Object> map = new HashMap<String, Object>();
         RetrofitQueryMap ret = new RetrofitQueryMap(map);
 
-        Gson gson = new Gson();
+
         String jsonStr = gson.toJson(this);
 
         JsonObject jsonObj = gson.fromJson(jsonStr, JsonObject.class);
@@ -454,8 +434,8 @@ public class ProductBaseSearchParams {
             }
         }
 
-        if(customMap != null) {
-            Set<Map.Entry<String, String>> set = customMap.entrySet();
+        if(customParam != null) {
+            Set<Map.Entry<String, String>> set = customParam.entrySet();
             for(Map.Entry<String, String> entry : set) {
                 String key = entry.getKey();
                 String val = entry.getValue();

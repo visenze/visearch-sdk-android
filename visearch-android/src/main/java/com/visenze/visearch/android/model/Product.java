@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Map;
 
-public class ProductResult {
+public class Product {
 
     @SerializedName("product_id")
     private String productId;

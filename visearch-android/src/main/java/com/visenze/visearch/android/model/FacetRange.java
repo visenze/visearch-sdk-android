@@ -4,12 +4,12 @@ import com.google.gson.annotations.SerializedName;
 
 public class FacetRange {
     @SerializedName("min")
-    private float min;
+    private Number min;
 
     @SerializedName("max")
-    private float max;
+    private Number max;
 
-    public float getMin() {
+    public Number getMin() {
         return min;
     }
 
@@ -17,7 +17,7 @@ public class FacetRange {
         this.min = min;
     }
 
-    public float getMax() {
+    public Number getMax() {
         return max;
     }
 
