@@ -349,39 +349,41 @@ public class BaseProductSearchParams {
         this.vaS2 = vaS2;
     }
 
-
-    @SerializedName("filters")
-    private List<String> filters;
-
-    @SerializedName("text_filters")
-    private List<String> textFilters;
-
-    @SerializedName("attrs_to_get")
-    private List<String> attrsToGet;
-
     @SerializedName("facets")
     private List<String> facets;
+
+    @SerializedName("attrs_to_get")
+    @Expose(deserialize = false, serialize = false)
+    private List<String> attrsToGet;
+
+
+    @Expose(deserialize = false, serialize = false)
+    private Map<String, String> filters;
+
+    @Expose(deserialize = false, serialize = false)
+    private Map<String, String> textFilters;
+
 
 
     @SerializedName("custom_map")
     @Expose(deserialize = false, serialize = false)
-    private Map<String, String> customParam;
+    private Map<String, String> customParams;
 
 
 
-    public List<String> getFilters() {
+    public Map<String, String> getFilters() {
         return filters;
     }
 
-    public void setFilters(List<String> filters) {
+    public void setFilters(Map<String, String> filters) {
         this.filters = filters;
     }
 
-    public List<String> getTextFilters() {
+    public Map<String, String> getTextFilters() {
         return textFilters;
     }
 
-    public void setTextFilters(List<String> textFilters) {
+    public void setTextFilters(Map<String, String> textFilters) {
         this.textFilters = textFilters;
     }
 
@@ -401,12 +403,12 @@ public class BaseProductSearchParams {
         this.facets = facets;
     }
 
-    public Map<String, String> getCustomParam() {
-        return customParam;
+    public Map<String, String> getCustomParams() {
+        return customParams;
     }
 
-    public void setCustomParam(Map<String, String> customMap) {
-        this.customParam = customMap;
+    public void setCustomParams(Map<String, String> customMap) {
+        this.customParams = customMap;
     }
 
     public RetrofitQueryMap getQueryMap() {
@@ -434,8 +436,8 @@ public class BaseProductSearchParams {
             }
         }
 
-        if(customParam != null) {
-            Set<Map.Entry<String, String>> set = customParam.entrySet();
+        if(customParams != null) {
+            Set<Map.Entry<String, String>> set = customParams.entrySet();
             for(Map.Entry<String, String> entry : set) {
                 String key = entry.getKey();
                 String val = entry.getValue();
@@ -443,6 +445,28 @@ public class BaseProductSearchParams {
             }
         }
 
+
+        if(filters != null) {
+            List<String> list = formatToList(filters);
+            ret.put("filters", list);
+        }
+
+        if(textFilters != null) {
+            List<String> list = formatToList(textFilters);
+            ret.put("text_filters", list);
+        }
+
+        return ret;
+    }
+
+    private List<String> formatToList(Map<String, String> params) {
+        Set<Map.Entry<String, String>> set = params.entrySet();
+        List<String> ret = new ArrayList<String>();
+        for(Map.Entry<String, String>entry : set) {
+            String key = entry.getKey();
+            String val = entry.getValue();
+            ret.add(key+":"+val);
+        }
         return ret;
     }
 

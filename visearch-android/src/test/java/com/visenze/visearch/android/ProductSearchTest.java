@@ -43,7 +43,8 @@ public class ProductSearchTest {
         customMap.put("testParam", "testParamVal");
         customMap.put("testParam2", "testParamVal2");
         customMap.put("debug", "true");
-        params.setCustomParam(customMap);
+        params.setCustomParams(customMap);
+
 
         RetrofitQueryMap map = params.getQueryMap();
 

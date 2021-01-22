@@ -17,6 +17,7 @@ public class ProductSearch {
     private static final String SEARCH_URL = "https://search.visenze.com/v1/";
 
 
+
     private String uid;
     private String trackCode;
     private VisenzeAnalytics visenzeAnalytics;
@@ -32,12 +33,12 @@ public class ProductSearch {
     }
 
 
-    public void similarSearch(ProductSearchByImageParams imageSearchParams, ResultListener listener) {
+    public void searchByImage(ProductSearchByImageParams imageSearchParams, ResultListener listener) {
         addAnalyticsParams(imageSearchParams);
         productSearchService.searchByImage(imageSearchParams, listener);
     }
 
-    public void visualSimilarSearch(ProductSearchByIdParams visualSimilarParams, ResultListener listener) {
+    public void searchById(ProductSearchByIdParams visualSimilarParams, ResultListener listener) {
         addAnalyticsParams(visualSimilarParams);
         productSearchService.searchById(visualSimilarParams, listener);
     }
