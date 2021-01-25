@@ -13,7 +13,7 @@ public class FacetRange {
         return min;
     }
 
-    public void setMin(float min) {
+    public void setMin(Number min) {
         this.min = min;
     }
 
@@ -21,7 +21,7 @@ public class FacetRange {
         return max;
     }
 
-    public void setMax(float max) {
+    public void setMax(Number max) {
         this.max = max;
     }
 }
