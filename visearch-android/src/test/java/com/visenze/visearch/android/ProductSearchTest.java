@@ -6,6 +6,9 @@ import android.os.Build;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.visenze.visearch.android.model.ErrorData;
+import com.visenze.visearch.android.model.ImageResult;
+import com.visenze.visearch.android.model.ObjectResult;
+import com.visenze.visearch.android.model.ProductObject;
 import com.visenze.visearch.android.model.ProductResponse;
 import com.visenze.visearch.android.model.Product;
 import com.visenze.visearch.android.model.ProductType;
@@ -76,6 +79,111 @@ public class ProductSearchTest {
                 assertEquals("Please provide ''image'', ''im_url'' or ''im_id'' parameter.", error.getMessage());
             }
         });
+    }
+
+    @Test
+    public void testObjectResponse() {
+        String successResp = "{\n" +
+                "    \"im_id\": \"202103093651675ff131da7abc242e2adf1dceed5177ca3110e.jpg\",\n" +
+                "    \"reqid\": \"0178162043b8002b2c6853f0a8740f\",\n" +
+                "    \"status\": \"OK\",\n" +
+                "    \"method\": \"product/search_by_image\",\n" +
+                "    \"page\": 1,\n" +
+                "    \"product_types\": [],\n" +
+                "    \"objects\": [\n" +
+                "        {\n" +
+                "            \"type\": \"top\",\n" +
+                "            \"score\": 0.91,\n" +
+                "            \"box\": [\n" +
+                "                14,\n" +
+                "                143,\n" +
+                "                807,\n" +
+                "                870\n" +
+                "            ],\n" +
+                "            \"attributes\": {},\n" +
+                "            \"total\": 1000,\n" +
+                "            \"result\": [\n" +
+                "                {\n" +
+                "                    \"product_id\": \"YOOX-AF-US_159390.1.5EDD.1FF02CAF2478AE01.12556480RV_7\",\n" +
+                "                    \"main_image_url\": \"https://cdn.yoox.biz/12/12556480RV_14_F.JPG\",\n" +
+                "                    \"data\": {\n" +
+                "                        \"price\": {\n" +
+                "                            \"currency\": \"USD\",\n" +
+                "                            \"value\": \"44.0\"\n" +
+                "                        },\n" +
+                "                        \"title\": \"ADIDAS ORIGINALS T-shirts\"\n" +
+                "                    }\n" +
+                "                },\n" +
+                "                {\n" +
+                "                    \"product_id\": \"FARFETCH-PRF-AF-GB_16172209\",\n" +
+                "                    \"main_image_url\": \"https://cdn-images.farfetch-contents.com/16/17/22/09/16172209_31551083_800.jpg\",\n" +
+                "                    \"data\": {\n" +
+                "                        \"price\": {\n" +
+                "                            \"currency\": \"GBP\",\n" +
+                "                            \"value\": \"54.0\"\n" +
+                "                        },\n" +
+                "                        \"title\": \"Diesel Kids - TEEN logo short-sleeve T-shirt - kids - Polyester/Cotton - 14 yrs, 16 yrs - White\"\n" +
+                "                    }\n" +
+                "                },\n" +
+                "                {\n" +
+                "                    \"product_id\": \"YOOX-AF-US_159390.1.5EDD.4521B2BD301631D9.12558949VR_5\",\n" +
+                "                    \"main_image_url\": \"https://cdn.yoox.biz/12/12558949VR_14_F.JPG\",\n" +
+                "                    \"data\": {\n" +
+                "                        \"price\": {\n" +
+                "                            \"currency\": \"USD\",\n" +
+                "                            \"value\": \"84.0\"\n" +
+                "                        },\n" +
+                "                        \"title\": \"NONNATIVE T-shirts\"\n" +
+                "                    }\n" +
+                "                },\n" +
+                "                {\n" +
+                "                    \"product_id\": \"MYTHERESA-US_180260.2.7FDB09775E3B9DE4.7FE5A568AC4C54A8.P00535115-1\",\n" +
+                "                    \"main_image_url\": \"https://img.mytheresa.com/1000/1000/95/jpeg/catalog/product/64/P00535115.jpg\",\n" +
+                "                    \"data\": {\n" +
+                "                        \"price\": {\n" +
+                "                            \"currency\": \"USD\",\n" +
+                "                            \"value\": \"89.0\"\n" +
+                "                        },\n" +
+                "                        \"title\": \"Play logo cotton T-shirt\"\n" +
+                "                    }\n" +
+                "                },\n" +
+                "                {\n" +
+                "                    \"product_id\": \"MYTHERESA-US_180260.2.7FDB09775E3B9DE4.8A5544F8CC27465A.P00535115-3\",\n" +
+                "                    \"main_image_url\": \"https://img.mytheresa.com/1000/1000/95/jpeg/catalog/product/64/P00535115.jpg\",\n" +
+                "                    \"data\": {\n" +
+                "                        \"price\": {\n" +
+                "                            \"currency\": \"USD\",\n" +
+                "                            \"value\": \"89.0\"\n" +
+                "                        },\n" +
+                "                        \"title\": \"Play logo cotton T-shirt\"\n" +
+                "                    }\n" +
+                "                }\n" +
+                "            ]\n" +
+                "        }\n" +
+                "    ],\n" +
+                "    \"result\": []\n" +
+                "}";
+        ProductResponse response = gson.fromJson(successResp, ProductResponse.class);
+        searchService.handleResponse(response, new ProductSearch.ResultListener() {
+            @Override
+            public void onSearchResult(ProductResponse response, ErrorData error) {
+                assertNull(error);
+                assertEquals("202103093651675ff131da7abc242e2adf1dceed5177ca3110e.jpg", response.getImId());
+                assertEquals("0178162043b8002b2c6853f0a8740f", response.getReqId());
+                assertEquals(1, response.getObjects().size());
+
+                ProductObject obj = response.getObjects().get(0);
+                assertEquals("top", obj.getType());
+
+                assertEquals(5, obj.getResult().size());
+                Product result = obj.getResult().get(0);
+
+                assertEquals("YOOX-AF-US_159390.1.5EDD.1FF02CAF2478AE01.12556480RV_7", result.getProductId());
+                assertEquals("https://cdn.yoox.biz/12/12556480RV_14_F.JPG", result.getImageUrl());
+
+            }
+        });
+
     }
 
 

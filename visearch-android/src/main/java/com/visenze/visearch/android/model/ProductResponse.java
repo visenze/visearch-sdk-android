@@ -25,6 +25,9 @@ public class ProductResponse {
     @SerializedName("result")
     private List<Product> products;
 
+    @SerializedName("objects")
+    private List<ProductObject> objects;
+
     @SerializedName("catalog_fields_mapping")
     private Map<String, String> catalogFieldsMapping;
 
@@ -89,6 +92,14 @@ public class ProductResponse {
 
     public void setImageResults(List<Product> products) {
         this.products = products;
+    }
+
+    public List<ProductObject> getObjects() {
+        return objects;
+    }
+
+    public void setObjects(List<ProductObject> objects) {
+        this.objects = objects;
     }
 
     public Map<String, String> getCatalogFieldsMapping() {
