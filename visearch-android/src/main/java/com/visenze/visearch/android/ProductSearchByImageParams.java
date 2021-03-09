@@ -28,6 +28,18 @@ public class ProductSearchByImageParams extends BaseProductSearchParams {
     @SerializedName("detection_sensitivity")
     private String detectionSensitivity;
 
+    @SerializedName("search_all_object")
+    private Boolean searchAllObjects;
+
+    
+    public Boolean getSearchAllObjects() {
+        return searchAllObjects;
+    }
+
+    public void setSearchAllObjects(Boolean searchAllObjects) {
+        this.searchAllObjects = searchAllObjects;
+    }
+
     public String getImUrl() {
         return imUrl;
     }

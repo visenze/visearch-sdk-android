@@ -88,6 +88,12 @@ public class BaseProductSearchParams {
     @SerializedName("va_app_version")
     private String vaAppVersion;
 
+    @SerializedName("dedup")
+    private Boolean dedup;
+
+    @SerializedName("dedup_score_threshold")
+    private Double dedupScoreThreshold;
+
     @SerializedName("va_aaid")
     private String vaAaid;
 
@@ -105,6 +111,30 @@ public class BaseProductSearchParams {
 
     @SerializedName("va_s2")
     private String vaS2;
+
+    public Boolean getDedup() {
+        return dedup;
+    }
+
+    public Double getDedupScoreThreshold() {
+        return dedupScoreThreshold;
+    }
+
+    public void setDedup(Boolean dedup) {
+        this.dedup = dedup;
+    }
+
+    public void setDedupScoreThreshold(Double dedupScoreThreshold) {
+        this.dedupScoreThreshold = dedupScoreThreshold;
+    }
+
+    public void setVaN1(Double vaN1) {
+        this.vaN1 = vaN1;
+    }
+
+    public void setVaN2(Double vaN2) {
+        this.vaN2 = vaN2;
+    }
 
     private static final Gson gson = new Gson();
 
