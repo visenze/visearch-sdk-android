@@ -15,17 +15,17 @@ import retrofit2.http.QueryMap;
 public interface APIProductService {
 
     @Retry
-    @GET("search_by_id/{product_id}")
+    @GET("product/search_by_id/{product_id}")
     Call<ProductResponse> searchById(@Path("product_id") String productId, @QueryMap RetrofitQueryMap query);
 
 
     @Retry
-    @POST("search_by_image")
+    @POST("product/search_by_image")
     Call<ProductResponse> searchByImage(@QueryMap RetrofitQueryMap query);
 
     @Retry
     @Multipart
-    @POST("search_by_image")
+    @POST("product/search_by_image")
     Call<ProductResponse> searchByImage(@Part MultipartBody.Part image, @QueryMap RetrofitQueryMap query);
 
 
