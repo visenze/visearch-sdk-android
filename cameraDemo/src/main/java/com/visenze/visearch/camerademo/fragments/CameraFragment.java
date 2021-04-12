@@ -38,10 +38,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.visenze.visearch.android.ProductSearch;
+import com.visenze.visearch.android.ProductSearchByImageParams;
 import com.visenze.visearch.android.ResultList;
 import com.visenze.visearch.android.UploadSearchParams;
 import com.visenze.visearch.android.ViSearch;
+import com.visenze.visearch.android.model.ErrorData;
 import com.visenze.visearch.android.model.Image;
+import com.visenze.visearch.android.model.ProductResponse;
 import com.visenze.visearch.camerademo.EditPhotoActivity;
 import com.visenze.visearch.camerademo.R;
 import com.visenze.visearch.camerademo.http.SearchAPI;
@@ -120,6 +124,7 @@ public class CameraFragment extends Fragment implements
                     R.id.camera_close_button})  List<ImageView>     cameraUIs;
     //ViSearch and Search parameters
     private ViSearch viSearch;
+    private ProductSearch productSearch;
     private String                      imagePath;
     private UploadSearchParams uploadSearchParams;
     //photo loading and process runnable
@@ -144,6 +149,7 @@ public class CameraFragment extends Fragment implements
 
         try {
             viSearch = SearchAPI.getInstance();
+            // productSearch = SearchAPI.getProductSearchInstance();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -198,6 +204,14 @@ public class CameraFragment extends Fragment implements
         DataHelper.setSearchParams(uploadSearchParams, "all");
 
         viSearch.uploadSearch(uploadSearchParams);
+
+        //ProductSearchByImageParams params = new ProductSearchByImageParams(image);
+        //productSearch.searchByImage(params, new ProductSearch.ResultListener() {
+        //    @Override
+        //   public void onSearchResult(ProductResponse response, ErrorData error) {
+        //        response.getProducts();
+        //    }
+        //});
     }
 
     /**
