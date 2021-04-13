@@ -22,6 +22,8 @@
           - 4.1.3 [Search by Color](#413-search-by-color)
           - 4.1.4 [Multiple Products Search](#414-multiple-products-search)
 	  - 4.2 [ProductSearch](#42-productsearch)
+	      - 4.2.1 [Search by Image](#421-search-by-image)
+	      - 4.2.2 [Search by ID](#422-search-by-id)
  5. [Search Results](#5-search-results)
       - 5.1 [ViSearch Response](#51-visearch-response)
       - 5.2 [ProductSearch Response](#52-productsearch-response)
