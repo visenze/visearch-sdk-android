@@ -17,17 +17,18 @@ repositories {
     jcenter()
 }
 
+
 def versionMajor = 2
 def versionMinor = 0
-def versionPatch = 0
-version = '2.0.0'
+def versionPatch = 1
+version = '2.0.1'
 
 android {
     compileSdkVersion 28
     buildToolsVersion '28.0.3'
 
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion 19
         targetSdkVersion 28
         versionCode versionMajor * 10000 + versionMinor * 100 + versionPatch
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
@@ -47,7 +48,7 @@ configurations {
 }
 
 dependencies {
-    compile 'com.visenze.datatracking:tracking:0.1.7'
+    compile 'com.visenze.datatracking:tracking:0.1.9'
     compile 'com.squareup.retrofit2:retrofit:2.3.0'
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
 
