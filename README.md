@@ -172,11 +172,14 @@ public class MyActivity extends Activity {
     private static final String appKey = "YOUR_APP_KEY";
     private static final Integer placementId = 1; 
 	...
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         SearchAPI.initProductSearchAPI(this, appKey, placementId);
+
 		...
 	}
+
 	...
 }
 ```
@@ -362,33 +365,96 @@ viSearch.discoversearch(uploadSearchParams);
 
 POST /product/search_by_image
 
-Searching by Image can happen in three different ways - by url, id or File. 
+Searching by Image can happen in three different ways - by url, id or File. Assuming that you have initialized the SDK according to section [3](#3-initialization):
 
-An example of by Image URL:
+- Example of image URL:
+
 ```java
-...
+... 
+
 String imageUrl = "https://some_website.com/some_image.jpg";
 ProductSearchByImageParams params = new ProductSearchByImageParams(imageUrl);
 ProductSeach ps = SearchAPI.getProductSearchInstance();
 ps.searchByImage(params, new ProductSearch.ResultListener() {
     @Override
     public void onSearchResult(ProductResponse response, ErrorData error) {
-        // process your code here 
-        // imageID = response.get ...
+        // LOGIC HERE
     }
 });
+
 ...
 ```
 
-> By Image ID refers to the ID that is assigned to each image that the API receives. Meaning, on every successful search (via URl or File), the image will have an ID assigned to it that can be reused. 
-> By Image File refers to an actual file with bytes representing the image (i.e. opened from file upload, or taken from camera).
+- Example of image ID:
 
+```java
+...
+
+public void yourFunction(ProductResponse yourPriorResponse)
+{
+    String imageID = yourPriorResponse.getImId();
+    ProductSearchByImageParams params = new ProductSearchByImageParams(imageID);
+    ProductSeach ps = SearchAPI.getProductSearchInstance();
+    ps.searchByImage(params, new ProductSearch.ResultListener() {
+        @Override
+        public void onSearchResult(ProductResponse response, ErrorData error) {
+            // LOGIC HERE
+        }
+    });
+}
+
+```
+
+> Image ID refers to the ID that is assigned to each image that the API receives. Meaning, on every successful search (via URl or File), the image will have an ID assigned to it that can be reused. 
+> The example above assumes that you have stored a prior successful ProductResponse somewhere and are using it as a parameter.
+
+- Example of image File:
+
+```java
+
+@Override
+public void OnImageCaptured(Image image, String imagePath) {
+    ProductSearchByImageParams params = new ProductSearchByImageParams(image);
+    ProductSeach ps = SearchAPI.getProductSearchInstance();
+    ps.searchByImage(params, new ProductSearch.ResultListener() {
+        @Override
+        public void onSearchResult(ProductResponse response, ErrorData error) {
+            // LOGIC HERE
+        }
+    });
+}
+
+```
+
+> Image File refers to an actual file with bytes representing the image (i.e. opened from file upload, or taken from camera).
+> The example above is in a scenario where the android camera captures an image.
 
 #### 4.2.2 Search By ID
 
 GET /product/search_by_id/{product_id}
 
 This Search By ID is NOT the same ID mentioned in [Search By Image](#421-search-by-image)'s ID. This ID refers to the product's ID and not the image's ID.
+
+```java
+...
+
+public void yourFunction(ProductResponse yourPriorResponse)
+{
+    String productID = yourPriorResponse.getProducts().get(0).getProductId();
+    ProductSearchByIdParams params = new ProductSearchByIdParams(productID);
+    ProductSeach ps = SearchAPI.getProductSearchInstance();
+    ps.searchById(params, new ProductSearch.ResultListener() {
+        @Override
+        public void onSearchResult(ProductResponse response, ErrorData error) {
+            // LOGIC HERE
+        }
+    });
+}
+
+```
+
+> The example above assumes that you have stored a prior successful ProductResponse somewhere and are using it as a parameter.
+> The `yourPriorResponse.getProducts().get(0).getProductId()` is an arbitrary product ID, you should implement a proper way of choosing which product in the response's products list to use.
 
 ## 5. Search Results
 
@@ -439,11 +505,15 @@ A successful response from calling the ProductSearch API can be found in the for
 
 This is the callback's signature:
 ```java
+
 @Override
 public void onSearchResult(ProductResponse response, ErrorData error) {
     // do your code here
 }
+
 ```
+
+> On a successful API call, the `ProductResponse` will be valid while `ErrorData` will be `null`, vice-versa on failure.
 
 ## 6. Advanced Search Parameters
 
