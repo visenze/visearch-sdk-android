@@ -4,7 +4,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.1'
+        classpath 'com.android.tools.build:gradle:3.5.2'
     }
 }
 
@@ -73,6 +73,7 @@ dependencies {
     implementation 'it.sephiroth.android.library.horizontallistview:hlistview:1.2.2'
     implementation 'com.jakewharton:butterknife:6.0.0'
     implementation 'com.squareup.picasso:picasso:2.4.0'
+    implementation project(path: ':visearch-android')
 
 
     testImplementation 'junit:junit:4.12'

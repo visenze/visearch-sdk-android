@@ -32,6 +32,7 @@ import com.visenze.visearch.camerademo.http.SearchAPI;
 public class MainActivity extends FragmentActivity {
     //TODO: init app key here
     private static final String appKey = "YOUR_APP_KEY";
+    private static final Integer placementId = 1; // only used in ProductSearch API/initializer
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,5 +45,6 @@ public class MainActivity extends FragmentActivity {
                 .commit();
 
         SearchAPI.initSearchAPI(this, appKey);
+        // SearchAPI.initProductSearchAPI(this, appKey, placementId);
     }
 }
