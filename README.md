@@ -11,14 +11,22 @@
       - 2.2 [Install the SDK](#22-install-the-sdk)
       - 2.3 [Add User Permissions](#23-add-user-permissions)
  3. [Initialization](#3-initialization)
+      - 3.1 [ViSearch API](#31-visearch-api)
+      - 3.2 [ProductSearch API](#32-productsearch-api)
  4. [Solution APIs](#4-solution-apis)
-	  - 4.1 [Visually Similar Recommendations](#41-visually-similar-recommendations)
-	  - 4.2 [Search by Image](#42-search-by-image)
-	    - 4.2.1 [Selection Box](#421-selection-box)
-	    - 4.2.2 [Resizing Settings](#422-resizing-settings)
-	  - 4.3 [Search by Color](#43-search-by-color)
-	  - 4.4 [Multiple Products Search](#44-multiple-products-search)
+      - 4.1 [ViSearch](#41-visearch)
+          - 4.1.1 [Visually Similar Recommendations](#411-visually-similar-recommendations)
+          - 4.1.2 [Search by Image](#412-search-by-image)
+            - 4.1.2.1 [Selection Box](#4121-selection-box)
+            - 4.1.2.2 [Resizing Settings](#4122-resizing-settings)
+          - 4.1.3 [Search by Color](#413-search-by-color)
+          - 4.1.4 [Multiple Products Search](#414-multiple-products-search)
+	  - 4.2 [ProductSearch](#42-productsearch)
+	      - 4.2.1 [Search by Image](#421-search-by-image)
+	      - 4.2.2 [Search by ID](#422-search-by-id)
  5. [Search Results](#5-search-results)
+      - 5.1 [ViSearch Response](#51-visearch-response)
+      - 5.2 [ProductSearch Response](#52-productsearch-response)
  6. [Advanced Search Parameters](#6-advanced-search-parameters)
 	  - 6.1 [Retrieving Metadata](#61-retrieving-metadata)
 	  - 6.2 [Filtering Results](#62-filtering-results)
@@ -52,12 +60,13 @@ The source code of a demo application is provided together with the SDK ([demo](
 
 ![screenshot](./doc/android_studio_2.png)
 
-You should change the app key  your own app key before running. You can create and mange
+You should change the app key  your own app key before running. You can create and manage
 
 ```java
 public class MainActivity extends FragmentActivity {
-    //TODO: init visearch app key here
-    private static final String appKey = "your_app_key ";
+    //TODO: init app key here
+    private static final String appKey = "YOUR_APP_KEY ";
+    private static final Integer placementId = 1; // used only with the ProductSearch API
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -112,6 +121,9 @@ ViSearch Android SDK needs these user permissions to work. Add the following dec
 ```
 
 ## 3. Initialization
+
+### 3.1 ViSearch API
+
 `ViSearch` must be initialized with an app key before it can be used. In order for it to be notified of the search result, `ViSearch.ResultListener` must be implemented. Call `viSearch.setListener` to set the listener.
 
 ```java
@@ -151,12 +163,43 @@ ViSearch viSearch = new ViSearch.Builder(APP_KEY).setUid("your device id such as
 // custom tracker for Analytics
 // Tracking code can be viewed in ViSenze's dashboard
 Tracker tracker = viSearch.newTracker(code, false);
-
 ```
+
+### 3.2 ProductSearch API
+
+`ProductSearch` must be initialized with an app key and a placement id before it can be used. In order for it to be notified of the search result, `ProductSearch.ResultListener` callback must be provided when making the actual API call.
+
+```java
+public class MyActivity extends Activity {
+    private static final String appKey = "YOUR_APP_KEY";
+    private static final Integer placementId = 1; 
+	...
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        SearchAPI.initProductSearchAPI(this, appKey, placementId);
+
+		...
+	}
+
+	...
+}
+```
+
+Please init ProductSearch client with the following if there is a need for changing the default endpoint (https://search.visenze.com).
+
+```java
+ProductSearch productSearch = new ProductSearch
+                            .Builder(appKey, placementId)
+                            .setApiEndPoint("https://custom-visearch.yourdomain.com")
+                            .build(context);
+```                
 
 ## 4. Solution APIs
 
-### 4.1 Visually Similar Recommendations
+### 4.1 ViSearch
+
+#### 4.1.1 Visually Similar Recommendations
 
 GET /search
 
@@ -167,7 +210,7 @@ IdSearchParams idSearchParams = new IdSearchParams("dress_1");
 viSearch.idSearch(idSearchParams);
 ```
 
-### 4.2 Search by Image
+#### 4.1.2 Search by Image
 
 POST /uploadsearch
 
@@ -230,7 +273,7 @@ uploadSearchParams.setImId(imId);
 viSearcher.uploadSearch(uploadSearchParams);
 ```
 
-#### 4.2.1 Selection Box
+##### 4.1.2.1 Selection Box
 If the object you wish to search for takes up only a small portion of your image, or other irrelevant objects exists in the same image, chances are the search result could become inaccurate. Use the Box parameter to refine the search area of the image to improve accuracy. The box coordinated is set with respect to the original size of the uploading image:
 
 ```java
@@ -252,7 +295,7 @@ uploadSearchParams.setBox(new Box(0, 0, 400, 400));
 viSearcher.uploadSearch(uploadSearchParams);
 ```
 
-#### 4.2.2 Resizing Settings
+##### 4.1.2.2 Resizing Settings
 When performing upload search, you may notice the increased search latency with increased image file size. This is due to the increased time spent in network transferring your images to the ViSearch server, and the increased time for processing larger image files in ViSearch. 
 
 To reduce upload search latency, by default the uploadSearch method makes a copy of your image file and resizes the copy to 512x512 pixels if both of the original dimensions exceed 512 pixels. This is the optimized size to lower search latency while not sacrificing search accuracy for general use cases:
@@ -294,7 +337,7 @@ public void onPictureTaken(byte[] bytes, Camera camera) {
 
 Please refer to the source code of [camera demo app](https://github.com/visenze/visearch-sdk-android/tree/master/cameraDemo) for the usage.
 
-### 4.3 Search by Color
+#### 4.1.3 Search by Color
 
 GET /colorsearch
 
@@ -305,7 +348,7 @@ ColorSearchParams colorSearchParams = new ColorSearchParams("9b351b");
 viSearch.colorSearch(colorSearchParams);
 ```
 
-### 4.4 Multiple Products Search
+#### 4.1.4 Multiple Products Search
 
 POST /discoversearch
 
@@ -318,7 +361,123 @@ UploadSearchParams uploadSearchParams = new UploadSearchParams(image);
 viSearch.discoversearch(uploadSearchParams);
 ```
 
+### 4.2 ProductSearch 
+
+#### 4.2.1 Search By Image
+
+POST /product/search_by_image
+
+Searching by Image can happen in three different ways - by url, id or File. Assuming that you have initialized the SDK according to section [3](#3-initialization):
+
+- Example of image URL:
+
+```java
+... 
+
+String imageUrl = "https://some_website.com/some_image.jpg";
+ProductSearchByImageParams params = new ProductSearchByImageParams(imageUrl);
+ProductSeach ps = SearchAPI.getProductSearchInstance();
+ps.searchByImage(params, new ProductSearch.ResultListener() {
+    @Override
+    public void onSearchResult(ProductResponse response, ErrorData error) {
+        // LOGIC HERE
+    }
+});
+
+...
+```
+
+- Example of image ID:
+
+```java
+...
+
+public void yourFunction(ProductResponse yourPriorResponse)
+{
+    String imageID = yourPriorResponse.getImId();
+    ProductSearchByImageParams params = new ProductSearchByImageParams(imageID);
+    ProductSeach ps = SearchAPI.getProductSearchInstance();
+    ps.searchByImage(params, new ProductSearch.ResultListener() {
+        @Override
+        public void onSearchResult(ProductResponse response, ErrorData error) {
+            // LOGIC HERE
+        }
+    });
+}
+
+```
+
+> Image ID refers to the ID that is assigned to each image that the API receives. Meaning, on every successful search (via URl or File), the image will have an ID assigned to it that can be reused. 
+> The example above assumes that you have stored a prior successful ProductResponse somewhere and are using it as a parameter.
+
+- Example of image File:
+
+```java
+
+@Override
+public void OnImageCaptured(Image image, String imagePath) {
+    ProductSearchByImageParams params = new ProductSearchByImageParams(image);
+    ProductSeach ps = SearchAPI.getProductSearchInstance();
+    ps.searchByImage(params, new ProductSearch.ResultListener() {
+        @Override
+        public void onSearchResult(ProductResponse response, ErrorData error) {
+            // LOGIC HERE
+        }
+    });
+}
+
+```
+
+> Image File refers to an actual file with bytes representing the image (i.e. opened from file upload, or taken from camera).
+> The example above is in a scenario where the android camera captures an image.
+
+#### 4.2.2 Search By ID
+
+GET /product/search_by_id/{product_id}
+
+This Search By ID is NOT the same ID mentioned in [Search By Image](#421-search-by-image)'s ID. This ID refers to the product's ID and not the image's ID.
+
+```java
+...
+
+public void yourFunction(ProductResponse yourPriorResponse)
+{
+    String productID = yourPriorResponse.getProducts().get(0).getProductId();
+    ProductSearchByIdParams params = new ProductSearchByIdParams(productID);
+    ProductSeach ps = SearchAPI.getProductSearchInstance();
+    ps.searchById(params, new ProductSearch.ResultListener() {
+        @Override
+        public void onSearchResult(ProductResponse response, ErrorData error) {
+            // LOGIC HERE
+        }
+    });
+}
+
+```
+
+> The example above assumes that you have stored a prior successful ProductResponse somewhere and are using it as a parameter.
+> The `yourPriorResponse.getProducts().get(0).getProductId()` is an arbitrary product ID, you should implement a proper way of choosing which product in the response's products list to use.
+
 ## 5. Search Results
+
+Regardless if you are using ViSearch API or ProductSearch API, you can provide pagination parameters to control the paging of the image search results. by configuring the basic search parameters `BaseSearchParams`. As the result is returned in a format of a list of images page by page, use `setLimit` to set the number of results per page, `setPage` to indicate the page number:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| page | Integer | Optional parameter to specify the page of results. The first page of result is 1. Defaults to 1. |
+| limit | Integer | Optional parameter to specify the result per page limit. Defaults to 10. |
+
+```java
+BaseSearchParams baseSearchParams = new BaseSearchParams();
+baseSearchParams.setLimit(20);
+baseSearchParams.setPage(1);
+ColorSearchParams colorSearchParams = new ColorSearchParams("3322ff");
+colorSearchParams.setBaseSearchParams(baseSearchParams);
+visearcher.colorSearch(colorSearchParams);
+```
+
+### 5.1 ViSearch Response
+
 The search results are returned as a list of image names with required additional information. Use `getImageList()` to get the list of images. The basic information returned about the image are image name. Use`viSearch.cancelSearch()` to cancel a search, and handle the result by implementing the `onSearchCanceled()` callback. If error occurs during the search, an error message will be returned and can be handled in `viSearch.onSearchError(String error)` callback method. 
 
 ```java
@@ -342,21 +501,21 @@ public void onSearchCanceled() {
 }
 ```
 
- You can provide pagination parameters to control the paging of the image search results. by configuring the basic search parameters `BaseSearchParams`. As the result is returned in a format of a list of images page by page, use `setLimit` to set the number of results per page, `setPage` to indicate the page number:
+### 5.2 ProductSearch Response
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| page | Integer | Optional parameter to specify the page of results. The first page of result is 1. Defaults to 1. |
-| limit | Integer | Optional parameter to specify the result per page limit. Defaults to 10. |
+A successful response from calling the ProductSearch API can be found in the form of the `ProductResponse` class. This is triggered through the callback function provided when calling the search API.
 
+This is the callback's signature:
 ```java
-BaseSearchParams baseSearchParams = new BaseSearchParams();
-baseSearchParams.setLimit(20);
-baseSearchParams.setPage(1);
-ColorSearchParams colorSearchParams = new ColorSearchParams("3322ff");
-colorSearchParams.setBaseSearchParams(baseSearchParams);
-visearcher.colorSearch(colorSearchParams);
+
+@Override
+public void onSearchResult(ProductResponse response, ErrorData error) {
+    // do your code here
+}
+
 ```
+
+> On a successful API call, the `ProductResponse` will be valid while `ErrorData` will be `null`, vice-versa on failure.
 
 ## 6. Advanced Search Parameters
 
@@ -495,7 +654,7 @@ You can initialize ViSenze Analytics tracker for sending analytics events by pro
 Tracker tracker = visearch.newTracker(code, false);
 ```
 
-### 7.2  Send Events
+### 7.2 Send Events
 
 Currently we support the following event actions: `click`, `view`, `product_click`, `product_view`, `add_to_cart`, and `transaction`. The `action` parameter can be an arbitrary string and custom events can be sent.
 
