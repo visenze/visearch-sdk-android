@@ -94,6 +94,9 @@ public class BaseProductSearchParams {
     @SerializedName("dedup_score_threshold")
     private Double dedupScoreThreshold;
 
+    @SerializedName("color_rel_weight")
+    private Double colorRelWeight;
+
     @SerializedName("va_aaid")
     private String vaAaid;
 
@@ -111,6 +114,14 @@ public class BaseProductSearchParams {
 
     @SerializedName("va_s2")
     private String vaS2;
+
+    public Double getColorRelWeight() {
+        return colorRelWeight;
+    }
+
+    public void setColorRelWeight(Double colorRelWeight) {
+        this.colorRelWeight = colorRelWeight;
+    }
 
     public Boolean getDedup() {
         return dedup;
