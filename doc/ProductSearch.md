@@ -36,7 +36,7 @@ With the release of ViSenze's Catalog system, ViSearch Android SDK will now incl
     - 5.6 [Facet](#56-facet)
     - 5.7 [FacetItem](#57-facetitem)
     - 5.8 [FaFacetRangecet](#58-facetrange)
-6. [Event Tracking](#6-event-tracking)
+6. [Search Examples](#6-search-examples)
 
 ---
 
@@ -387,11 +387,105 @@ Facet for distinct value filtering.
 
 ### 5.8 FacetRange
 
-Facet for value range filtering. 
+Facet for value range filtering.
 
 | Name | Type | Description |
 |:---|:---|:---|
 | min | Number |  |
 | max | Number |  |
 
-## 6. Event Tracking
+## 6. Search Examples
+
+Here are a set of complex search examples that makes use of the other search parameters and how their response works. Lets start off by ensuring that you know what attributes/ fields are available to your app key (Attributes are set using the Dashboard when creating the App).
+
+- By setting `returnFieldsMapping` to true, you will retrieve a map of field names that can be used for other advanced searches like filtering:
+
+    ```java
+    String imageUrl = "REPLACE WITH VALID URL";
+    ProductSearchByImageParams params = new ProductSearchByImageParams(imageUrl);
+    params.setReturnFieldsMapping(true);
+
+    // The productSearch variable is a class member variable assigned via
+    // SearchAPI.getProductSearchInstance() in a previous function (constructor etc)
+    productSearch.searchByImage(params, new ProductSearch.ResultListener() {
+        @Override
+        public void onSearchResult(ProductResponse response, ErrorData error) {
+            // This mapping represents how ViSenze's fields are mapped to a Client's fields
+            // Visenze Field -> Client Field
+            Map<String, String> mappings = response.getCatalogFieldsMapping();
+
+            // The data field will contain minimal information as we did not set any attributes to get
+            for (Product p: response.getProducts()) {
+                Map<String, Object> data = p.getData();
+            }
+        }
+    });
+    ```
+
+- Once you know what attributes/fields you can use, we can try retrieving more data in the result. By default, there is not alot of information returned in the `data` field of the search results' products. However we can request for more information about the products by setting `attrsToGet`:
+
+    ```java
+    String imageUrl = "REPLACE WITH VALID URL";
+    ProductSearchByImageParams params = new ProductSearchByImageParams(imageUrl);
+    params.setReturnFieldsMapping(true);
+
+    // Tell the API to return the `merchant_category` as part of the product's `data` field.
+    List<String> attributes = new ArrayList<String>();
+    attributes.add("merchant_category");
+    params.setAttrsToGet(attributes);
+    
+    // The productSearch variable is a class member variable assigned via
+    // SearchAPI.getProductSearchInstance() in a previous function (constructor etc)
+    productSearch.searchByImage(params, new ProductSearch.ResultListener() {
+        @Override
+        public void onSearchResult(ProductResponse response, ErrorData error) {
+            Map<String, String> mappings = response.getCatalogFieldsMapping();
+
+            // By setting attrsToGet, we can now find the `merchant_category` field in `data`. 
+            for (Product p: response.getProducts()) {
+                Map<String, Object> data = p.getData();
+            }
+        }
+    });
+    ```
+
+    > Remember to replace `"merchant_category"` to a field that is valid for you (found in the `catalogFieldsMapping`).
+
+- After getting a hang of how attributes/fields work for you, we can further expand the search parameters to perform filterings as well:
+
+    ```java
+    String imageUrl = "REPLACE WITH VALID URL";
+    ProductSearchByImageParams params = new ProductSearchByImageParams(imageUrl);
+    params.setReturnFieldsMapping(true);
+
+    // Tell the API to return the `merchant_category` as part of the product's `data` field.
+    List<String> attributes = new ArrayList<String>();
+    attributes.add("merchant_category");
+    params.setAttrsToGet(attributes);
+
+    // Tell the API to filter products that have the `merchant_category` == "Clothing/Tops/Blouse"
+    Map<String, String> filters = new HashMap<String,String>();
+    filters.put("merchant_category", "Clothing/Tops/Blouse");
+    params.setFilters(filters);
+    
+    // The productSearch variable is a class member variable assigned via
+    // SearchAPI.getProductSearchInstance() in a previous function (constructor etc)
+    productSearch.searchByImage(params, new ProductSearch.ResultListener() {
+        @Override
+        public void onSearchResult(ProductResponse response, ErrorData error) {
+            Map<String, String> mappings = response.getCatalogFieldsMapping();
+
+            // By setting `attrsToGet`, we can now find the `merchant_category` field in `data`. 
+            // By setting `filters`, we can now see that all products belongs to the "Clothing/Tops/Blouse" category from `data["merchant_category"]`.
+            for (Product p: response.getProducts()) {
+                Map<String, Object> data = p.getData();
+            }
+        }
+    });
+    ```
+
+    > Remember to replace `"merchant_category"` to a field that is valid for you (found in the `catalogFieldsMapping`).
+
+    >Remember to replace `"Clothing/Tops/Blouse"` to a valid value depending on your fields.
+
+With these advance examples, you should be able to start playing around with the other parameters!
