@@ -26,6 +26,7 @@ package com.visenze.visearch.camerademo.http;
 
 import android.content.Context;
 
+import com.visenze.visearch.android.ProductSearch;
 import com.visenze.visearch.android.ViSearch;
 
 /**
@@ -34,14 +35,20 @@ import com.visenze.visearch.android.ViSearch;
  */
 public class SearchAPI {
     private static ViSearch viSearch;
-
+    private static ProductSearch productSearch;
 
     public static ViSearch getInstance() throws Exception {
         if (viSearch == null) {
             throw new Exception("init instance before use");
         }
-
         return viSearch;
+    }
+
+    public static ProductSearch getProductSearchInstance() throws Exception {
+        if (productSearch == null) {
+            throw new Exception("init instance before use");
+        }
+        return productSearch;
     }
 
     /**
@@ -52,5 +59,16 @@ public class SearchAPI {
      */
     public static void initSearchAPI(Context context, String appKey) {
         viSearch = new ViSearch.Builder(appKey).build(context);
+    }
+
+    /**
+     * Initialise the ProductSearcher with a valid access and placement ID
+     *
+     * @param context       Activity context
+     * @param appKey        the App Key
+     * @param placementId   the placement ID
+     */
+    public static void initProductSearchAPI(Context context, String appKey, Integer placementId) {
+        productSearch = new ProductSearch.Builder(appKey, placementId).build(context);
     }
 }

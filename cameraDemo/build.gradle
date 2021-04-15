@@ -4,7 +4,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.1'
+        classpath 'com.android.tools.build:gradle:3.5.2'
     }
 }
 
@@ -62,8 +62,8 @@ android {
 }
 
 dependencies {
-//    implementation project(":visearch-android")
-    implementation ('com.visenze:visearch-android:1.5.3')
+    implementation project(":visearch-android")
+    //implementation ('com.visenze:visearch-android:1.5.3')
 
     implementation('androidx.appcompat:appcompat:1.0.0')
     implementation 'me.littlecheesecake:waterfalllayoutview:1.0.0'

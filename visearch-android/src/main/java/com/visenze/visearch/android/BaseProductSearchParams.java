@@ -469,7 +469,11 @@ public class BaseProductSearchParams {
                 List<String> list = new ArrayList<String>();
                 JsonArray array = val.getAsJsonArray();
                 for(int i=0; i<array.size(); i++) {
-                    list.add(array.get(i).toString());
+                    if (array.get(i).isJsonPrimitive()) {
+                        list.add(array.get(i).getAsString());
+                    } else {
+                        list.add(array.get(i).toString());
+                    }
                 }
                 ret.put(key, list);
             } else if (val.isJsonPrimitive()) {
