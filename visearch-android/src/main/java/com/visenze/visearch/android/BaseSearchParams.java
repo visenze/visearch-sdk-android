@@ -32,6 +32,12 @@ public class BaseSearchParams {
 
     private Charset charset;
 
+    private List<String> facets;
+
+    private Integer facetsLimit;
+
+    private String sortBy;
+
     /**
      * The default sets limit at 10 and page at 1, other basic parameters are set as null
      */
@@ -44,6 +50,8 @@ public class BaseSearchParams {
         this.queryInfo = null;
         this.getAllFl = null;
         this.charset = null;
+        this.facets = null;
+        this.facetsLimit = 10;
     }
 
     /**
@@ -124,6 +132,55 @@ public class BaseSearchParams {
         this.fl = fl;
         return this;
     }
+
+    /**
+     * Set the facets list:
+     * Request the search to return the specified schema parameters
+     *
+     * @param facets field list
+     * @return this instance.
+     */
+    public BaseSearchParams setFacets(List<String> facets) {
+        this.facets = facets;
+        return this;
+    }
+
+
+    /**
+     * Set the facets limit:
+     * Request the search to return the specified schema parameters
+     *
+     * @param facetsLimit facet limit
+     * @return this instance.
+     */
+    public BaseSearchParams setFacetsLimit(Integer facetsLimit) {
+        this.facetsLimit = facetsLimit;
+        return this;
+    }
+
+
+    /**
+     * Set the sortBy:
+     * Request the search to return the specified schema parameters
+     *
+     * @param sortBy
+     * @return this instance.
+     */
+    public BaseSearchParams setSortBy(String sortBy) {
+        this.sortBy = sortBy;
+        return this;
+    }
+
+
+    /**
+     * Get the sortBy value
+     *
+     * @return sortBy
+     */
+    public String getSortBy() {
+        return sortBy;
+    }
+
 
     /**
      * Get the limit value
@@ -242,6 +299,24 @@ public class BaseSearchParams {
         return fl;
     }
 
+    /**
+     * Get the facets list
+     *
+     * @return facets list.
+     */
+    public List<String> getFacets() {
+        return facets;
+    }
+
+    /**
+     * Get the facets limit
+     *
+     * @return facets limit
+     */
+    public Integer getFacetsLimit() {
+        return facetsLimit;
+    }
+
     public Map<String, List<String> > toMap() {
         Map<String, List<String> > map = new HashMap<String, List<String> >();
 
@@ -273,6 +348,10 @@ public class BaseSearchParams {
             putStringInMap(map, "get_all_fl", String.valueOf(getAllFl));
         }
 
+        if (sortBy != null) {
+            putStringInMap(map, "sort_by", sortBy);
+        }
+
         if (custom != null && custom.size() > 0) {
             for (String key : custom.keySet()) {
                 putStringInMap(map, key, custom.get(key));
@@ -291,6 +370,14 @@ public class BaseSearchParams {
 
         if (fl != null && fl.size() > 0) {
             map.put("fl", fl);
+        }
+
+        if (facets != null && facets.size() > 0) {
+            map.put("facets", facets);
+        }
+
+        if (facetsLimit != null && facetsLimit > 0) {
+            putStringInMap(map, "facets_limit", facetsLimit.toString());
         }
 
         return map;
