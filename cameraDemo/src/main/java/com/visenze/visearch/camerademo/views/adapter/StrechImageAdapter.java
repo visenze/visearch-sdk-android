@@ -78,8 +78,10 @@ public class StrechImageAdapter extends ArrayAdapter<ImageResult> {
                 .tag(mContext)
                 .into(viewHolder.imageView);
 
-        int score = (int)(imageList.get(position).getScore() * 100);
-        viewHolder.scoreView.setText("Similarity " + String.valueOf(score) + "%");
+        Float score = imageList.get(position).getScore();
+        if (score != null) {
+            viewHolder.scoreView.setText("Similarity " + String.valueOf((int)(score * 100)) + "%");
+        }
 
         return imageLayout;
     }
