@@ -48,25 +48,20 @@ The source code of a demo application is provided together with the SDK ([demo](
 
 ### 1.2 Installing the SDK
 
-You can include the SDK into your project without the dmeo app by modifying your project's dependency using gradle with:
-
+As bintray has expired. we have moved our repository to jitpack. Add repository in your root build.gradle
 ```gradle
-implementation 'com.visenze:visearch-android:1.5.0'
+	allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
 ```
 
-In the `build.gradle` file under your app module, add the packaging options to ensure a successful compilation:
-
+include the dependency in your project using gradle:
 ```gradle
-android {
-    ...
-    packagingOptions {
-        exclude 'META-INF/NOTICE'
-        exclude 'META-INF/LICENSE'
-    }
-}
+implementation 'com.github.visenze:visearch-sdk-android:2.0.1'
 ```
-
-If you want to use the packaged Jars directly in your project, please find all the dependencies in the directory `/dependency`.
 
 ### 1.3 Add User Permissions
 
