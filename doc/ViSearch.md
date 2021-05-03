@@ -67,12 +67,12 @@ You can play around with our demo app to see how we build up the cool image sear
 ### 1.2 Install the SDK
 As bintray has expired. we have moved our repository to jitpack. Add repository in your root build.gradle
 ```gradle
-	allprojects {
-		repositories {
-			...
-			maven { url 'https://jitpack.io' }
-		}
+allprojects {
+	repositories {
+		...
+		maven { url 'https://jitpack.io' }
 	}
+}
 ```
 
 include the dependency in your project using gradle:

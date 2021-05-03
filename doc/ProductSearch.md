@@ -50,12 +50,12 @@ The source code of a demo application is provided together with the SDK ([demo](
 
 As bintray has expired. we have moved our repository to jitpack. Add repository in your root build.gradle
 ```gradle
-	allprojects {
-		repositories {
-			...
-			maven { url 'https://jitpack.io' }
-		}
+allprojects {
+	repositories {
+		...
+		maven { url 'https://jitpack.io' }
 	}
+}
 ```
 
 include the dependency in your project using gradle:
