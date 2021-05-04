@@ -6,7 +6,7 @@ With the release of ViSenze's Catalog system, ViSearch Android SDK will now incl
 - Aggregate search results on a product level instead of image level
 - Consistent data type in API response with Catalog’s schema
 
-> Current stable version: 2.0.0
+> Current stable version: 2.0.1
 
 > Minimum Android SDK Version: API 9, Android 2.3
 
@@ -173,11 +173,11 @@ public void OnImageCaptured(Image image, String imagePath) {
 
 > Image File refers to an actual file with bytes representing the image (i.e. opened from file upload, or taken from camera). The example above is in a scenario where the android camera captures an image.
 
-### 3.2 recommendations
+### 3.2 Recommendations
 
 GET /product/recommendations/{product_id}
 
-This Search By ID is NOT the same ID mentioned in [Search By Image](#31-search-by-image)'s ID. This ID refers to the product's ID and not the image's ID.
+Sample code for calling Recommendations:
 
 ```java
 ...
