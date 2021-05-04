@@ -30,6 +30,8 @@ The ViSearch Android SDK is an open source software to provide easy integration 
     - 5.2 [Filtering Results](#52-filtering-results)
     - 5.3 [Result Score](#53-result-score)
     - 5.4 [Automatic Object Recognition Beta](#54-automatic-object-recognition-beta)
+    - 5.5 [Facets filtering](#55-facets-filtering)
+    - 5.6 [Sort](#56-sort)
 6. [Event Tracking](#6-event-tracking)
     - 6.1 [Setup Tracking](#61-setup-tracking)
     - 6.2 [Send Events](#62-send-events)
@@ -475,6 +477,49 @@ uploadSearchParams.setDetection("bag");
 ```
 
 The detected product types are listed in `product_types` together with the match score and box area of the detected object. Multiple objects can be detected from the query image and they are ranked from the highest score to lowest. The full list of supported product types by our API will also be returned in `product_types_list`.
+
+
+## 5.5 Facets filtering
+You can get the facet results by sending a list of fields to enable faceting on. Here are some limitations on the request:
+
+- Facet fields need to be marked as `searchable` on ViSenze dashboard.
+Text field is not supported as facet field even it is `searchable`.
+System will return value range, the min, max value for numerical fields which are in ‘int’, ‘float’ type.
+
+- Only facet values that exist in current search results will be returned. For example, if your search results contain 10 unique brands, then the facet filters will return the value for these 10 brands.
+ 
+- Facet value list is ordered by the item count descendingly.
+When the value is set to all (facets = *), all the searchable fields will be used as facet fields.
+
+Name | Type | Description
+--- | --- | --- |
+facets | array | List of fields to enable faceting.
+facets_limit | Int | Limit of the number of facet values to be returned. Only for non-numerical fields.
+
+```java
+BaseSearchParams baseSearchParams = new BaseSearchParams();
+baseSearchParams.setFacets(List.of(
+    "brand", "price"
+));
+baseSearchParams.setFacetsLimit(10);
+
+UploadSearchParams uploadSearchParams = new UploadSearchParams(new Image("/path/to/image"));
+uploadSearchParams.setBaseSearchParams(baseSearchParams);
+
+```
+## 5.6 Sort
+you can sort the search result by setting the sort by parameters. 
+
+The metadata field used to sort the search results per page. Ascending or descending order needs to be specified. e.g. price:asc / price:desc
+
+```java
+
+BaseSearchParams baseSearchParams = new BaseSearchParams();
+baseSearchParams.setSortBy("price:desc");
+UploadSearchParams uploadSearchParams = new UploadSearchParams(new Image("/path/to/image"));
+uploadSearchParams.setBaseSearchParams(baseSearchParams);
+
+```
 
 ## 6. Event Tracking
 
