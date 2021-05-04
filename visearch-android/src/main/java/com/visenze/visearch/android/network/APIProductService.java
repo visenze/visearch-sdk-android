@@ -15,7 +15,7 @@ import retrofit2.http.QueryMap;
 public interface APIProductService {
 
     @Retry
-    @GET("product/search_by_id/{product_id}")
+    @GET("product/recommendations/{product_id}")
     Call<ProductResponse> searchById(@Path("product_id") String productId, @QueryMap RetrofitQueryMap query);
 
 

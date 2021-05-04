@@ -43,6 +43,10 @@ public class ProductSearch {
         productSearchService.searchById(visualSimilarParams, listener);
     }
 
+    public void recommendations(ProductSearchByIdParams visualSimilarParams, ResultListener listener) {
+        searchById(visualSimilarParams, listener);
+    }
+
 
     private void addAnalyticsParams(BaseProductSearchParams searchParams) {
         if (searchParams == null) return;
