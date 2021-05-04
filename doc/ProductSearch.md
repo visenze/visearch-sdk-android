@@ -21,7 +21,7 @@ With the release of ViSenze's Catalog system, ViSearch Android SDK will now incl
 2. [Initialization](#2-initialization)
 3. [Solution APIs](#3-solution-apis)
      - 3.1 [Search by Image](#31-search-by-image)
-     - 3.2 [Search by ID](#32-search-by-id)
+     - 3.2 [Search by ID/recommendation](#32-search-by-id)
 4. [Search Parameters](#4-search-parameters)
     - 4.1 [BaseProductSearchParams](#41-baseproductsearchparams)
     - 4.2 [ProductSearchByImageParams](#42-productsearchbyimageparams)
@@ -173,9 +173,9 @@ public void OnImageCaptured(Image image, String imagePath) {
 
 > Image File refers to an actual file with bytes representing the image (i.e. opened from file upload, or taken from camera). The example above is in a scenario where the android camera captures an image.
 
-### 3.2 Search By ID
+### 3.2 Search By ID/recommendations
 
-GET /product/search_by_id/{product_id}
+GET /product/recommendations/{product_id}
 
 This Search By ID is NOT the same ID mentioned in [Search By Image](#31-search-by-image)'s ID. This ID refers to the product's ID and not the image's ID.
 
@@ -192,6 +192,15 @@ public void yourFunction(ProductResponse yourPriorResponse)
             // LOGIC HERE
         }
     });
+    /* or use recommendations 
+    ps.recommendations(params, new ProductSearch.ResultListener()) {
+        @Override
+        public void onSearchResult(ProductResponse response, ErrorData error) {
+            // LOGIC HERE
+        }       
+    }
+    */
+
 }
 ```
 
@@ -208,7 +217,7 @@ The example above assumes that you have stored a prior successful ProductRespons
 Depending on which API function you call, it requires their own parameters both of which is extends off the [BaseProductSearchParams](#41-baseproductsearchparams) class:
 
 - [Search by Image](#31-search-by-image) uses [ProductSearchByImageParams](#42-productsearchbyimageparams)
-- [Search by ID](#32-search-by-id) uses [ProductSearchByIdParams](#43-productsearchbyidparams)
+- [Search by ID/recommendations](#32-search-by-id) uses [ProductSearchByIdParams](#43-productsearchbyidparams)
 
 ### 4.1 BaseProductSearchParams
 
@@ -324,7 +333,7 @@ public void onSearchResult(ProductResponse response, ErrorData error) {
 
 | Name | Type | Description |
 |:---|:---|:---|
-| productId | String | The product's ID which can be used in [Search by ID](#32-search-by-id). |
+| productId | String | The product's ID which can be used in [Search by ID/recommendations](#32-search-by-id). |
 | imageUrl | String | Image URL. |
 | data | Map\<String, Object> | This data field is slightly more complicated and deserves its own section over [here](#541-data). |
 | score | Float | The detection score of the product. |
