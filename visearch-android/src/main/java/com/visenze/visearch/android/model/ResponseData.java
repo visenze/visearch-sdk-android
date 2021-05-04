@@ -68,6 +68,9 @@ public class ResponseData {
     @SerializedName("qinfo")
     private Map<String, String> qinfo;
 
+    @SerializedName("facets")
+    private List<Facet> facets;
+
     public void setStatus(String status) {
         this.status = status;
     }
@@ -126,6 +129,14 @@ public class ResponseData {
 
     public void setQinfo(Map<String, String> qinfo) {
         this.qinfo = qinfo;
+    }
+
+    public void setFacets(List<Facet> facets) {
+        this.facets = facets;
+    }
+
+    public List<Facet> getFacets() {
+        return facets;
     }
 
     public String getStatus() {
@@ -188,6 +199,8 @@ public class ResponseData {
         resultList.setQueryTags(queryTags);
         resultList.setImId(imId);
         resultList.setReqid(reqId);
+
+        resultList.setFacets(facets);
         return resultList;
     }
 

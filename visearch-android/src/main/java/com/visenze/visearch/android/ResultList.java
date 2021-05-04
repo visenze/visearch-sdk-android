@@ -1,5 +1,6 @@
 package com.visenze.visearch.android;
 
+import com.visenze.visearch.android.model.Facet;
 import com.visenze.visearch.android.model.ImageResult;
 import com.visenze.visearch.android.model.ObjectResult;
 import com.visenze.visearch.android.model.ProductType;
@@ -46,6 +47,8 @@ public class ResultList {
 
     // this is from API response
     private String reqid;
+
+    private List<Facet> facets;
 
     public ResultList() {
         imageResult = new ArrayList<ImageResult>();
@@ -148,6 +151,14 @@ public class ResultList {
 
     public String getReqid() {
         return reqid;
+    }
+
+    public List<Facet> getFacets() {
+        return facets;
+    }
+
+    public void setFacets(List<Facet> facets) {
+        this.facets = facets;
     }
 
     public void setPage(Integer page) {

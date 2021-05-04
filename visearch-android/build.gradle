@@ -1,22 +1,6 @@
-buildscript {
-    repositories {
-        jcenter()
-        google()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.1'
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.0'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.4.1'
-    }
+plugins {
+    id 'com.android.library'
 }
-
-apply plugin: 'com.android.library'
-apply plugin: 'jacoco'
-
-repositories {
-    jcenter()
-}
-
 
 def versionMajor = 2
 def versionMinor = 0
@@ -40,44 +24,20 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
-// Add a new configuration to hold your dependencies
-configurations {
-    myConfig
-}
 
 dependencies {
-    compile 'com.visenze.datatracking:tracking:0.1.9'
-    compile 'com.squareup.retrofit2:retrofit:2.3.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.visenze.datatracking:tracking:0.1.9'
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.8.9'
     testImplementation 'org.robolectric:robolectric:3.1'
 }
-
-ext {
-    bintrayUserOrg = "visenze"
-    bintrayRepo = "maven"
-    bintrayName = "com.visenze:visearch-android"
-    bintrayWebsiteUrl = 'https://github.com/visenze/visearch-sdk-android'
-    bintrayVcsUrl = 'https://github.com/visenze/visearch-sdk-android'
-    bintrayIssueTrackerUrl = 'https://github.com/visenze/visearch-sdk-android/issues'
-    bintrayLabels = ['visenze', 'visearch', 'sdk', 'android']
-
-    publishedGroupId = 'com.visenze'
-    artifact = 'visearch-android'
-
-    libraryName = 'visearch-android'
-    libraryDescription = 'ViSearch Android SDK'
-    libraryVersion = "${versionMajor}.${versionMinor}.${versionPatch}"
-
-    developerId = 'visenze'
-    developerName = 'ViSenze'
-}
-
-apply from: '../tools/bintray.gradle'
-apply from: '../tools/makejar.gradle'
-
-

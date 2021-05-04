@@ -1,1 +1,1 @@
-include ':visearch-android', ':cameraDemo', ':lib'
+include ':visearch-android', ':cameraDemo'
