@@ -71,6 +71,9 @@ public class ResponseData {
     @SerializedName("facets")
     private List<Facet> facets;
 
+    @SerializedName("algorithm")
+    private String algorithm;
+
     public void setStatus(String status) {
         this.status = status;
     }
@@ -135,6 +138,10 @@ public class ResponseData {
         this.facets = facets;
     }
 
+    public void setAlgorithm(String algorithm) {
+        this.algorithm = algorithm;
+    }
+
     public List<Facet> getFacets() {
         return facets;
     }
@@ -178,6 +185,11 @@ public class ResponseData {
     public List<ObjectResult> getObjects() {
         return objects;
     }
+
+    public String getAlgorithm() {
+        return algorithm;
+    }
+
     public ResultList getResultList() {
         ResultList resultList = new ResultList();
         if(error != null && error.length > 0) {
@@ -189,6 +201,7 @@ public class ResponseData {
         resultList.setLimit(limit);
         resultList.setTransId(transId);
         resultList.setQueryInfo(qinfo);
+        resultList.setAlgorithm(algorithm);
 
         resultList.setImageList(results);
         resultList.setObjects(objects);
