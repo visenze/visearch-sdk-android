@@ -22,7 +22,7 @@ import retrofit2.Response;
 public class SearchService {
 
     public final static String ID_SEARCH = "search";
-    public final static String RECOMMENDATION = "recommendation";
+    public final static String RECOMMENDATION = "recommendations";
     public final static String COLOR_SEARCH = "colorsearch";
     public final static String UPLOAD_SEARCH = "uploadsearch";
     public final static String DISCOVER_SEARCH = "discoversearch";
