@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,17 +29,21 @@ public class ImageResult {
     @SerializedName("s3_url")
     private String s3Url;
 
+    @SerializedName("alternatives")
+    private List<ImageResult> alternatives;
 
+    @SerializedName("tags")
+    private Map<String, Object> tags;
 
     public ImageResult() {
         this.fieldList = new HashMap<String, String>();
     }
 
-    public ImageResult(String imageName, String imageUrl, Float score, Map<String, String> filedList) {
+    public ImageResult(String imageName, String imageUrl, Float score, Map<String, String> fieldList) {
         this.imageName = imageName;
         this.imageUrl = imageUrl;
         this.score = score;
-        this.fieldList = filedList;
+        this.fieldList = fieldList;
     }
 
     /**
@@ -91,6 +96,14 @@ public class ImageResult {
         return s3Url;
     }
 
+    public List<ImageResult> getAlternatives() {
+        return alternatives;
+    }
+
+    public Map<String, Object> getTags() {
+        return tags;
+    }
+
     public void setImageName(String imageName) {
         this.imageName = imageName;
     }
@@ -112,5 +125,13 @@ public class ImageResult {
 
     public void setS3Url(String s3Url) {
         this.s3Url = s3Url;
+    }
+
+    public void setAlternatives(List<ImageResult> alternatives) {
+        this.alternatives = alternatives;
+    }
+
+    public void setTags(Map<String, Object> tags) {
+        this.tags = tags;
     }
 }
