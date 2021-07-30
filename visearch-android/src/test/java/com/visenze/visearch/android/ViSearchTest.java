@@ -714,7 +714,33 @@ public class ViSearchTest {
 
         assertEquals("ZALORA-SG_9A39AAA26CE98BGS", object2.getResult().get(0).getImageName());
         assertEquals("0.7401134", String.valueOf(object2.getResult().get(0).getScore()));
+        assertNull(resultList.getAlgorithm());
 
+
+    }
+
+    @Test
+    public void testRecommendationResponse() throws Exception{
+        String responseBody = "{\"status\": \"OK\",\"method\": \"recommendations\",\"algorithm\": \"STL\",\"error\": [],\"page\": 1,\"limit\": 10," +
+                "\"total\": 10,\"result\": [{\"im_name\": \"top-name-1\",\"value_map\": {\"title\": \"top-name-001\"},\"tags\": {\"category\": \"top\"}," +
+                "\"alternatives\": [{\"im_name\": \"top-name-2\",\"value_map\": {\"title\": \"top-name-002\"}},{\"im_name\": \"top-name-3\",\"value_map\": {" +
+                "\"title\": \"top-name-003\"}}]}],\"reqid\": \"1156773933236717419\"}";
+
+        ResponseData response = gson.fromJson(responseBody, ResponseData.class);
+        ResultList resultList = response.getResultList();
+
+        assertEquals("STL", resultList.getAlgorithm());
+        assertTrue(1 == resultList.getImageList().size());
+        ImageResult imageResult = resultList.getImageList().get(0);
+
+        assertEquals("top-name-1", imageResult.getImageName());
+        assertEquals("top-name-001", imageResult.getMetaData().getOrDefault("title", null));
+        assertEquals("top", imageResult.getTags().getOrDefault("category", null));
+        assertEquals(2, imageResult.getAlternatives().size());
+        assertEquals("top-name-2", imageResult.getAlternatives().get(0).getImageName());
+        assertEquals("top-name-002", imageResult.getAlternatives().get(0).getMetaData().getOrDefault("title", null));
+        assertEquals("top-name-3", imageResult.getAlternatives().get(1).getImageName());
+        assertEquals("top-name-003", imageResult.getAlternatives().get(1).getMetaData().getOrDefault("title", null));
 
     }
 }
