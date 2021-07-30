@@ -24,7 +24,7 @@ public interface APIService {
     Call<ResponseData> search(@HeaderMap Map<String, String> headers, @QueryMap RetrofitQueryMap query);
 
     @Retry
-    @GET("recommendation")
+    @GET("recommendations")
     Call<ResponseData> recommendation(@HeaderMap Map<String, String> headers, @QueryMap RetrofitQueryMap query);
 
     @Retry

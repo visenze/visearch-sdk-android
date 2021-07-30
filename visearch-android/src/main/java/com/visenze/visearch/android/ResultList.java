@@ -50,6 +50,9 @@ public class ResultList {
 
     private List<Facet> facets;
 
+    // recommendation related
+    private String algorithm;
+
     public ResultList() {
         imageResult = new ArrayList<ImageResult>();
         queryInfo = new HashMap<String, String>();
@@ -219,5 +222,13 @@ public class ResultList {
 
     public void setObjects(List<ObjectResult> objects) {
         this.objects = objects;
+    }
+
+    public String getAlgorithm() {
+        return algorithm;
+    }
+
+    public void setAlgorithm(String algorithm) {
+        this.algorithm = algorithm;
     }
 }

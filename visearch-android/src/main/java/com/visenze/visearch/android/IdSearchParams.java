@@ -11,6 +11,13 @@ public class IdSearchParams extends SearchParams {
 
     private String imName;
 
+    // for recommendations
+    private String algorithm;
+
+    private Integer altLimit;
+
+    private String dedupBy;
+
     public IdSearchParams() {
         super();
     }
@@ -45,10 +52,47 @@ public class IdSearchParams extends SearchParams {
         return imName;
     }
 
+    public String getAlgorithm() {
+        return algorithm;
+    }
+
+    public void setAlgorithm(String algorithm) {
+        this.algorithm = algorithm;
+    }
+
+    public Integer getAltLimit() {
+        return altLimit;
+    }
+
+    public void setAltLimit(Integer altLimit) {
+        this.altLimit = altLimit;
+    }
+
+    public String getDedupBy() {
+        return dedupBy;
+    }
+
+    public void setDedupBy(String dedupBy) {
+        this.dedupBy = dedupBy;
+    }
+
     @Override
     public Map<String, List<String> > toMap() {
         Map<String, List<String> > map = super.toMap();
         putStringInMap(map, "im_name", imName);
+
+        if (algorithm != null) {
+            putStringInMap(map, "algorithm", algorithm);
+        }
+
+        if (dedupBy != null) {
+            putStringInMap(map, "dedup_by", dedupBy);
+        }
+
+        if (altLimit != null) {
+            putStringInMap(map, "alt_limit", String.valueOf(altLimit));
+        }
+
         return map;
     }
 

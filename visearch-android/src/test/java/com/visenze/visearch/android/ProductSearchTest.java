@@ -364,5 +364,110 @@ public class ProductSearchTest {
     }
 
 
+    @Test
+    public void testRecommendationsResponse() {
+        String json = "{\n" +
+                "    \"reqid\": \"017a3bb0a050fb56218beb28b9e5ec\",\n" +
+                "    \"status\": \"OK\",\n" +
+                "    \"method\": \"product/recommendations\",\n" +
+                "    \"page\": 1,\n" +
+                "    \"limit\": 10,\n" +
+                "    \"total\": 2,\n" +
+                "    \"product_types\": [],\n" +
+                "    \"result\": [\n" +
+                "        {\n" +
+                "            \"product_id\": \"top-name-1\",\n" +
+                "            \"main_image_url\": \"https://localhost/top-name-1.jpg\",\n" +
+                "            \"data\": {\n" +
+                "                \"title\": \"top-name-001\"\n" +
+                "            },\n" +
+                "            \"tags\": {\n" +
+                "                \"category\": \"top\"\n" +
+                "            },\n" +
+                "            \"alternatives\": [\n" +
+                "                {\n" +
+                "                    \"product_id\": \"top-name-2\",\n" +
+                "                    \"main_image_url\": \"https://localhost/top-name-2.jpg\",\n" +
+                "                    \"data\": {\n" +
+                "                        \"title\": \"top-name-002\"\n" +
+                "                    }\n" +
+                "                },\n" +
+                "                {\n" +
+                "                    \"product_id\": \"top-name-3\",\n" +
+                "                    \"main_image_url\": \"https://localhost/top-name-3.jpg\",\n" +
+                "                    \"data\": {\n" +
+                "                        \"title\": \"top-name-003\"\n" +
+                "                    }\n" +
+                "                }\n" +
+                "            ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"product_id\": \"pants-name-1\",\n" +
+                "            \"main_image_url\": \"https://localhost/pants-name-1.jpg\",\n" +
+                "            \"data\": {\n" +
+                "                \"title\": \"pants-name-001\"\n" +
+                "            },\n" +
+                "            \"tags\": {\n" +
+                "                \"category\": \"pants\"\n" +
+                "            },\n" +
+                "            \"alternatives\": [\n" +
+                "                {\n" +
+                "                    \"product_id\": \"pants-name-2\",\n" +
+                "                    \"main_image_url\": \"https://localhost/pants-name-2.jpg\",\n" +
+                "                    \"data\": {\n" +
+                "                        \"title\": \"pants-name-002\"\n" +
+                "                    }\n" +
+                "                }\n" +
+                "            ]\n" +
+                "        }\n" +
+                "    ],\n" +
+                "    \"strategy\": {\n" +
+                "        \"id\": 1,\n" +
+                "        \"name\": \"Visually similar\",\n" +
+                "        \"algorithm\": \"VSR\"\n" +
+                "    },\n" +
+                "    \"alt_limit\": 5\n" +
+                "}";
+
+        ProductResponse response = gson.fromJson(json, ProductResponse.class);
+        searchService.handleResponse(response, new ProductSearch.ResultListener() {
+            @Override
+            public void onSearchResult(ProductResponse response, ErrorData error) {
+                assertNull(error);
+
+                assertEquals(1, response.getPage());
+                assertEquals(10, response.getLimit());
+                assertEquals(2, response.getTotal());
+                assertEquals(5, response.getAltLimit().intValue());
+                assertEquals(1, response.getStrategy().getId().intValue());
+                assertEquals("Visually similar", response.getStrategy().getName());
+                assertEquals("VSR", response.getStrategy().getAlgorithm());
+                assertEquals(2, response.getProducts().size());
+
+                assertEquals("top-name-1", response.getProducts().get(0).getProductId());
+                assertEquals("top", response.getProducts().get(0).getTags().get("category"));
+                assertEquals("https://localhost/top-name-1.jpg", response.getProducts().get(0).getImageUrl());
+                assertEquals("top-name-001", response.getProducts().get(0).getData().get("title"));
+                assertEquals(2, response.getProducts().get(0).getAlternatives().size());
+                assertEquals("top-name-2", response.getProducts().get(0).getAlternatives().get(0).getProductId());
+                assertEquals("https://localhost/top-name-2.jpg", response.getProducts().get(0).getAlternatives().get(0).getImageUrl());
+                assertEquals("top-name-002", response.getProducts().get(0).getAlternatives().get(0).getData().get("title"));
+                assertEquals("top-name-3", response.getProducts().get(0).getAlternatives().get(1).getProductId());
+                assertEquals("https://localhost/top-name-3.jpg", response.getProducts().get(0).getAlternatives().get(1).getImageUrl());
+                assertEquals("top-name-003", response.getProducts().get(0).getAlternatives().get(1).getData().get("title"));
+
+                assertEquals("pants-name-1", response.getProducts().get(1).getProductId());
+                assertEquals("pants", response.getProducts().get(1).getTags().get("category"));
+                assertEquals("https://localhost/pants-name-1.jpg", response.getProducts().get(1).getImageUrl());
+                assertEquals("pants-name-001", response.getProducts().get(1).getData().get("title"));
+                assertEquals(1, response.getProducts().get(1).getAlternatives().size());
+                assertEquals("pants-name-2", response.getProducts().get(1).getAlternatives().get(0).getProductId());
+                assertEquals("https://localhost/pants-name-2.jpg", response.getProducts().get(1).getAlternatives().get(0).getImageUrl());
+                assertEquals("pants-name-002", response.getProducts().get(1).getAlternatives().get(0).getData().get("title"));
+
+            }
+        });
+
+    }
 
 }
