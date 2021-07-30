@@ -46,6 +46,12 @@ public class ProductResponse {
     @SerializedName("reqid")
     private String reqId;
 
+    @SerializedName("alt_limit")
+    private Integer altLimit;
+
+    @SerializedName("strategy")
+    private Strategy strategy;
+
     public String getStatus() {
         return status;
     }
@@ -148,5 +154,21 @@ public class ProductResponse {
 
     public void setReqId(String reqId) {
         this.reqId = reqId;
+    }
+
+    public Integer getAltLimit() {
+        return altLimit;
+    }
+
+    public void setAltLimit(Integer altLimit) {
+        this.altLimit = altLimit;
+    }
+
+    public Strategy getStrategy() {
+        return strategy;
+    }
+
+    public void setStrategy(Strategy strategy) {
+        this.strategy = strategy;
     }
 }

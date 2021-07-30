@@ -3,6 +3,7 @@ package com.visenze.visearch.android.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
 import java.util.Map;
 
 public class Product {
@@ -35,6 +36,11 @@ public class Product {
     @Expose(deserialize = false, serialize = false)
     private Box box;
 
+    @SerializedName("tags")
+    private Map<String, Object> tags;
+
+    @SerializedName("alternatives")
+    private List<Product> alternatives;
 
     public String getProductId() {
         return productId;
@@ -111,5 +117,21 @@ public class Product {
         }
 
         return null;
+    }
+
+    public Map<String, Object> getTags() {
+        return tags;
+    }
+
+    public void setTags(Map<String, Object> tags) {
+        this.tags = tags;
+    }
+
+    public List<Product> getAlternatives() {
+        return alternatives;
+    }
+
+    public void setAlternatives(List<Product> alternatives) {
+        this.alternatives = alternatives;
     }
 }
