@@ -4,16 +4,16 @@ plugins {
 
 def versionMajor = 2
 def versionMinor = 1
-def versionPatch = 0
-version = '2.1.0'
+def versionPatch = 1
+version = '2.1.1'
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion '28.0.3'
+    compileSdkVersion 29
+    buildToolsVersion "29.0.2"
 
     defaultConfig {
         minSdkVersion 19
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode versionMajor * 10000 + versionMinor * 100 + versionPatch
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
     }
@@ -33,7 +33,7 @@ android {
 
 
 dependencies {
-    implementation 'com.visenze.datatracking:tracking:0.1.9'
+    implementation 'com.github.visenze:visenze-tracking-android:0.2.1'
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
 

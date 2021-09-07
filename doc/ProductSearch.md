@@ -60,7 +60,7 @@ allprojects {
 
 include the dependency in your project using gradle:
 ```gradle
-implementation 'com.github.visenze:visearch-sdk-android:2.0.1'
+implementation 'com.github.visenze:visearch-sdk-android:2.1.1'
 ```
 
 ### 1.3 Add User Permissions
@@ -91,7 +91,7 @@ Our SDK additionally needs these user permissions to work. Add the following dec
 ```java
 public class MyActivity extends Activity {
     private static final String appKey = "YOUR_APP_KEY";
-    private static final Integer placementId = 1; 
+    private static final Integer placementId = 1;
     ...
 
     @Override
@@ -429,7 +429,7 @@ Here are a set of complex search examples that makes use of the other search par
     List<String> attributes = new ArrayList<String>();
     attributes.add("merchant_category");
     params.setAttrsToGet(attributes);
-    
+
     // The productSearch variable is a class member variable assigned via
     // SearchAPI.getProductSearchInstance() in a previous function (constructor etc)
     productSearch.searchByImage(params, new ProductSearch.ResultListener() {
@@ -437,7 +437,7 @@ Here are a set of complex search examples that makes use of the other search par
         public void onSearchResult(ProductResponse response, ErrorData error) {
             Map<String, String> mappings = response.getCatalogFieldsMapping();
 
-            // By setting attrsToGet, we can now find the `merchant_category` field in `data`. 
+            // By setting attrsToGet, we can now find the `merchant_category` field in `data`.
             for (Product p: response.getProducts()) {
                 Map<String, Object> data = p.getData();
             }
@@ -463,7 +463,7 @@ Here are a set of complex search examples that makes use of the other search par
     Map<String, String> filters = new HashMap<String,String>();
     filters.put("merchant_category", "Clothing/Tops/Blouse");
     params.setFilters(filters);
-    
+
     // The productSearch variable is a class member variable assigned via
     // SearchAPI.getProductSearchInstance() in a previous function (constructor etc)
     productSearch.searchByImage(params, new ProductSearch.ResultListener() {
@@ -471,7 +471,7 @@ Here are a set of complex search examples that makes use of the other search par
         public void onSearchResult(ProductResponse response, ErrorData error) {
             Map<String, String> mappings = response.getCatalogFieldsMapping();
 
-            // By setting `attrsToGet`, we can now find the `merchant_category` field in `data`. 
+            // By setting `attrsToGet`, we can now find the `merchant_category` field in `data`.
             // By setting `filters`, we can now see that all products belongs to the "Clothing/Tops/Blouse" category from `data["merchant_category"]`.
             for (Product p: response.getProducts()) {
                 Map<String, Object> data = p.getData();
