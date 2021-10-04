@@ -6,7 +6,7 @@ With the release of ViSenze's Catalog system, ViSearch Android SDK will now incl
 - Aggregate search results on a product level instead of image level
 - Consistent data type in API response with Catalog’s schema
 
-> Current stable version: 2.1.0
+> Current stable version: 2.1.1
 
 > Minimum Android SDK Version: API 9, Android 2.3
 
@@ -497,10 +497,11 @@ In addition, to improve subsequent search quality, it is recommended to send use
 
 ### 7.1 Setup Tracking
 
-You can initialize ViSenze Analytics tracker for sending analytics events by providing the code (found in ViSenze Dashboard).
+You can initialize ViSenze Analytics tracker for sending analytics events as follow.
 
 ```java
-Tracker tracker = ProductSearch.newTracker(null, false);
+ProductSeach productSearch = SearchAPI.getProductSearchInstance();
+Tracker tracker = productSearch.newTracker(null, false);
 ```
 
 ### 7.2 Send Events
