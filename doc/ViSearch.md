@@ -58,7 +58,7 @@ public class MainActivity extends FragmentActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-    
+
     ...
 ```
 
@@ -79,6 +79,7 @@ allprojects {
 
 include the dependency in your project using gradle:
 ```gradle
+implementation 'com.github.visenze:visenze-tracking-android:0.2.1'
 implementation 'com.github.visenze:visearch-sdk-android:2.0.1'
 ```
 
@@ -188,7 +189,7 @@ viSearcher.uploadSearch(uploadSearchParams);
 public void onPictureTaken(byte[] bytes, Camera camera) {
     Image image = new Image(bytes);
     UploadSearchParams uploadSearchParams = new UploadSearchParams(image);
-    
+
     viSearcher.uploadSearch(uploadSearchParams);
 }
 ```
@@ -279,7 +280,7 @@ ViSearch Android SDK provides an interface to handle byte array returned from [`
 public void onPictureTaken(byte[] bytes, Camera camera) {
     Image image = new Image(bytes, ResizeSettings.CAMERA_HIGH, 90);
     UploadSearchParams uploadSearchParams = new UploadSearchParams(image);
-    
+
     viSearcher.uploadSearch(uploadSearchParams);
 }
 ```
@@ -487,7 +488,7 @@ Text field is not supported as facet field even it is `searchable`.
 System will return value range, the min, max value for numerical fields which are in ‘int’, ‘float’ type.
 
 - Only facet values that exist in current search results will be returned. For example, if your search results contain 10 unique brands, then the facet filters will return the value for these 10 brands.
- 
+
 - Facet value list is ordered by the item count descendingly.
 When the value is set to all (facets = *), all the searchable fields will be used as facet fields.
 
@@ -508,7 +509,7 @@ uploadSearchParams.setBaseSearchParams(baseSearchParams);
 
 ```
 ## 5.6 Sort
-you can sort the search result by setting the sort by parameters. 
+you can sort the search result by setting the sort by parameters.
 
 The metadata field used to sort the search results per page. Ascending or descending order needs to be specified. e.g. price:asc / price:desc
 
@@ -557,11 +558,11 @@ Event.createProductImpressionEvent(String queryId, String pid, String imgUrl, in
 
 Event.createAddCartEvent(String queryId, String pid, String imgUrl, int pos)
 
-Event.createTransactionEvent(String queryId, String transactionId, double value) 
+Event.createTransactionEvent(String queryId, String transactionId, double value)
 
 // custom event with arbitray action
 Event.createCustomEvent(String action)
- 
+
 ```
 
 Finally send the event via the tracker:

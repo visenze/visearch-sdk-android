@@ -63,6 +63,7 @@ allprojects {
 
 include the dependency in your project using gradle:
 ```gradle
+implementation 'com.github.visenze:visenze-tracking-android:0.2.1'
 implementation 'com.github.visenze:visearch-sdk-android:2.1.1'
 ```
 
@@ -513,8 +514,8 @@ To send events, first retrieve the search query ID found in the search results l
 ```java
         public void onSearchResult(ProductResponse response, ErrorData error) {
             String queryId = response.getReqid();
-	    
-	    // send event here 
+
+	    // send event here
         }
 
 ```
@@ -528,11 +529,11 @@ Event.createProductImpressionEvent(String queryId, String pid, String imgUrl, in
 
 Event.createAddCartEvent(String queryId, String pid, String imgUrl, int pos)
 
-Event.createTransactionEvent(String queryId, String transactionId, double value) 
+Event.createTransactionEvent(String queryId, String transactionId, double value)
 
 // custom event with arbitray action
 Event.createCustomEvent(String action)
- 
+
 ```
 
 Finally send the event via the tracker:
