@@ -6,7 +6,7 @@ With the release of ViSenze's Catalog system, ViSearch Android SDK will now incl
 - Aggregate search results on a product level instead of image level
 - Consistent data type in API response with Catalog’s schema
 
-> Current stable version: 2.1.0
+> Current stable version: 2.1.1
 
 > Minimum Android SDK Version: API 9, Android 2.3
 
@@ -37,6 +37,9 @@ With the release of ViSenze's Catalog system, ViSearch Android SDK will now incl
     - 5.7 [FacetItem](#57-facetitem)
     - 5.8 [FacetRange](#58-facetrange)
 6. [Search Examples](#6-search-examples)
+7. [Event Tracking](#7-event-tracking)
+    - 7.1 [Setup Tracking](#71-setup-tracking)
+    - 7.2 [Send Events](#72-send-events)
 
 ---
 
@@ -60,6 +63,7 @@ allprojects {
 
 include the dependency in your project using gradle:
 ```gradle
+implementation 'com.github.visenze:visenze-tracking-android:0.2.1'
 implementation 'com.github.visenze:visearch-sdk-android:2.1.1'
 ```
 
@@ -485,3 +489,90 @@ Here are a set of complex search examples that makes use of the other search par
     >Remember to replace `"Clothing/Tops/Blouse"` to a valid value depending on your fields.
 
 With these advance examples, you should be able to start playing around with the other parameters!
+
+## 7. Event Tracking
+
+ViSearch Android SDK provides methods to track how your customer interacts with the search results.
+
+In addition, to improve subsequent search quality, it is recommended to send user actions when they interact with the results.
+
+### 7.1 Setup Tracking
+
+You can initialize ViSenze Analytics tracker for sending analytics events as follow.
+
+```java
+ProductSeach productSearch = SearchAPI.getProductSearchInstance();
+Tracker tracker = productSearch.newTracker(null, false);
+```
+
+### 7.2 Send Events
+
+Currently we support the following event actions: `click`, `view`, `product_click`, `product_view`, `add_to_cart`, and `transaction`. The `action` parameter can be an arbitrary string and custom events can be sent.
+
+To send events, first retrieve the search query ID found in the search results listener:
+
+```java
+        public void onSearchResult(ProductResponse response, ErrorData error) {
+            String queryId = response.getReqid();
+
+	    // send event here
+        }
+
+```
+
+Then, create the event using 1 of the helper methods Event.createXXXEvent(). For `product_click`, `product_view` events, queryId, pid, imgUrl and pos are all required.
+
+```java
+Event.createProductClickEvent(String queryId, String pid, String imgUrl, int pos)
+
+Event.createProductImpressionEvent(String queryId, String pid, String imgUrl, int pos)
+
+Event.createAddCartEvent(String queryId, String pid, String imgUrl, int pos)
+
+Event.createTransactionEvent(String queryId, String transactionId, double value)
+
+// custom event with arbitray action
+Event.createCustomEvent(String action)
+
+```
+
+Finally send the event via the tracker:
+
+```java
+tracker.sendEvent(event);
+```
+
+Below are the brief description for various parameters:
+
+Field | Description | Required
+--- | --- | ---
+queryId| The request id of the search request. This reqid can be obtained from all the search result:```resultList.getReqid()``` | Yes
+action | Event action. Currently we support the following event actions: `click`, `view`, `product_click`, `product_view`, `add_to_cart`, and `transaction`. | Yes
+pid | Product ID ( generally this is the `im_name`) for this product. Can be retrieved via `ImageResult.getImageName()` | Required for product view, product click and add to cart events
+imgUrl | Image URL ( generally this is the `im_url`) for this product. Can be retrieved via `ImageResult.getImageUrl()` | Required for product view, product click and add to cart events
+pos | Position of the product in Search Results e.g. click position/ view position. Note that this start from 1 , not 0. | Required for product view, product click and add to cart events
+transactionId | Transaction ID | Required for transaction event.
+value | Transaction value e.g. order value | Required for transaction event.
+uid | Unique user/device ID. If not provided, a random (non-personalizable) UUID will be generated to track the device. | No
+category | A generic string to categorize / group the events in related user flow. For example: `privacy_flow`, `videos`, `search_results`. Typically, categories are used to group related UI elements. Max length: 32 | No
+name | Event name e.g. `open_app` , `click_on_camera_btn`. Max length: 32. | No
+label | label for main interaction object such as product title, page title. This together with `action` can be used to decide whether an event is unique e.g. if user clicks on same product twice, only 1 unique click . Max length: 32. | No
+fromReqId | Generic request ID field to specify which request leads to this event e.g. click request ID that leads to the purchase. The chain can be like this queryId → clickId → purchase. Max length: 32. | No
+source | Segment the traffic by tagging them e.g. from camera, from desktop. Max length: 32. | No
+brand | Product brand. Max length: 64. | No
+price | Product price. Numeric field, if provided must be >=0 and is a valid number. | No
+currency | ISO 3 characters code e.g. “USD”. Will be validated if provided. | No
+productUrl| Product URL. Max length: 512 | No
+campaign | Advertising campaign. Max length : 64. | No
+campaignAdGroup | Ad group name (only relevant for campaign) | No
+campaignCreative | Creative name (only relevant for campaign) | No
+n1 | Custom numeric parameter. | No
+n2 | Custom numeric parameter. | No
+n3 | Custom numeric parameter. | No
+n4 | Custom numeric parameter. | No
+n5 | Custom numeric parameter. | No
+s1 | Custom string parameter. Max length: 64. | No
+s2 | Custom string parameter. Max length: 64. | No
+s3 | Custom string parameter. Max length: 64. | No
+s4 | Custom string parameter. Max length: 64. | No
+s5 | Custom string parameter. Max length: 64. | No
