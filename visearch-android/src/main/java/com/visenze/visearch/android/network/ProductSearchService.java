@@ -1,5 +1,6 @@
 package com.visenze.visearch.android.network;
 
+import com.google.gson.Gson;
 import com.visenze.visearch.android.BaseProductSearchParams;
 import com.visenze.visearch.android.ProductSearchByImageParams;
 import com.visenze.visearch.android.ProductSearch;
@@ -79,11 +80,18 @@ public class ProductSearchService {
         call.enqueue(new Callback<ProductResponse>() {
             @Override
             public void onResponse(Call<ProductResponse> call, Response<ProductResponse> response) {
-
                 if(response.isSuccessful() && response.body() !=null) {
                     ProductResponse data = response.body();
                     handleResponse(data, resultListener);
                 } else {
+                    if (response.errorBody() != null) {
+                        Gson gson = new Gson();
+                        ProductResponse resp = gson.fromJson(response.errorBody().charStream(), ProductResponse.class);
+                        if (resp != null && resp.getError()!= null) {
+                            resultListener.onSearchResult(null, resp.getError());
+                            return;
+                        }
+                    }
                     ErrorData error = new ErrorData();
                     error.setMessage("api failed");
                     error.setCode(-1);
