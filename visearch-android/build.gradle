@@ -5,8 +5,8 @@ plugins {
 
 def versionMajor = 2
 def versionMinor = 1
-def versionPatch = 4
-version = '2.1.4'
+def versionPatch = 5
+version = '2.1.5'
 
 android {
     compileSdkVersion 29
@@ -20,9 +20,13 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("String","VERSION_NAME","\"${defaultConfig.versionName}\"")
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField("String","VERSION_NAME","\"${defaultConfig.versionName}\"")
         }
     }
 
@@ -41,4 +45,18 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.8.9'
     testImplementation 'org.robolectric:robolectric:3.1'
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            // Creates a Maven publication called "release".
+            release(MavenPublication) {
+                from components.release
+                groupId = 'com.github.visenze'
+                artifactId = 'visearch-sdk-android'
+                version = "${version}"
+            }
+        }
+    }
 }
