@@ -1,24 +1,23 @@
 buildscript {
     repositories {
-        jcenter()
         mavenCentral()
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.2'
+        classpath 'com.android.tools.build:gradle:3.5.4'
     }
 }
 
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 32
     buildToolsVersion "29.0.2"
 
     defaultConfig {
         applicationId "com.visenze.visearch.android.example"
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 32
         versionCode 1
         versionName "1.0.0"
         javaCompileOptions {
@@ -67,8 +66,8 @@ dependencies {
 //    implementation 'com.github.visenze:visearch-sdk-android:2.1.1'
 
     implementation('androidx.appcompat:appcompat:1.0.0')
-    implementation 'me.littlecheesecake:waterfalllayoutview:1.0.0'
-    implementation 'me.littlecheesecake:croplayout:1.0.5'
+//    implementation 'me.littlecheesecake:waterfalllayoutview:1.0.0'
+//    implementation 'me.littlecheesecake:croplayout:1.0.5'
     implementation 'com.sothree.slidinguppanel:library:3.2.0'
     implementation 'in.srain.cube:grid-view-with-header-footer:1.0.8'
     implementation 'it.sephiroth.android.library.horizontallistview:hlistview:1.2.2'

@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import me.littlecheesecake.croplayout.model.ScalableBox;
+//import me.littlecheesecake.croplayout.model.ScalableBox;
 
 /**
  * Created by visenze on 16/12/15.
@@ -64,28 +64,28 @@ public class DataHelper {
         return productList;
     }
 
-    public static String getEstimatedType(ScalableBox box, List<ProductType> productTypes) {
-        String type = "all";
-        int maxIndex = -1;
-        float maxOverlap = 0;
-        for (int i = 0; i < productTypes.size() && (!productTypes.get(i).getType().equals("other")); i++) {
-            Box productBox = productTypes.get(i).getBox();
-            float overlap = calculateOverlap(box.getX1(), box.getX2(), box.getY1(), box.getY2(),
-                    productBox.getX1(), productBox.getX2(), productBox.getY1(), productBox.getY2());
-            if (overlap > maxOverlap) {
-                maxOverlap = overlap;
-                maxIndex = i;
-            } else if (overlap == maxOverlap && maxOverlap > 1f) {
-                return type;
-            }
-        }
-
-        if (maxOverlap > 0.5f && maxIndex > -1) {
-            type = productTypes.get(maxIndex).getType();
-        }
-
-        return type;
-    }
+//    public static String getEstimatedType(ScalableBox box, List<ProductType> productTypes) {
+//        String type = "all";
+//        int maxIndex = -1;
+//        float maxOverlap = 0;
+//        for (int i = 0; i < productTypes.size() && (!productTypes.get(i).getType().equals("other")); i++) {
+//            Box productBox = productTypes.get(i).getBox();
+//            float overlap = calculateOverlap(box.getX1(), box.getX2(), box.getY1(), box.getY2(),
+//                    productBox.getX1(), productBox.getX2(), productBox.getY1(), productBox.getY2());
+//            if (overlap > maxOverlap) {
+//                maxOverlap = overlap;
+//                maxIndex = i;
+//            } else if (overlap == maxOverlap && maxOverlap > 1f) {
+//                return type;
+//            }
+//        }
+//
+//        if (maxOverlap > 0.5f && maxIndex > -1) {
+//            type = productTypes.get(maxIndex).getType();
+//        }
+//
+//        return type;
+//    }
 
     public static UploadSearchParams setSearchParams(UploadSearchParams uploadSearchParams, String detection) {
         List<String> fl = new ArrayList<>();

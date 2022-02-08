@@ -15,16 +15,16 @@
         android:layout_marginBottom="@dimen/edit_bottom_margin"
         android:background="@drawable/round_corner_red_background">
 
-        <me.littlecheesecake.croplayout.EditPhotoView
-            xmlns:crop="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/photoedit_image_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="30dp"
-            android:background="@drawable/round_corner_background"
-            crop:crop_corner_color="@color/green"
-            crop:crop_line_color="@color/transparent"
-            crop:crop_shadow_color="@color/gray_trans_40"/>
+<!--        <me.littlecheesecake.croplayout.EditPhotoView-->
+<!--            xmlns:crop="http://schemas.android.com/apk/res-auto"-->
+<!--            android:id="@+id/photoedit_image_view"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_marginBottom="30dp"-->
+<!--            android:background="@drawable/round_corner_background"-->
+<!--            crop:crop_corner_color="@color/green"-->
+<!--            crop:crop_line_color="@color/transparent"-->
+<!--            crop:crop_shadow_color="@color/gray_trans_40"/>-->
         <TextView
             android:id="@+id/photoedit_rotate_button"
             android:layout_width="wrap_content"

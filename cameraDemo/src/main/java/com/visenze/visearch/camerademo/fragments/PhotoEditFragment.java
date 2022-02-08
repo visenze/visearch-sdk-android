@@ -68,12 +68,12 @@ import butterknife.InjectView;
 import butterknife.InjectViews;
 import butterknife.OnClick;
 import it.sephiroth.android.library.widget.HListView;
-import me.littlecheesecake.croplayout.EditPhotoView;
-import me.littlecheesecake.croplayout.EditableImage;
-import me.littlecheesecake.croplayout.handler.OnBoxChangedListener;
-import me.littlecheesecake.croplayout.model.ScalableBox;
-import me.littlecheesecake.waterfalllayoutview.MultiColumnListView;
-import me.littlecheesecake.waterfalllayoutview.WFAdapterView;
+//import me.littlecheesecake.croplayout.EditPhotoView;
+//import me.littlecheesecake.croplayout.EditableImage;
+//import me.littlecheesecake.croplayout.handler.OnBoxChangedListener;
+//import me.littlecheesecake.croplayout.model.ScalableBox;
+//import me.littlecheesecake.waterfalllayoutview.MultiColumnListView;
+//import me.littlecheesecake.waterfalllayoutview.WFAdapterView;
 
 /**
  * Created by yulu on 2/17/15.
@@ -98,7 +98,7 @@ public class PhotoEditFragment extends Fragment implements ViSearch.ResultListen
     @InjectView(R.id.result_loading)            ImageView               loadingImage;
     @InjectView(R.id.result_query_image)        ImageView               queryImage;
     @InjectViews({R.id.result_grid_view})       List<View>              photoUIs;
-    @InjectView(R.id.photoedit_image_view)      EditPhotoView           editPhotoView;
+//    @InjectView(R.id.photoedit_image_view)      EditPhotoView           editPhotoView;
     @InjectView(R.id.photoedit_rotate_button)   TextView                rotateButton;
     @InjectView(R.id.result_grid_view)          FrameLayout             resultGridView;
     @InjectView(R.id.category_list_view)        HListView               categoryListView;
@@ -106,7 +106,7 @@ public class PhotoEditFragment extends Fragment implements ViSearch.ResultListen
     @InjectView(R.id.result_switch_button)      ImageView               switchButtonView;
     //Dynamic UI elements
     private HorizontalProductTypeArrayAdapter   horizontalAdapter;
-    private MultiColumnListView                 waterfallViewLayout;
+//    private MultiColumnListView                 waterfallViewLayout;
     private ScrollAwareGridView                 gridViewLayout;
     private VIEW_LAYOUT                         currentLayout;
     //parameters passed in from camera activity
@@ -118,7 +118,7 @@ public class PhotoEditFragment extends Fragment implements ViSearch.ResultListen
     private ResultList                  resultList;
     //ViSearch and Search parameters
     private ViSearch                    viSearch;
-    private EditableImage               editableImage;
+//    private EditableImage               editableImage;
 
     /**
      * Constructor: get new instance of PhotoEditFragment
@@ -165,12 +165,12 @@ public class PhotoEditFragment extends Fragment implements ViSearch.ResultListen
             public void onItemClick(it.sephiroth.android.library.widget.AdapterView<?> adapterView, View view, int i, long l) {
                 horizontalAdapter.setSelected(i);
 
-                ScalableBox b = editableImage.getBox();
+//                ScalableBox b = editableImage.getBox();
 
                 //set search parameters
                 UploadSearchParams uploadSearchParams = new UploadSearchParams();
                 uploadSearchParams.setImId(imId);
-                uploadSearchParams.setBox(new Box(b.getX1(), b.getY1(), b.getX2(), b.getY2()));
+//                uploadSearchParams.setBox(new Box(b.getX1(), b.getY1(), b.getX2(), b.getY2()));
 
                 //set detection
                 selectedType = productList.get(i);
@@ -182,25 +182,25 @@ public class PhotoEditFragment extends Fragment implements ViSearch.ResultListen
             }
         });
 
-        editableImage = new EditableImage(imagePath);
-        editableImage.setBox(getDetectionBox(box));
-        editPhotoView.initView(getActivity(), editableImage);
-        editPhotoView.setOnBoxChangedListener(new OnBoxChangedListener() {
-            @Override
-            public void onChanged(int x1, int y1, int x2, int y2) {
-                //set search parameters
-                UploadSearchParams uploadSearchParams = new UploadSearchParams();
-                uploadSearchParams.setImId(imId);
-                uploadSearchParams.setBox(new Box(x1, y1, x2, y2));
-
-                //set detection
-                DataHelper.setSearchParams(uploadSearchParams, selectedType);
-
-                viSearch.cancelSearch();
-                viSearch.uploadSearch(uploadSearchParams);
-                changeUploadUI();
-            }
-        });
+//        editableImage = new EditableImage(imagePath);
+//        editableImage.setBox(getDetectionBox(box));
+//        editPhotoView.initView(getActivity(), editableImage);
+//        editPhotoView.setOnBoxChangedListener(new OnBoxChangedListener() {
+//            @Override
+//            public void onChanged(int x1, int y1, int x2, int y2) {
+//                //set search parameters
+//                UploadSearchParams uploadSearchParams = new UploadSearchParams();
+//                uploadSearchParams.setImId(imId);
+//                uploadSearchParams.setBox(new Box(x1, y1, x2, y2));
+//
+//                //set detection
+//                DataHelper.setSearchParams(uploadSearchParams, selectedType);
+//
+//                viSearch.cancelSearch();
+//                viSearch.uploadSearch(uploadSearchParams);
+//                changeUploadUI();
+//            }
+//        });
 
         //set up result view
         switchView();
@@ -219,8 +219,8 @@ public class PhotoEditFragment extends Fragment implements ViSearch.ResultListen
             gridViewLayout.setAdapter(new SquareImageAdapter(getActivity(), resultList.getImageList()));
             gridViewLayout.invalidate();
         } else if (currentLayout == VIEW_LAYOUT.WATERFALL) {
-            waterfallViewLayout.setAdapter(new StrechImageAdapter(getActivity(), resultList.getImageList()));
-            waterfallViewLayout.invalidate();
+//            waterfallViewLayout.setAdapter(new StrechImageAdapter(getActivity(), resultList.getImageList()));
+//            waterfallViewLayout.invalidate();
         }
 
         if (resultList.getImId() != null) {
@@ -276,14 +276,14 @@ public class PhotoEditFragment extends Fragment implements ViSearch.ResultListen
         super.onDestroy();
         ButterKnife.reset(this);
 
-        if (editableImage.getOriginalImage() != null)
-            editableImage.getOriginalImage().recycle();
+//        if (editableImage.getOriginalImage() != null)
+//            editableImage.getOriginalImage().recycle();
     }
 
     @OnClick(R.id.photoedit_rotate_button)
     public void rotateImage() {
-        editPhotoView.rotateImageView();
-        editableImage.saveEditedImage(imagePath);
+//        editPhotoView.rotateImageView();
+//        editableImage.saveEditedImage(imagePath);
         changeUploadUI();
 
         Image image = new Image(imagePath, Config.IMAGE_QUALITY);
@@ -323,20 +323,20 @@ public class PhotoEditFragment extends Fragment implements ViSearch.ResultListen
             currentLayout = VIEW_LAYOUT.WATERFALL;
             switchButtonView.setSelected(true);
 
-            if (waterfallViewLayout == null) {
-                waterfallViewLayout = new MultiColumnListView(getActivity());
-            }
-
-            waterfallViewLayout.setAdapter(new StrechImageAdapter(getActivity(), resultList.getImageList()));
-            waterfallViewLayout.setOnItemClickListener(new WFAdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(WFAdapterView<?> parent, View view, int position, long id) {
-                    startDetailActivity(resultList.getImageList().get(position));
-                }
-            });
-            waterfallViewLayout.invalidate();
+//            if (waterfallViewLayout == null) {
+//                waterfallViewLayout = new MultiColumnListView(getActivity());
+//            }
+//
+//            waterfallViewLayout.setAdapter(new StrechImageAdapter(getActivity(), resultList.getImageList()));
+//            waterfallViewLayout.setOnItemClickListener(new WFAdapterView.OnItemClickListener() {
+//                @Override
+//                public void onItemClick(WFAdapterView<?> parent, View view, int position, long id) {
+//                    startDetailActivity(resultList.getImageList().get(position));
+//                }
+//            });
+//            waterfallViewLayout.invalidate();
             resultGridView.removeAllViews();
-            resultGridView.addView(waterfallViewLayout);
+//            resultGridView.addView(waterfallViewLayout);
         } else {
             currentLayout = VIEW_LAYOUT.GRID;
             switchButtonView.setSelected(false);
@@ -387,17 +387,17 @@ public class PhotoEditFragment extends Fragment implements ViSearch.ResultListen
         rotateButton.setClickable(true);
     }
 
-    private ScalableBox getDetectionBox(Box box) {
-        ScalableBox searchBox = new ScalableBox();
-        if (box != null) {
-            searchBox.setX1(box.getX1());
-            searchBox.setX2(box.getX2());
-            searchBox.setY1(box.getY1());
-            searchBox.setY2(box.getY2());
-        }
-
-        return searchBox;
-    }
+//    private ScalableBox getDetectionBox(Box box) {
+//        ScalableBox searchBox = new ScalableBox();
+//        if (box != null) {
+//            searchBox.setX1(box.getX1());
+//            searchBox.setX2(box.getX2());
+//            searchBox.setY1(box.getY1());
+//            searchBox.setY2(box.getY2());
+//        }
+//
+//        return searchBox;
+//    }
 
     private enum VIEW_LAYOUT {
         GRID, WATERFALL
