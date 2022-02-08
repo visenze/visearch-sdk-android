@@ -5,8 +5,8 @@ plugins {
 
 def versionMajor = 2
 def versionMinor = 1
-def versionPatch = 4
-version = '2.1.4'
+def versionPatch = 5
+version = '2.1.5'
 
 android {
     compileSdkVersion 29
