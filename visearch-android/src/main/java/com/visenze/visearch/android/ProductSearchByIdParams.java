@@ -11,6 +11,9 @@ public class ProductSearchByIdParams extends BaseProductSearchParams {
     @SerializedName("alt_limit")
     private Integer altLimit;
 
+    @SerializedName("strategy_id")
+    private Integer strategyId;
+
     public String getProductId() {
         return productId;
     }
@@ -21,6 +24,18 @@ public class ProductSearchByIdParams extends BaseProductSearchParams {
 
     public void setAltLimit(Integer altLimit) {
         this.altLimit = altLimit;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
+
+    public Integer getStrategyId() {
+        return strategyId;
+    }
+
+    public void setStrategyId(Integer strategyId) {
+        this.strategyId = strategyId;
     }
 
     public ProductSearchByIdParams(String productId) {

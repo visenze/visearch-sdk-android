@@ -397,6 +397,9 @@ public class BaseProductSearchParams {
     @Expose(deserialize = false, serialize = false)
     private List<String> attrsToGet;
 
+    @SerializedName("vs_attrs_to_get")
+    @Expose(deserialize = false, serialize = false)
+    private List<String> vsAttrsToGet;
 
     @Expose(deserialize = false, serialize = false)
     private Map<String, String> filters;
@@ -404,13 +407,12 @@ public class BaseProductSearchParams {
     @Expose(deserialize = false, serialize = false)
     private Map<String, String> textFilters;
 
-
+    @Expose(deserialize = false, serialize = false)
+    private Map<String, String> vsConfig;
 
     @SerializedName("custom_map")
     @Expose(deserialize = false, serialize = false)
     private Map<String, String> customParams;
-
-
 
     public Map<String, String> getFilters() {
         return filters;
@@ -428,12 +430,28 @@ public class BaseProductSearchParams {
         this.textFilters = textFilters;
     }
 
+    public Map<String, String> getVsConfig() {
+        return vsConfig;
+    }
+
+    public void setVsConfig(Map<String, String> vsConfig) {
+        this.vsConfig = vsConfig;
+    }
+
     public List<String> getAttrsToGet() {
         return attrsToGet;
     }
 
     public void setAttrsToGet(List<String> attrsToGet) {
         this.attrsToGet = attrsToGet;
+    }
+
+    public List<String> getVsAttrsToGet() {
+        return vsAttrsToGet;
+    }
+
+    public void setVsAttrsToGet(List<String> vsAttrsToGet) {
+        this.vsAttrsToGet = vsAttrsToGet;
     }
 
     public List<String> getFacets() {
@@ -481,16 +499,6 @@ public class BaseProductSearchParams {
             }
         }
 
-        if(customParams != null) {
-            Set<Map.Entry<String, String>> set = customParams.entrySet();
-            for(Map.Entry<String, String> entry : set) {
-                String key = entry.getKey();
-                String val = entry.getValue();
-                ret.put(key, val);
-            }
-        }
-
-
         if(filters != null) {
             List<String> list = formatToList(filters);
             ret.put("filters", list);
@@ -499,6 +507,20 @@ public class BaseProductSearchParams {
         if(textFilters != null) {
             List<String> list = formatToList(textFilters);
             ret.put("text_filters", list);
+        }
+
+        if (vsConfig != null) {
+            List<String> list = formatToList(vsConfig);
+            ret.put("vs_config", list);
+        }
+
+        if(customParams != null) {
+            Set<Map.Entry<String, String>> set = customParams.entrySet();
+            for(Map.Entry<String, String> entry : set) {
+                String key = entry.getKey();
+                String val = entry.getValue();
+                ret.put(key, val);
+            }
         }
 
         return ret;
@@ -510,7 +532,7 @@ public class BaseProductSearchParams {
         for(Map.Entry<String, String>entry : set) {
             String key = entry.getKey();
             String val = entry.getValue();
-            ret.add(key+":"+val);
+            ret.add(key + ":" + val);
         }
         return ret;
     }

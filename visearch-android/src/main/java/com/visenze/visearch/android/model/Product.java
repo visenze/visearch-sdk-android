@@ -17,6 +17,9 @@ public class Product {
     @SerializedName("data")
     private Map<String, Object> data;
 
+    @SerializedName("vs_data")
+    private Map<String, Object> vsData;
+
     @SerializedName("score")
     private Float score;
 
@@ -64,6 +67,14 @@ public class Product {
 
     public void setData(Map<String, Object> data) {
         this.data = data;
+    }
+
+    public Map<String, Object> getVsData() {
+        return vsData;
+    }
+
+    public void setVsData(Map<String, Object> vsData) {
+        this.vsData = vsData;
     }
 
     public Float getScore() {

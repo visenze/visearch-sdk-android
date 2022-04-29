@@ -6,6 +6,7 @@ import android.os.Build;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.visenze.visearch.android.model.ErrorData;
+import com.visenze.visearch.android.model.Experiment;
 import com.visenze.visearch.android.model.ImageResult;
 import com.visenze.visearch.android.model.ObjectResult;
 import com.visenze.visearch.android.model.ProductObject;
@@ -23,7 +24,9 @@ import org.robolectric.annotation.Config;
 import java.util.HashMap;
 import java.util.Map;
 
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
 @Config(constants = BuildConfig.class, sdk = Build.VERSION_CODES.LOLLIPOP, manifest = Config.NONE)
@@ -464,6 +467,63 @@ public class ProductSearchTest {
                 assertEquals("pants-name-2", response.getProducts().get(1).getAlternatives().get(0).getProductId());
                 assertEquals("https://localhost/pants-name-2.jpg", response.getProducts().get(1).getAlternatives().get(0).getImageUrl());
                 assertEquals("pants-name-002", response.getProducts().get(1).getAlternatives().get(0).getData().get("title"));
+
+            }
+        });
+
+    }
+
+    @Test
+    public void testExperimentResponse() {
+        String json =
+                "{\n" +
+                "    \"reqid\": \"01806a667776c6f8a31c28105fd99b\",\n" +
+                "    \"status\": \"OK\",\n" +
+                "    \"method\": \"product/recommendations\",\n" +
+                "    \"page\": 1,\n" +
+                "    \"limit\": 10,\n" +
+                "    \"total\": 2,\n" +
+                "    \"product_types\": [],\n" +
+                "    \"result\": [\n" +
+                "    ],\n" +
+                "    \"strategy\": {\n" +
+                "        \"id\": 3,\n" +
+                "        \"name\": \"test\",\n" +
+                "        \"algorithm\": \"VSR\"\n" +
+                "    },\n" +
+                "   \"experiment\": {\n" +
+                "        \"experiment_id\": 522,\n" +
+                "        \"variant_id\": 2019,\n" +
+                "        \"strategy_id\": 3,\n" +
+                "        \"experiment_no_recommendation\": false,\n" +
+                "        \"debug\": {\n" +
+                "            \"experimentDebugLogs\": [\n" +
+                "                {\n" +
+                "                    \"experimentID\": 522,\n" +
+                "                    \"msg\": \"matched all constraints. rollout yes. {BucketNum:260 DistributionArray:{VariantIDs:[2019 2020] PercentsAccumulated:[500 1000]} VariantID:2019 RolloutPercent:100}\"\n" +
+                "                }\n" +
+                "            ]\n" +
+                "        }\n" +
+                "    }," +
+                "    \"alt_limit\": 15\n" +
+                "}";
+        ProductResponse response = gson.fromJson(json, ProductResponse.class);
+        searchService.handleResponse(response, new ProductSearch.ResultListener() {
+            @Override
+            public void onSearchResult(ProductResponse response, ErrorData error) {
+                assertNull(error);
+
+                assertEquals(15, response.getAltLimit().intValue());
+                assertEquals(3, response.getStrategy().getId().intValue());
+                assertEquals("test", response.getStrategy().getName());
+                assertEquals("VSR", response.getStrategy().getAlgorithm());
+                assertEquals(0, response.getProducts().size());
+
+                Experiment experiment = response.getExperiment();
+                assertEquals(522, experiment.getExperimentId());
+                assertEquals(2019, experiment.getVariantId());
+                assertFalse(experiment.isExpNoRecommendation());
+                assertTrue(3 == experiment.getStrategyId());
 
             }
         });

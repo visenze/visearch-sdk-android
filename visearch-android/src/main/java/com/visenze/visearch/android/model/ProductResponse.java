@@ -52,6 +52,9 @@ public class ProductResponse {
     @SerializedName("strategy")
     private Strategy strategy;
 
+    @SerializedName("experiment")
+    private Experiment experiment;
+
     public String getStatus() {
         return status;
     }
@@ -96,7 +99,7 @@ public class ProductResponse {
         return products;
     }
 
-    public void setImageResults(List<Product> products) {
+    public void setProducts(List<Product> products) {
         this.products = products;
     }
 
@@ -170,5 +173,21 @@ public class ProductResponse {
 
     public void setStrategy(Strategy strategy) {
         this.strategy = strategy;
+    }
+
+    public Experiment getExperiment() {
+        return experiment;
+    }
+
+    public void setExperiment(Experiment experiment) {
+        this.experiment = experiment;
+    }
+
+    /**
+     *
+     * @return whether the results are empty due to A/B test setting of returning no recommendations
+     */
+    public boolean experimentNoRecommendation() {
+        return (experiment != null && experiment.isExpNoRecommendation());
     }
 }
