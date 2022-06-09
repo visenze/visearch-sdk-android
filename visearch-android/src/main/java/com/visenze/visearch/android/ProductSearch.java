@@ -50,7 +50,7 @@ public class ProductSearch {
 
     // get auto-generated session ID string (va_sid) for Analytics purpose
     public String getSid() {
-        return visenzeAnalytics.getSessionManager().getUid();
+        return visenzeAnalytics.getSessionManager().getSessionId();
     }
 
     private void addAnalyticsParams(BaseProductSearchParams searchParams) {
