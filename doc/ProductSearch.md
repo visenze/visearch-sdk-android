@@ -6,7 +6,7 @@ With the release of ViSenze's Catalog system, ViSearch Android SDK will now incl
 - Aggregate search results on a product level instead of image level
 - Consistent data type in API response with Catalog’s schema
 
-> Current stable version: 2.2.0
+> Current stable version: 2.2.1
 
 > Minimum Android SDK Version: API 9, Android 2.3
 
@@ -64,7 +64,7 @@ allprojects {
 include the dependency in your project using gradle:
 ```gradle
 implementation 'com.github.visenze:visenze-tracking-android:0.2.1'
-implementation 'com.github.visenze:visearch-sdk-android:2.2.0'
+implementation 'com.github.visenze:visearch-sdk-android:2.2.1'
 ```
 
 ### 1.3 Add User Permissions
@@ -175,7 +175,29 @@ public void OnImageCaptured(Image image, String imagePath) {
 }
 ```
 
-> Image File refers to an actual file with bytes representing the image (i.e. opened from file upload, or taken from camera). The example above is in a scenario where the android camera captures an image.
+> Image File refers to an actual file with bytes representing the image (i.e. opened from file upload, or taken from camera). The example above is in a scenario where the android camera captures an image. You can construct the Image object by doing 1 of the following:
+
+- Using an image from a local file path:
+
+```java
+Image image = new Image("/local/path/to/image.jpg");
+```
+
+- Using an image by providing the Uri of the image in photo gallery:
+
+```java
+Image image = new Image(context, uri);
+```
+
+- Construct the `image` from the byte array returned by the camera preview callback:
+
+```java
+@Override
+public void onPictureTaken(byte[] bytes, Camera camera) {
+    Image image = new Image(bytes);
+}
+```
+
 
 ### 3.2 Recommendations
 

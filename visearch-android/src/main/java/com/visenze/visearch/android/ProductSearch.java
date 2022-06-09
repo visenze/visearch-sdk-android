@@ -16,13 +16,10 @@ public class ProductSearch {
     private static final String USER_AGENT = "productsearch-android-sdk";
     private static final String SEARCH_URL = "https://search.visenze.com/v1/";
 
-
-
     private String uid;
     private String trackCode;
     private VisenzeAnalytics visenzeAnalytics;
     private ProductSearchService productSearchService;
-
 
     private ProductSearch(Context context, String appKey, int placementId, String endPoint, String userAgent, String uid) {
 
@@ -31,7 +28,6 @@ public class ProductSearch {
         this.visenzeAnalytics = VisenzeAnalytics.getInstance(context.getApplicationContext(), uid);
         this.productSearchService = new ProductSearchService(endPoint, appKey, placementId, userAgent);
     }
-
 
     public void searchByImage(ProductSearchByImageParams imageSearchParams, ResultListener listener) {
         addAnalyticsParams(imageSearchParams);
@@ -47,14 +43,21 @@ public class ProductSearch {
         searchById(visualSimilarParams, listener);
     }
 
+    // get auto-generated uid string (va_uid) for Analytics purpose
+    public String getUid() {
+        return visenzeAnalytics.getSessionManager().getUid();
+    }
+
+    // get auto-generated session ID string (va_sid) for Analytics purpose
+    public String getSid() {
+        return visenzeAnalytics.getSessionManager().getUid();
+    }
 
     private void addAnalyticsParams(BaseProductSearchParams searchParams) {
         if (searchParams == null) return;
 
         SessionManager sessionManager = visenzeAnalytics.getSessionManager();
         DataCollection dataCollection = visenzeAnalytics.getDataCollection();
-
-
 
         if (searchParams.getVaUid() == null) {
             searchParams.setVaUid(sessionManager.getUid());
