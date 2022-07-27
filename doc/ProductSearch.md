@@ -6,7 +6,7 @@ With the release of ViSenze's Catalog system, ViSearch Android SDK will now incl
 - Aggregate search results on a product level instead of image level
 - Consistent data type in API response with Catalog’s schema
 
-> Current stable version: 2.2.1
+> Current stable version: 2.2.2
 
 > Minimum Android SDK Version: API 9, Android 2.3
 
