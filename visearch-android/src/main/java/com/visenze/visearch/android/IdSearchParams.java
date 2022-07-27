@@ -18,6 +18,10 @@ public class IdSearchParams extends SearchParams {
 
     private String dedupBy;
 
+    private Boolean showPinnedImNames;
+
+    private Boolean showExcludedImNames;
+
     public IdSearchParams() {
         super();
     }
@@ -76,6 +80,22 @@ public class IdSearchParams extends SearchParams {
         this.dedupBy = dedupBy;
     }
 
+    public Boolean getShowPinnedImNames() {
+        return showPinnedImNames;
+    }
+
+    public void setShowPinnedImNames(Boolean showPinnedImNames) {
+        this.showPinnedImNames = showPinnedImNames;
+    }
+
+    public Boolean getShowExcludedImNames() {
+        return showExcludedImNames;
+    }
+
+    public void setShowExcludedImNames(Boolean showExcludedImNames) {
+        this.showExcludedImNames = showExcludedImNames;
+    }
+
     @Override
     public Map<String, List<String> > toMap() {
         Map<String, List<String> > map = super.toMap();
@@ -91,6 +111,14 @@ public class IdSearchParams extends SearchParams {
 
         if (altLimit != null) {
             putStringInMap(map, "alt_limit", String.valueOf(altLimit));
+        }
+
+        if (showPinnedImNames != null) {
+            putStringInMap(map, "show_pinned_im_names", showPinnedImNames.toString());
+        }
+
+        if (showExcludedImNames != null) {
+            putStringInMap(map, "show_excluded_im_names", showExcludedImNames.toString());
         }
 
         return map;

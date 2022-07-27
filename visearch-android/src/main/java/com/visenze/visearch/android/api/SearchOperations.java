@@ -20,7 +20,7 @@ public interface SearchOperations {
     public void search(IdSearchParams idSearchParams, final ViSearch.ResultListener resultListener);
 
     /**
-     * Recommendation (GET /recommendation)
+     * Recommendation (GET /recommendations)
      * Get list of recommended images against the image collection using an existing image in the collection
      *
      * @param idSearchParams the index search parameter setting

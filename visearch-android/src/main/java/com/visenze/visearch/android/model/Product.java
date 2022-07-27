@@ -23,6 +23,9 @@ public class Product {
     @SerializedName("score")
     private Float score;
 
+    @SerializedName("pinned")
+    private Boolean pinned;
+
     @SerializedName("image_s3_url")
     private String s3Url;
 
@@ -144,5 +147,13 @@ public class Product {
 
     public void setAlternatives(List<Product> alternatives) {
         this.alternatives = alternatives;
+    }
+
+    public Boolean getPinned() {
+        return pinned;
+    }
+
+    public void setPinned(Boolean pinned) {
+        this.pinned = pinned;
     }
 }

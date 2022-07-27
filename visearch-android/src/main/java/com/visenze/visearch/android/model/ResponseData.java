@@ -74,6 +74,9 @@ public class ResponseData {
     @SerializedName("algorithm")
     private String algorithm;
 
+    @SerializedName("excluded_im_names")
+    private List<String> excludedImNames;
+
     public void setStatus(String status) {
         this.status = status;
     }
@@ -142,6 +145,10 @@ public class ResponseData {
         this.algorithm = algorithm;
     }
 
+    public void setExcludedImNames(List<String> excludedImNames) {
+        this.excludedImNames = excludedImNames;
+    }
+
     public List<Facet> getFacets() {
         return facets;
     }
@@ -190,6 +197,10 @@ public class ResponseData {
         return algorithm;
     }
 
+    public List<String> getExcludedImNames() {
+        return excludedImNames;
+    }
+
     public ResultList getResultList() {
         ResultList resultList = new ResultList();
         if(error != null && error.length > 0) {
@@ -214,6 +225,8 @@ public class ResponseData {
         resultList.setReqid(reqId);
 
         resultList.setFacets(facets);
+        resultList.setExcludedImNames(excludedImNames);
+
         return resultList;
     }
 

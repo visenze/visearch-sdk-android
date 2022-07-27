@@ -55,6 +55,9 @@ public class ProductResponse {
     @SerializedName("experiment")
     private Experiment experiment;
 
+    @SerializedName("excluded_pids")
+    private List<String> excludedPids;
+
     public String getStatus() {
         return status;
     }
@@ -189,5 +192,13 @@ public class ProductResponse {
      */
     public boolean experimentNoRecommendation() {
         return (experiment != null && experiment.isExpNoRecommendation());
+    }
+
+    public List<String> getExcludedPids() {
+        return excludedPids;
+    }
+
+    public void setExcludedPids(List<String> excludedPids) {
+        this.excludedPids = excludedPids;
     }
 }
