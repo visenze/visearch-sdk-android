@@ -530,4 +530,67 @@ public class ProductSearchTest {
 
     }
 
+    @Test
+    public void testPinExcludeResponse() {
+        String json =
+                "{\n" +
+                        "    \"reqid\": \"01806a667776c6f8a31c28105fd99e\",\n" +
+                        "    \"status\": \"OK\",\n" +
+                        "    \"method\": \"product/recommendations\",\n" +
+                        "    \"page\": 1,\n" +
+                        "    \"limit\": 10,\n" +
+                        "    \"total\": 1,\n" +
+                        "    \"product_types\": [],\n" +
+                        "    \"result\": [\n" +
+                        "        {\n" +
+                        "            \"product_id\": \"top-name-11\",\n" +
+                        "            \"main_image_url\": \"https://localhost/top-name-11.jpg\",\n" +
+                        "            \"data\": {\n" +
+                        "                \"title\": \"top-name-001\"\n" +
+                        "            },\n" +
+                        "            \"tags\": {\n" +
+                        "                \"category\": \"top\"\n" +
+                        "            },\n" +
+                        "            \"pinned\": \"true\",\n" +
+                        "            \"alternatives\": [\n" +
+                        "                {\n" +
+                        "                    \"product_id\": \"top-name-22\",\n" +
+                        "                    \"main_image_url\": \"https://localhost/top-name-22.jpg\",\n" +
+                        "                    \"data\": {\n" +
+                        "                        \"title\": \"top-name-002\"\n" +
+                        "                    }\n" +
+                        "                },\n" +
+                        "                {\n" +
+                        "                    \"product_id\": \"top-name-33\",\n" +
+                        "                    \"main_image_url\": \"https://localhost/top-name-33.jpg\",\n" +
+                        "                    \"data\": {\n" +
+                        "                        \"title\": \"top-name-003\"\n" +
+                        "                    }\n" +
+                        "                }\n" +
+                        "            ]\n" +
+                        "        }\n" +
+                        "    ],\n" +
+                        "    \"strategy\": {\n" +
+                        "        \"id\": 3,\n" +
+                        "        \"name\": \"test\",\n" +
+                        "        \"algorithm\": \"STL\"\n" +
+                        "    },\n" +
+                        "    \"excluded_pids\" : [\"p1\", \"p2\"],\n" +
+                        "    \"alt_limit\": 5\n" +
+                        "}";
+
+        ProductResponse response = gson.fromJson(json, ProductResponse.class);
+        searchService.handleResponse(response, new ProductSearch.ResultListener() {
+            @Override
+            public void onSearchResult(ProductResponse response, ErrorData error) {
+                assertNull(error);
+
+                assertTrue(response.getProducts().get(0).getPinned());
+                assertEquals(2, response.getExcludedPids().size());
+                assertEquals("p1" , response.getExcludedPids().get(0));
+                assertEquals("p2" , response.getExcludedPids().get(1));
+            }
+        });
+
+    }
 }
