@@ -743,4 +743,54 @@ public class ViSearchTest {
         assertEquals("top-name-003", imageResult.getAlternatives().get(1).getMetaData().getOrDefault("title", null));
 
     }
+
+    @Test
+    public void testRecommendationResponseWithExcludedPids() throws Exception{
+        String responseBody = "{\n" +
+                "    \"status\": \"OK\",\n" +
+                "    \"method\": \"recommendations\",\n" +
+                "    \"algorithm\": \"STL\",\n" +
+                "    \"error\": [],\n" +
+                "    \"page\": 1,\n" +
+                "    \"limit\": 3,\n" +
+                "    \"total\": 1,\n" +
+                "    \"result\": [\n" +
+                "        {\n" +
+                "            \"im_name\": \"image_F01\",\n" +
+                "            \"score\": 0.6613727807998657,\n" +
+                "            \"alternatives\": [\n" +
+                "                {\n" +
+                "                    \"im_name\": \"image_bag_3\",\n" +
+                "                    \"score\": 0.6613727807998657\n" +
+                "                }\n" +
+                "            ],\n" +
+                "            \"pinned\" : \"true\",\n" +
+                "            \"tags\": {\n" +
+                "                \"query_product_id\": \"image_bag_5\",\n" +
+                "                \"category\": \"bag\",\n" +
+                "                \"query_image_url\": \"https://test.jpg\"\n" +
+                "            }\n" +
+                "        }\n" +
+                "    ],\n" +
+                "    \"excluded_im_names\" : [\"im1\", \"im2\"],\n" +
+                "    \"reqid\": \"1317439821672620035\"\n" +
+                "}";;
+
+        ResponseData response = gson.fromJson(responseBody, ResponseData.class);
+        ResultList resultList = response.getResultList();
+
+        assertEquals("STL", resultList.getAlgorithm());
+        assertTrue(1 == resultList.getImageList().size());
+
+        ImageResult imageResult = resultList.getImageList().get(0);
+        assertEquals("image_F01", imageResult.getImageName());
+
+        assertEquals(1, imageResult.getAlternatives().size());
+        assertEquals("image_bag_3", imageResult.getAlternatives().get(0).getImageName());
+        assertTrue(imageResult.getPinned());
+
+        assertEquals(2, resultList.getExcludedImNames().size());
+        assertEquals("im1" , resultList.getExcludedImNames().get(0));
+        assertEquals("im2" , resultList.getExcludedImNames().get(1));
+    }
 }

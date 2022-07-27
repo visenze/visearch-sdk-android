@@ -53,6 +53,8 @@ public class ResultList {
     // recommendation related
     private String algorithm;
 
+    private List<String> excludedImNames;
+
     public ResultList() {
         imageResult = new ArrayList<ImageResult>();
         queryInfo = new HashMap<String, String>();
@@ -230,5 +232,13 @@ public class ResultList {
 
     public void setAlgorithm(String algorithm) {
         this.algorithm = algorithm;
+    }
+
+    public List<String> getExcludedImNames() {
+        return excludedImNames;
+    }
+
+    public void setExcludedImNames(List<String> excludedImNames) {
+        this.excludedImNames = excludedImNames;
     }
 }

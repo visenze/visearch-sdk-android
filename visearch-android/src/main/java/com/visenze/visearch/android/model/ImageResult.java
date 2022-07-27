@@ -23,6 +23,9 @@ public class ImageResult {
     @SerializedName("score")
     private Float score;
 
+    @SerializedName("pinned")
+    private Boolean pinned;
+
     @SerializedName("value_map")
     private Map<String, String> fieldList;
 
@@ -133,5 +136,13 @@ public class ImageResult {
 
     public void setTags(Map<String, Object> tags) {
         this.tags = tags;
+    }
+
+    public Boolean getPinned() {
+        return pinned;
+    }
+
+    public void setPinned(Boolean pinned) {
+        this.pinned = pinned;
     }
 }
