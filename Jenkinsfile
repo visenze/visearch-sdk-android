@@ -37,22 +37,6 @@ pipeline {
         script {
           sh("sudo update-alternatives --set java /usr/lib/jvm/java-8-oracle/jre/bin/java")
           sh("java -version")
-          sh "./gradlew assembleRelease"
-        }
-      }
-    }
-
-    stage('Push to Bintray') {
-      when {
-        expression {
-          params.BINTRAY_PUBLISH
-        }
-      }
-      steps {
-        script {
-          withCredentials([usernamePassword(credentialsId: params.BINTRAY_CERDENTIAL_ID, usernameVariable: 'bintrayUser', passwordVariable: 'bintrayKey')]) {
-            sh "./gradlew bintrayUpload -PbintrayUser=${bintrayUser} -PbintrayKey=${bintrayKey}"
-          }
         }
       }
     }
