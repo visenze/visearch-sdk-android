@@ -35,6 +35,8 @@ pipeline {
     stage('Build') {
       steps {
         script {
+          sh("sudo update-alternatives --set java /usr/lib/jvm/java-8-oracle/jre/bin/java")
+          sh("java -version")
           sh "./gradlew assembleRelease"
         }
       }
