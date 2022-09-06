@@ -58,6 +58,9 @@ public class ProductResponse {
     @SerializedName("excluded_pids")
     private List<String> excludedPids;
 
+    @SerializedName("set_info")
+    private List<SetInfo> setInfoList;
+
     public String getStatus() {
         return status;
     }
@@ -200,5 +203,13 @@ public class ProductResponse {
 
     public void setExcludedPids(List<String> excludedPids) {
         this.excludedPids = excludedPids;
+    }
+
+    public List<SetInfo> getSetInfoList() {
+        return setInfoList;
+    }
+
+    public void setSetInfoList(List<SetInfo> setInfoList) {
+        this.setInfoList = setInfoList;
     }
 }

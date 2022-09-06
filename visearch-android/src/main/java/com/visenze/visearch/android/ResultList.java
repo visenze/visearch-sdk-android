@@ -4,6 +4,7 @@ import com.visenze.visearch.android.model.Facet;
 import com.visenze.visearch.android.model.ImageResult;
 import com.visenze.visearch.android.model.ObjectResult;
 import com.visenze.visearch.android.model.ProductType;
+import com.visenze.visearch.android.model.SetInfo;
 import com.visenze.visearch.android.model.TagGroup;
 
 import java.util.ArrayList;
@@ -54,6 +55,8 @@ public class ResultList {
     private String algorithm;
 
     private List<String> excludedImNames;
+
+    private List<SetInfo> setInfoList;
 
     public ResultList() {
         imageResult = new ArrayList<ImageResult>();
@@ -240,5 +243,13 @@ public class ResultList {
 
     public void setExcludedImNames(List<String> excludedImNames) {
         this.excludedImNames = excludedImNames;
+    }
+
+    public List<SetInfo> getSetInfoList() {
+        return setInfoList;
+    }
+
+    public void setSetInfoList(List<SetInfo> setInfoList) {
+        this.setInfoList = setInfoList;
     }
 }

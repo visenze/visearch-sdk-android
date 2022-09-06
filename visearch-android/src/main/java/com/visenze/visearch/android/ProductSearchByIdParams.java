@@ -20,6 +20,12 @@ public class ProductSearchByIdParams extends BaseProductSearchParams {
     @SerializedName("show_excluded_pids")
     private Boolean showExcludedPids;
 
+    @SerializedName("set_limit")
+    private Integer setLimit;
+
+    @SerializedName("use_set_based_ctl")
+    private Boolean useSetBasedCtl;
+
     public String getProductId() {
         return productId;
     }
@@ -58,6 +64,22 @@ public class ProductSearchByIdParams extends BaseProductSearchParams {
 
     public void setShowExcludedPids(Boolean showExcludedPids) {
         this.showExcludedPids = showExcludedPids;
+    }
+
+    public Integer getSetLimit() {
+        return setLimit;
+    }
+
+    public void setSetLimit(Integer setLimit) {
+        this.setLimit = setLimit;
+    }
+
+    public Boolean getUseSetBasedCtl() {
+        return useSetBasedCtl;
+    }
+
+    public void setUseSetBasedCtl(Boolean useSetBasedCtl) {
+        this.useSetBasedCtl = useSetBasedCtl;
     }
 
     public ProductSearchByIdParams(String productId) {
