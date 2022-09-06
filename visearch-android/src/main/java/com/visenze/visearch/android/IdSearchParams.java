@@ -22,6 +22,9 @@ public class IdSearchParams extends SearchParams {
 
     private Boolean showExcludedImNames;
 
+    private Integer setLimit;
+    private Boolean useSetBasedCtl;
+
     public IdSearchParams() {
         super();
     }
@@ -96,6 +99,22 @@ public class IdSearchParams extends SearchParams {
         this.showExcludedImNames = showExcludedImNames;
     }
 
+    public Integer getSetLimit() {
+        return setLimit;
+    }
+
+    public void setSetLimit(Integer setLimit) {
+        this.setLimit = setLimit;
+    }
+
+    public Boolean getUseSetBasedCtl() {
+        return useSetBasedCtl;
+    }
+
+    public void setUseSetBasedCtl(Boolean useSetBasedCtl) {
+        this.useSetBasedCtl = useSetBasedCtl;
+    }
+
     @Override
     public Map<String, List<String> > toMap() {
         Map<String, List<String> > map = super.toMap();
@@ -119,6 +138,14 @@ public class IdSearchParams extends SearchParams {
 
         if (showExcludedImNames != null) {
             putStringInMap(map, "show_excluded_im_names", showExcludedImNames.toString());
+        }
+
+        if (setLimit != null) {
+            putStringInMap(map, "set_limit", String.valueOf(setLimit));
+        }
+
+        if (useSetBasedCtl != null) {
+            putStringInMap(map, "use_set_based_ctl", useSetBasedCtl.toString());
         }
 
         return map;
