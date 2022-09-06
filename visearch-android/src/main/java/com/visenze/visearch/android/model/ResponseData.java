@@ -77,6 +77,9 @@ public class ResponseData {
     @SerializedName("excluded_im_names")
     private List<String> excludedImNames;
 
+    @SerializedName("set_info")
+    private List<SetInfo> setInfoList;
+
     public void setStatus(String status) {
         this.status = status;
     }
@@ -147,6 +150,14 @@ public class ResponseData {
 
     public void setExcludedImNames(List<String> excludedImNames) {
         this.excludedImNames = excludedImNames;
+    }
+
+    public List<SetInfo> getSetInfoList() {
+        return setInfoList;
+    }
+
+    public void setSetInfoList(List<SetInfo> setInfoList) {
+        this.setInfoList = setInfoList;
     }
 
     public List<Facet> getFacets() {
@@ -226,6 +237,7 @@ public class ResponseData {
 
         resultList.setFacets(facets);
         resultList.setExcludedImNames(excludedImNames);
+        resultList.setSetInfoList(setInfoList);
 
         return resultList;
     }
