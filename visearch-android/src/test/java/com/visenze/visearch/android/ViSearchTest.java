@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 import com.visenze.visearch.android.model.ResponseData;
 import com.visenze.visearch.android.model.ImageResult;
 import com.visenze.visearch.android.model.ObjectResult;
+import com.visenze.visearch.android.model.SetInfo;
 import com.visenze.visearch.android.model.Tag;
 import com.visenze.visearch.android.model.TagGroup;
 import com.visenze.visearch.android.network.SearchService;
@@ -39,7 +40,7 @@ public class ViSearchTest {
         .setLenient()
         .create();
     @Test
-    public void testErrorResponse() throws Exception {
+    public void testErrorResponse() throws Exception{
         String errorSearchResponse = "{\n" +
                 "    \"status\":\"fail\",\n" +
                 "    \"method\":\"search\",\n" +
@@ -792,5 +793,63 @@ public class ViSearchTest {
         assertEquals(2, resultList.getExcludedImNames().size());
         assertEquals("im1" , resultList.getExcludedImNames().get(0));
         assertEquals("im2" , resultList.getExcludedImNames().get(1));
+    }
+
+    @Test
+    public void testCtlSetBasedRecommendationResponse() throws Exception{
+        String responseBody = "{\n" +
+                "  \"status\": \"OK\",\n" +
+                "  \"method\": \"recommendations\",\n" +
+                "  \"algorithm\": \"CTL\",\n" +
+                "  \"error\": [],\n" +
+                "  \"page\": 1,\n" +
+                "  \"limit\": 2,\n" +
+                "  \"total\": 1000,\n" +
+                "  \"result\": [\n" +
+                "    {\n" +
+                "      \"im_name\": \"image-name-1\",\n" +
+                "      \"tags\": {\n" +
+                "        \"category\": \"top\",\n" +
+                "        \"set_id\": \"set1\"\n" +
+                "      }\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"im_name\": \"image-name-2\",\n" +
+                "      \"tags\": {\n" +
+                "        \"category\": \"bottom\",\n" +
+                "        \"set_id\": \"set1\"\n" +
+                "      }\n" +
+                "    }\n" +
+                "  ],\n" +
+                "  \"set_info\": [\n" +
+                "    {\n" +
+                "      \"set_id\": \"set1\",\n" +
+                "      \"set_score\": 1000.0\n" +
+                "    }\n" +
+                "  ],\n" +
+                "  \"reqid\": \"1156773933236717419\"\n" +
+                "}";
+
+        ResponseData response = gson.fromJson(responseBody, ResponseData.class);
+        ResultList resultList = response.getResultList();
+
+        assertEquals("CTL", resultList.getAlgorithm());
+        assertTrue(2 == resultList.getImageList().size());
+
+        ImageResult imageResult = resultList.getImageList().get(0);
+        assertEquals("image-name-1", imageResult.getImageName());
+        assertEquals("top", imageResult.getTags().get("category"));
+        assertEquals("set1", imageResult.getTags().get("set_id"));
+
+        ImageResult imageResult2 = resultList.getImageList().get(1);
+        assertEquals("image-name-2", imageResult2.getImageName());
+        assertEquals("bottom", imageResult2.getTags().get("category"));
+        assertEquals("set1", imageResult2.getTags().get("set_id"));
+
+        List<SetInfo> setInfoList = resultList.getSetInfoList();
+        assertEquals(1, setInfoList.size());
+        assertEquals("set1", setInfoList.get(0).getSetId());
+        assertTrue(1000.0 == setInfoList.get(0).getSetScore());
+
     }
 }

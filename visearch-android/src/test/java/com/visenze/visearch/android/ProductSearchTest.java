@@ -13,6 +13,7 @@ import com.visenze.visearch.android.model.ProductObject;
 import com.visenze.visearch.android.model.ProductResponse;
 import com.visenze.visearch.android.model.Product;
 import com.visenze.visearch.android.model.ProductType;
+import com.visenze.visearch.android.model.SetInfo;
 import com.visenze.visearch.android.network.ProductSearchService;
 import com.visenze.visearch.android.network.RetrofitQueryMap;
 
@@ -22,6 +23,7 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static junit.framework.TestCase.assertTrue;
@@ -589,6 +591,95 @@ public class ProductSearchTest {
                 assertEquals(2, response.getExcludedPids().size());
                 assertEquals("p1" , response.getExcludedPids().get(0));
                 assertEquals("p2" , response.getExcludedPids().get(1));
+            }
+        });
+
+    }
+
+    @Test
+    public void testCtlSetBasedResponse() {
+        String json =
+                "{\n" +
+                        "    \"reqid\": \"01806a667776c6f8a31c28105fd99f\",\n" +
+                        "    \"status\": \"OK\",\n" +
+                        "    \"method\": \"product/recommendations\",\n" +
+                        "    \"page\": 1,\n" +
+                        "    \"limit\": 10,\n" +
+                        "    \"total\": 1,\n" +
+                        "    \"product_types\": [],\n" +
+                        "    \"result\": [\n" +
+                        "{\n" +
+                        "      \"product_id\": \"dress1\",\n" +
+                        "      \"main_image_url\": \"http://test.com/img1.jpg\",\n" +
+                        "      \"tags\": {\n" +
+                        "        \"category\": \"dress\",\n" +
+                        "        \"set_id\": \"set1\"\n" +
+                        "      },\n" +
+                        "      \"score\": 0.9\n" +
+                        "    },\n" +
+                        "    {\n" +
+                        "      \"product_id\": \"shirt1\",\n" +
+                        "      \"main_image_url\": \"http://test.com/img2.jpg\",\n" +
+                        "      \"tags\": {\n" +
+                        "        \"category\": \"shirt\",\n" +
+                        "        \"set_id\": \"set1\"\n" +
+                        "      },\n" +
+                        "      \"score\": 0.7\n" +
+                        "    },\n" +
+                        "    {\n" +
+                        "      \"product_id\": \"shoe2\",\n" +
+                        "      \"main_image_url\": \"http://test.com/img2.jpg\",\n" +
+                        "      \"tags\": {\n" +
+                        "        \"category\": \"shoes\",\n" +
+                        "        \"set_id\": \"set2\"\n" +
+                        "      },\n" +
+                        "      \"score\": 0.8\n" +
+                        "    }" +
+                        "    ],\n" +
+                        "\"set_info\": [\n" +
+                        "    {\n" +
+                        "      \"set_id\": \"set1\",\n" +
+                        "      \"set_score\": 1000\n" +
+                        "    },\n" +
+                        "    {\n" +
+                        "      \"set_id\": \"set2\",\n" +
+                        "      \"set_score\": 900\n" +
+                        "    }\n" +
+                        "  ]," +
+                        "    \"strategy\": {\n" +
+                        "        \"id\": 3,\n" +
+                        "        \"name\": \"test\",\n" +
+                        "        \"algorithm\": \"CTL\"\n" +
+                        "    }\n" +
+                        "}";
+
+        ProductResponse response = gson.fromJson(json, ProductResponse.class);
+        searchService.handleResponse(response, new ProductSearch.ResultListener() {
+            @Override
+            public void onSearchResult(ProductResponse response, ErrorData error) {
+                assertNull(error);
+
+                List<Product> result = response.getProducts();
+                assertEquals(3, result.size());
+
+                assertEquals("set1", result.get(0).getTags().get("set_id"));
+                assertEquals("dress", result.get(0).getTags().get("category"));
+
+                assertEquals("set1", result.get(1).getTags().get("set_id"));
+                assertEquals("shirt", result.get(1).getTags().get("category"));
+
+                assertEquals("set2", result.get(2).getTags().get("set_id"));
+                assertEquals("shoes", result.get(2).getTags().get("category"));
+
+                List<SetInfo> setInfoList = response.getSetInfoList();
+                assertEquals(2, setInfoList.size());
+
+                assertEquals("set1", setInfoList.get(0).getSetId());
+                assertTrue(1000 == setInfoList.get(0).getSetScore());
+
+                assertEquals("set2", setInfoList.get(1).getSetId());
+                assertTrue(900 == setInfoList.get(1).getSetScore());
+
             }
         });
 
