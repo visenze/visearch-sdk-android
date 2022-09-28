@@ -639,11 +639,13 @@ public class ProductSearchTest {
                         "\"set_info\": [\n" +
                         "    {\n" +
                         "      \"set_id\": \"set1\",\n" +
-                        "      \"set_score\": 1000\n" +
+                        "      \"set_score\": 1000,\n" +
+                        "      \"item_count\": 5\n" +
                         "    },\n" +
                         "    {\n" +
                         "      \"set_id\": \"set2\",\n" +
-                        "      \"set_score\": 900\n" +
+                        "      \"set_score\": 900,\n" +
+                        "      \"item_count\": 2\n" +
                         "    }\n" +
                         "  ]," +
                         "    \"strategy\": {\n" +
@@ -676,9 +678,11 @@ public class ProductSearchTest {
 
                 assertEquals("set1", setInfoList.get(0).getSetId());
                 assertTrue(1000 == setInfoList.get(0).getSetScore());
+                assertTrue(5 == setInfoList.get(0).getItemCount());
 
                 assertEquals("set2", setInfoList.get(1).getSetId());
                 assertTrue(900 == setInfoList.get(1).getSetScore());
+                assertTrue(2 == setInfoList.get(1).getItemCount());
 
             }
         });

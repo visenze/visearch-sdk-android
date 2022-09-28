@@ -10,6 +10,9 @@ public class SetInfo {
     @SerializedName("set_score")
     private double setScore;
 
+    @SerializedName("item_count")
+    private int itemCount;
+
     public String getSetId() {
         return setId;
     }
@@ -24,5 +27,13 @@ public class SetInfo {
 
     public void setSetScore(double setScore) {
         this.setScore = setScore;
+    }
+
+    public int getItemCount() {
+        return itemCount;
+    }
+
+    public void setItemCount(int itemCount) {
+        this.itemCount = itemCount;
     }
 }
