@@ -13,11 +13,7 @@ pipeline {
   agent {
     label "${params.AGENT_LABEL ?: 'build'}"
   }
-
-  environment {
-    ANDROID_HOME = tool(name: 'android-sdk-tools', type: 'com.cloudbees.jenkins.plugins.customtools.CustomTool')
-  }
-
+  
   parameters {
     string(name: 'AGENT_LABEL', defaultValue: 'build')
     booleanParam(name: 'BINTRAY_PUBLISH', defaultValue: false)
