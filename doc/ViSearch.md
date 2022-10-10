@@ -4,7 +4,7 @@ ViSearch is an API that provides accurate, reliable and scalable image search. V
 
 The ViSearch Android SDK is an open source software to provide easy integration of ViSearch Search API with your Android mobile applications. It provides three search methods based on the ViSearch Search API - pre-indexed search, color search and upload search. For source code and references, please visit the [Github Repository](https://github.com/visenze/visearch-sdk-android).
 
->Current stable version: 2.2.4
+>Current stable version: 2.2.5
 
 >Minimum Android SDK Version: API 9, Android 2.3
 
@@ -79,8 +79,8 @@ allprojects {
 
 include the dependency in your project using gradle:
 ```gradle
-implementation 'com.github.visenze:visenze-tracking-android:0.2.1'
-implementation 'com.github.visenze:visearch-sdk-android:2.2.4'
+implementation 'com.github.visenze:visenze-tracking-android:0.2.2'
+implementation 'com.github.visenze:visearch-sdk-android:2.2.5'
 ```
 
 ### 1.3 Add User Permissions
@@ -533,7 +533,7 @@ In addition, to improve subsequent search quality, it is recommended to send use
 You can initialize ViSenze Analytics tracker for sending analytics events by providing the code (found in ViSenze Dashboard).
 
 ```java
-Tracker tracker = visearch.newTracker(code, false);
+Tracker tracker = visearch.newTracker(code);
 ```
 
 ### 6.2 Send Events
@@ -569,6 +569,14 @@ Finally send the event via the tracker:
 
 ```java
 tracker.sendEvent(event);
+```
+
+User action(s) can also be sent through an batch event handler.
+
+A common use case for this batch event method is to group up all transaction by sending it in a batch. This SDK will automatically generate a transaction ID to group transactions as an order if the transaction ID is not provided.
+
+```java
+tracker.sendEvents(eventList);
 ```
 
 Below are the brief description for various parameters:
