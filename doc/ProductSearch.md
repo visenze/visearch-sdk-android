@@ -6,7 +6,7 @@ With the release of ViSenze's Catalog system, ViSearch Android SDK will now incl
 - Aggregate search results on a product level instead of image level
 - Consistent data type in API response with Catalog’s schema
 
-> Current stable version: 2.2.4
+> Current stable version: 2.2.5
 
 > Minimum Android SDK Version: API 9, Android 2.3
 
@@ -63,8 +63,8 @@ allprojects {
 
 include the dependency in your project using gradle:
 ```gradle
-implementation 'com.github.visenze:visenze-tracking-android:0.2.1'
-implementation 'com.github.visenze:visearch-sdk-android:2.2.4'
+implementation 'com.github.visenze:visenze-tracking-android:0.2.2'
+implementation 'com.github.visenze:visearch-sdk-android:2.2.5'
 ```
 
 ### 1.3 Add User Permissions
@@ -525,7 +525,7 @@ You can initialize ViSenze Analytics tracker for sending analytics events as fol
 
 ```java
 ProductSeach productSearch = SearchAPI.getProductSearchInstance();
-Tracker tracker = productSearch.newTracker(null, false);
+Tracker tracker = productSearch.newTracker();
 ```
 
 ### 7.2 Send Events
@@ -563,6 +563,14 @@ Finally send the event via the tracker:
 
 ```java
 tracker.sendEvent(event);
+```
+
+User action(s) can also be sent through an batch event handler.
+
+A common use case for this batch event method is to group up all transaction by sending it in a batch. This SDK will automatically generate a transaction ID to group transactions as an order if the transaction ID is not provided.
+
+```java
+tracker.sendEvents(eventList);
 ```
 
 Below are the brief description for various parameters:

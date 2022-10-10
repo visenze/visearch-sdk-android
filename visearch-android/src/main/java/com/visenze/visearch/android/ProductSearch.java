@@ -97,12 +97,18 @@ public class ProductSearch {
     }
 
     // tracking related
+    public Tracker newTracker() {
+        return newTracker(null, false);
+    }
+
+    public Tracker newTracker(String code) {
+        return newTracker(code, false);
+    }
+
     public Tracker newTracker(String code, boolean useCnEndpoint) {
         if(code == null) code = trackCode;
         return visenzeAnalytics.newTracker(code, useCnEndpoint);
     }
-
-
 
     public static class Builder {
         private String mAppKey;
