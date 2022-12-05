@@ -16,8 +16,8 @@ public class ProductSearchByImageParams extends BaseProductSearchParams {
     @Expose(deserialize = false, serialize = false)
     private Image image;
 
-    @SerializedName("box")
-    private int[] box;
+    // transient is to prevent serialization
+    private transient int[] box;
 
     @SerializedName("detection")
     private String detection;
@@ -31,6 +31,9 @@ public class ProductSearchByImageParams extends BaseProductSearchParams {
     @SerializedName("search_all_object")
     private Boolean searchAllObjects;
 
+    // internal serialization
+    @SerializedName("box")
+    private String boxParam;
     
     public Boolean getSearchAllObjects() {
         return searchAllObjects;
@@ -70,6 +73,7 @@ public class ProductSearchByImageParams extends BaseProductSearchParams {
 
     public void setBox(int x1, int y1, int x2, int y2) {
         this.box = new int[] {x1, y1, x2, y2};
+        this.boxParam = String.format("%d,%d,%d,%d", x1, y1, x2, y2);
     }
 
     public String getDetection() {
@@ -94,6 +98,10 @@ public class ProductSearchByImageParams extends BaseProductSearchParams {
 
     public void setDetectionSensitivity(String detectionSensitivity) {
         this.detectionSensitivity = detectionSensitivity;
+    }
+
+    public String getBoxParam() {
+        return boxParam;
     }
 
     public ProductSearchByImageParams() {

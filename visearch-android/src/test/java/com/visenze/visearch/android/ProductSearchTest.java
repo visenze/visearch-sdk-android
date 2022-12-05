@@ -53,6 +53,8 @@ public class ProductSearchTest {
         customMap.put("debug", "true");
         params.setCustomParams(customMap);
 
+        params.setBox(10,20,400,500);
+
 
         RetrofitQueryMap map = params.getQueryMap();
 
@@ -61,6 +63,7 @@ public class ProductSearchTest {
         assertEquals("testParamVal", map.get("testParam"));
         assertEquals("testParamVal2", map.get("testParam2"));
         assertEquals("1234555", map.get("im_id"));
+        assertEquals("10,20,400,500", map.get("box"));
     }
 
 
