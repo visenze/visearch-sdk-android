@@ -116,6 +116,8 @@ ProductSearch productSearch = new ProductSearch
                             .build(context);
 ```
 
+For searches in China, please change the endpoint to `https://search.visenze.com.cn`.
+
 ## 3. Solution APIs
 
 There are two main APIs provided in this suite, one allows searching for products based on an image input, the other searches using a product's ID (Recommendations API). A product's ID can be retrieved from a [Search Result](#4-search-results).
@@ -526,6 +528,11 @@ You can initialize ViSenze Analytics tracker for sending analytics events as fol
 ```java
 ProductSeach productSearch = SearchAPI.getProductSearchInstance();
 Tracker tracker = productSearch.newTracker();
+```
+
+For China, please change the tracker to:
+```
+Tracker tracker = productSearch.newTracker(true);
 ```
 
 ### 7.2 Send Events

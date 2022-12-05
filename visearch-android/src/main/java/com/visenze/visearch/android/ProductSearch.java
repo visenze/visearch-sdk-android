@@ -101,6 +101,10 @@ public class ProductSearch {
         return newTracker(null, false);
     }
 
+    public Tracker newTracker(boolean useCnEndpoint) {
+        return newTracker(null, useCnEndpoint);
+    }
+
     public Tracker newTracker(String code) {
         return newTracker(code, false);
     }
