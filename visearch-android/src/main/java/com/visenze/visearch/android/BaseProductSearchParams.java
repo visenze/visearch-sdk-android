@@ -477,7 +477,6 @@ public class BaseProductSearchParams {
 
 
         String jsonStr = gson.toJson(this);
-        System.out.println("json: " + jsonStr);
 
         JsonObject jsonObj = gson.fromJson(jsonStr, JsonObject.class);
         Set<Map.Entry<String, JsonElement>> entrySet = jsonObj.entrySet();
