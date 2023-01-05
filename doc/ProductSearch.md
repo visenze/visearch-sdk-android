@@ -553,6 +553,8 @@ To send events, first retrieve the search query ID found in the search results l
 Then, create the event using 1 of the helper methods Event.createXXXEvent(). For `product_click`, `product_view` events, queryId, pid, imgUrl and pos are all required.
 
 ```java
+Event.createResultLoadEvent(String queryId, String pid) // send result_load event
+
 Event.createProductClickEvent(String queryId, String pid, String imgUrl, int pos)
 
 Event.createProductImpressionEvent(String queryId, String pid, String imgUrl, int pos)
