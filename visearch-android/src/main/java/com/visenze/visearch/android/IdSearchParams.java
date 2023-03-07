@@ -24,6 +24,7 @@ public class IdSearchParams extends SearchParams {
 
     private Integer setLimit;
     private Boolean useSetBasedCtl;
+    private Boolean showBestProductImages;
 
     public IdSearchParams() {
         super();
@@ -146,6 +147,10 @@ public class IdSearchParams extends SearchParams {
 
         if (useSetBasedCtl != null) {
             putStringInMap(map, "use_set_based_ctl", useSetBasedCtl.toString());
+        }
+
+        if (showBestProductImages != null) {
+            putStringInMap(map, "show_best_product_images", showBestProductImages.toString());
         }
 
         return map;

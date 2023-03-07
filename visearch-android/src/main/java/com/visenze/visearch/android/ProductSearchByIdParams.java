@@ -26,6 +26,9 @@ public class ProductSearchByIdParams extends BaseProductSearchParams {
     @SerializedName("use_set_based_ctl")
     private Boolean useSetBasedCtl;
 
+    @SerializedName("show_best_product_images")
+    private Boolean showBestProductImages;
+
     public String getProductId() {
         return productId;
     }
@@ -80,6 +83,14 @@ public class ProductSearchByIdParams extends BaseProductSearchParams {
 
     public void setUseSetBasedCtl(Boolean useSetBasedCtl) {
         this.useSetBasedCtl = useSetBasedCtl;
+    }
+
+    public Boolean getShowBestProductImages() {
+        return showBestProductImages;
+    }
+
+    public void setShowBestProductImages(Boolean showBestProductImages) {
+        this.showBestProductImages = showBestProductImages;
     }
 
     public ProductSearchByIdParams(String productId) {

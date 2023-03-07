@@ -38,6 +38,9 @@ public class ImageResult {
     @SerializedName("tags")
     private Map<String, Object> tags;
 
+    @SerializedName("best_images")
+    private List<BestImage> bestImages;
+
     public ImageResult() {
         this.fieldList = new HashMap<String, String>();
     }
@@ -144,5 +147,13 @@ public class ImageResult {
 
     public void setPinned(Boolean pinned) {
         this.pinned = pinned;
+    }
+
+    public List<BestImage> getBestImages() {
+        return bestImages;
+    }
+
+    public void setBestImages(List<BestImage> bestImages) {
+        this.bestImages = bestImages;
     }
 }
