@@ -48,6 +48,9 @@ public class Product {
     @SerializedName("alternatives")
     private List<Product> alternatives;
 
+    @SerializedName("best_images")
+    private List<BestImage> bestImages;
+
     public String getProductId() {
         return productId;
     }
@@ -155,5 +158,13 @@ public class Product {
 
     public void setPinned(Boolean pinned) {
         this.pinned = pinned;
+    }
+
+    public List<BestImage> getBestImages() {
+        return bestImages;
+    }
+
+    public void setBestImages(List<BestImage> bestImages) {
+        this.bestImages = bestImages;
     }
 }
