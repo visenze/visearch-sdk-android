@@ -64,7 +64,7 @@ allprojects {
 include the dependency in your project using gradle. Please change the version to latest.
 
 ```gradle
-implementation 'com.github.visenze:visenze-tracking-android:0.2.2'
+implementation 'com.github.visenze:visenze-tracking-android:0.2.3'
 implementation 'com.github.visenze:visearch-sdk-android:2.3.0'
 ```
 
