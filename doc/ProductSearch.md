@@ -6,7 +6,7 @@ With the release of ViSenze's Catalog system, ViSearch Android SDK will now incl
 - Aggregate search results on a product level instead of image level
 - Consistent data type in API response with Catalog’s schema
 
-> Current stable version: 2.3.0
+> Current stable version: 2.3.1
 
 > Minimum Android SDK Version: API 9, Android 2.3
 
@@ -65,7 +65,7 @@ include the dependency in your project using gradle. Please change the version t
 
 ```gradle
 implementation 'com.github.visenze:visenze-tracking-android:0.2.3'
-implementation 'com.github.visenze:visearch-sdk-android:2.3.0'
+implementation 'com.github.visenze:visearch-sdk-android:2.3.1'
 ```
 
 ### 1.3 Add User Permissions
