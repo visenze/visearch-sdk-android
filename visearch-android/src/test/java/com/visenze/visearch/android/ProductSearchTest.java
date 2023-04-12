@@ -3,18 +3,20 @@ package com.visenze.visearch.android;
 
 import android.os.Build;
 
+import com.google.common.base.Joiner;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.visenze.visearch.android.model.BestImage;
+import com.visenze.visearch.android.model.Box;
 import com.visenze.visearch.android.model.ErrorData;
 import com.visenze.visearch.android.model.Experiment;
-import com.visenze.visearch.android.model.ImageResult;
-import com.visenze.visearch.android.model.ObjectResult;
+import com.visenze.visearch.android.model.Facet;
 import com.visenze.visearch.android.model.ProductObject;
 import com.visenze.visearch.android.model.ProductResponse;
 import com.visenze.visearch.android.model.Product;
 import com.visenze.visearch.android.model.ProductType;
 import com.visenze.visearch.android.model.SetInfo;
+import com.visenze.visearch.android.model.Strategy;
 import com.visenze.visearch.android.network.ProductSearchService;
 import com.visenze.visearch.android.network.RetrofitQueryMap;
 
@@ -771,5 +773,248 @@ public class ProductSearchTest {
             }
         });
 
+    }
+
+    @Test
+    public void testStiResponse() {
+        String json =
+                "{\n" +
+                        "    \"reqid\": \"01806a667776c6f8a31c28105fd99e\",\n" +
+                        "    \"status\": \"OK\",\n" +
+                        "    \"method\": \"product/recommendations\",\n" +
+                        "    \"page\": 1,\n" +
+                        "    \"limit\": 5,\n" +
+                        "    \"total\": 2,\n" +
+
+                        "  \"objects\": [\n" +
+                        "    {\n" +
+                        "      \"id\": \"b0eedf870030ebb7ec637cd2641d0591\",\n" +
+                        "      \"category\": \"eyewear\",\n" +
+                        "      \"box\": [\n" +
+                        "        54,\n" +
+                        "        1568,\n" +
+                        "        1765,\n" +
+                        "        2189\n" +
+                        "      ],\n" +
+                        "      \"total\": 745,\n" +
+                        "      \"result\": [\n" +
+                        "        {\n" +
+                        "          \"product_id\": \"4081895\",\n" +
+                        "          \"pinned\" : \"true\",\n" +
+                        "          \"score\": 1,\n" +
+                        "          \"data\": {\n" +
+                        "            \"title\": \"Versace VE4281 Women's Square Sunglasses, Black/Brown Gradient\"\n" +
+                        "          },\n" +
+                        "          \"vs_data\": {\n" +
+                        "            \"index_filter.product_tagging\": \"others\",\n" +
+                        "            \"detect\": \"eyewear\"\n" +
+                        "          }\n" +
+                        "        },\n" +
+                        "        {\n" +
+                        "          \"product_id\": \"4047149\",\n" +
+                        "          \"score\": 0.711370050907135,\n" +
+                        "          \"data\": {\n" +
+                        "            \"title\": \"Prada PR 02VS Women's Cat's Eye Sunglasses\"\n" +
+                        "          },\n" +
+                        "          \"vs_data\": {\n" +
+                        "            \"index_filter.product_tagging\": \"others\",\n" +
+                        "            \"detect\": \"eyewear\"\n" +
+                        "          }\n" +
+                        "        },\n" +
+                        "        {\n" +
+                        "          \"product_id\": \"3839024\",\n" +
+                        "          \"score\": 0.692736804485321,\n" +
+                        "          \"data\": {\n" +
+                        "            \"title\": \"Polo Ralph Lauren RA5160 Women's Cat's Eye Sunglasses, Black/Grey\"\n" +
+                        "          },\n" +
+                        "          \"vs_data\": {\n" +
+                        "            \"index_filter.product_tagging\": \"others\",\n" +
+                        "            \"detect\": \"eyewear\"\n" +
+                        "          }\n" +
+                        "        },\n" +
+                        "        {\n" +
+                        "          \"product_id\": \"4299829\",\n" +
+                        "          \"score\": 0.6816573143005371,\n" +
+                        "          \"data\": {\n" +
+                        "            \"title\": \"Ralph RA5257 Women's Square Sunglasses\"\n" +
+                        "          },\n" +
+                        "          \"vs_data\": {\n" +
+                        "            \"index_filter.product_tagging\": \"others\",\n" +
+                        "            \"detect\": \"eyewear\"\n" +
+                        "          }\n" +
+                        "        },\n" +
+                        "        {\n" +
+                        "          \"product_id\": \"4894399\",\n" +
+                        "          \"score\": 0.6687576174736023,\n" +
+                        "          \"data\": {\n" +
+                        "            \"title\": \"Michael Kors MK2023 Women's Polarised Round Sunglasses, Tortoise/Brown Gradient\"\n" +
+                        "          },\n" +
+                        "          \"vs_data\": {\n" +
+                        "            \"index_filter.product_tagging\": \"others\",\n" +
+                        "            \"detect\": \"eyewear\"\n" +
+                        "          }\n" +
+                        "        }\n" +
+                        "      ],\n" +
+                        "      \"excluded_pids\": [\"pid1\",\"pid2\"] , \n" +
+                        "      \"facets\": [\n" +
+                        "        {\n" +
+                        "          \"key\": \"category\",\n" +
+                        "          \"items\": [\n" +
+                        "            {\n" +
+                        "              \"value\": \"Women > Women's Dresses\"\n" +
+                        "            }\n" +
+                        "          ]\n" +
+                        "        }\n" +
+                        "      ]\n" +
+                        "    },\n" +
+                        "    {\n" +
+                        "      \"id\": \"b0eedf870030ebb7ec637cd2641d0592\",\n" +
+                        "      \"category\": \"sunglasses\",\n" +
+                        "      \"box\": [\n" +
+                        "        52,\n" +
+                        "        1589,\n" +
+                        "        1753,\n" +
+                        "        2210\n" +
+                        "      ],\n" +
+                        "      \"total\": 689,\n" +
+                        "      \"result\": [\n" +
+                        "        {\n" +
+                        "          \"product_id\": \"4081895\",\n" +
+                        "          \"score\": 1,\n" +
+                        "          \"data\": {\n" +
+                        "            \"title\": \"Versace VE4281 Women's Square Sunglasses, Black/Brown Gradient\"\n" +
+                        "          },\n" +
+                        "          \"vs_data\": {\n" +
+                        "            \"index_filter.product_tagging\": \"others\",\n" +
+                        "            \"detect\": \"eyewear\"\n" +
+                        "          }\n" +
+                        "        },\n" +
+                        "        {\n" +
+                        "          \"product_id\": \"4047149\",\n" +
+                        "          \"score\": 0.7817856073379517,\n" +
+                        "          \"data\": {\n" +
+                        "            \"title\": \"Prada PR 02VS Women's Cat's Eye Sunglasses\"\n" +
+                        "          },\n" +
+                        "          \"vs_data\": {\n" +
+                        "            \"index_filter.product_tagging\": \"others\",\n" +
+                        "            \"detect\": \"eyewear\"\n" +
+                        "          }\n" +
+                        "        },\n" +
+                        "        {\n" +
+                        "          \"product_id\": \"3839024\",\n" +
+                        "          \"score\": 0.7810016870498657,\n" +
+                        "          \"data\": {\n" +
+                        "            \"title\": \"Polo Ralph Lauren RA5160 Women's Cat's Eye Sunglasses, Black/Grey\"\n" +
+                        "          },\n" +
+                        "          \"vs_data\": {\n" +
+                        "            \"index_filter.product_tagging\": \"others\",\n" +
+                        "            \"detect\": \"eyewear\"\n" +
+                        "          }\n" +
+                        "        },\n" +
+                        "        {\n" +
+                        "          \"product_id\": \"4299829\",\n" +
+                        "          \"score\": 0.7412603497505188,\n" +
+                        "          \"data\": {\n" +
+                        "            \"title\": \"Ralph RA5257 Women's Square Sunglasses\"\n" +
+                        "          },\n" +
+                        "          \"vs_data\": {\n" +
+                        "            \"index_filter.product_tagging\": \"others\",\n" +
+                        "            \"detect\": \"eyewear\"\n" +
+                        "          }\n" +
+                        "        },\n" +
+                        "        {\n" +
+                        "          \"product_id\": \"4894399\",\n" +
+                        "          \"score\": 0.7388582825660706,\n" +
+                        "          \"data\": {\n" +
+                        "            \"title\": \"Michael Kors MK2023 Women's Polarised Round Sunglasses, Tortoise/Brown Gradient\"\n" +
+                        "          },\n" +
+                        "          \"vs_data\": {\n" +
+                        "            \"index_filter.product_tagging\": \"others\",\n" +
+                        "            \"detect\": \"eyewear\"\n" +
+                        "          }\n" +
+                        "        }\n" +
+                        "      ],\n" +
+                        "      \"facets\": [\n" +
+                        "        {\n" +
+                        "          \"key\": \"category\",\n" +
+                        "          \"items\": [\n" +
+                        "            {\n" +
+                        "              \"value\": \"Women > Women's Sunglasses\"\n" +
+                        "            }\n" +
+                        "          ]\n" +
+                        "        }\n" +
+                        "      ]\n" +
+                        "    }\n" +
+                        "  ],\n" +
+
+                        "    \"strategy\": {\n" +
+                        "        \"id\": 123,\n" +
+                        "        \"name\": \"test STI\",\n" +
+                        "        \"algorithm\": \"STI\"\n" +
+                        "    }\n" +
+                        "}";;
+
+        ProductResponse response = gson.fromJson(json, ProductResponse.class);
+        searchService.handleResponse(response, new ProductSearch.ResultListener() {
+            @Override
+            public void onSearchResult(ProductResponse response, ErrorData error) {
+                assertNull(error);
+
+                Strategy strategy = response.getStrategy();
+                assertEquals( Integer.valueOf(123), strategy.getId());
+                assertEquals("test STI" , strategy.getName());
+                assertEquals("STI", strategy.getAlgorithm());
+
+                assertEquals(1, response.getPage());
+                assertEquals(5, response.getLimit());
+                assertEquals(2, response.getTotal());
+                assertEquals("01806a667776c6f8a31c28105fd99e", response.getReqId());
+
+                assertEquals(2, response.getObjects().size());
+
+                ProductObject o1 = response.getObjects().get(0);
+                assertEquals("b0eedf870030ebb7ec637cd2641d0591", o1.getId());
+
+                assertEquals("eyewear" , o1.getCategory());
+                assertEquals("54,1568,1765,2189", getBoxString(o1.getBox()));
+                assertEquals(Integer.valueOf(745), o1.getTotal());
+                assertEquals(5, o1.getResult().size());
+
+                Product i1 = o1.getResult().get(0);
+
+                assertEquals("4081895", i1.getProductId());
+                assertEquals("Versace VE4281 Women's Square Sunglasses, Black/Brown Gradient", i1.getData().get("title").toString());
+                assertEquals("others", i1.getVsData().get("index_filter.product_tagging").toString());
+                assertTrue(i1.getPinned());
+
+                assertEquals("pid1,pid2", Joiner.on(",").join(o1.getExcludedPids()));
+
+                Facet facet1 = o1.getFacets().get(0);
+                assertEquals("category", facet1.getKey());
+                assertEquals(1, facet1.getItems().size());
+                assertEquals("Women > Women's Dresses", facet1.getItems().get(0).getValue());
+
+
+                ProductObject o2 = response.getObjects().get(1);
+                assertEquals("b0eedf870030ebb7ec637cd2641d0592", o2.getId());
+                assertEquals("sunglasses" , o2.getCategory());
+                assertEquals("52,1589,1753,2210", getBoxString(o2.getBox()));
+                assertEquals(Integer.valueOf(689), o2.getTotal());
+                assertEquals(5, o2.getResult().size());
+
+                assertEquals(1, o2.getFacets().size());
+
+                Facet facet = o2.getFacets().get(0);
+                assertEquals("category", facet.getKey());
+                assertEquals(1, facet.getItems().size());
+                assertEquals("Women > Women's Sunglasses", facet.getItems().get(0).getValue());
+
+            }
+        });
+
+    }
+
+    private String getBoxString(Box box) {
+        return box.getX1() + "," + box.getY1() + "," + box.getX2() + "," + box.getY2();
     }
 }

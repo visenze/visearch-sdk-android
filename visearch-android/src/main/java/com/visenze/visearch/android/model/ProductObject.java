@@ -11,6 +11,20 @@ public class ProductObject extends ProductType {
     @SerializedName("total")
     private Integer total;
 
+    @SerializedName("id")
+    private String id;
+
+    @SerializedName("category")
+    private String category;
+
+    @SerializedName("name")
+    private String name;
+
+    @SerializedName("excluded_pids")
+    private List<String> excludedPids;
+
+    @SerializedName("facets")
+    private List<Facet> facets;
 
     public List<Product> getResult() {
         return result;
@@ -26,5 +40,45 @@ public class ProductObject extends ProductType {
 
     public void setTotal(Integer total) {
         this.total = total;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<String> getExcludedPids() {
+        return excludedPids;
+    }
+
+    public void setExcludedPids(List<String> excludedPids) {
+        this.excludedPids = excludedPids;
+    }
+
+    public List<Facet> getFacets() {
+        return facets;
+    }
+
+    public void setFacets(List<Facet> facets) {
+        this.facets = facets;
     }
 }
