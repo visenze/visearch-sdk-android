@@ -116,6 +116,14 @@ public class IdSearchParams extends SearchParams {
         this.useSetBasedCtl = useSetBasedCtl;
     }
 
+    public Boolean getShowBestProductImages() {
+        return showBestProductImages;
+    }
+
+    public void setShowBestProductImages(Boolean showBestProductImages) {
+        this.showBestProductImages = showBestProductImages;
+    }
+
     @Override
     public Map<String, List<String> > toMap() {
         Map<String, List<String> > map = super.toMap();
