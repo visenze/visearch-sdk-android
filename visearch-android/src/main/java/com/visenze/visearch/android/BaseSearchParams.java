@@ -323,6 +323,10 @@ public class BaseSearchParams {
         return facetsLimit;
     }
 
+    public String getStrategyId() {
+        return strategyId;
+    }
+
     public Map<String, List<String> > toMap() {
         Map<String, List<String> > map = new HashMap<String, List<String> >();
 
