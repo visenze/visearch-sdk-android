@@ -53,6 +53,9 @@ public class ResponseData {
     @SerializedName("result")
     private List<ImageResult> results;
 
+    @SerializedName("group_results")
+    private List<GroupSearchResult> groupResults;
+
     @SerializedName("product_types")
     private List<ProductType> productTypes;
 
@@ -212,6 +215,14 @@ public class ResponseData {
         return excludedImNames;
     }
 
+    public List<GroupSearchResult> getGroupResults() {
+        return groupResults;
+    }
+
+    public void setGroupResults(List<GroupSearchResult> groupResults) {
+        this.groupResults = groupResults;
+    }
+
     public ResultList getResultList() {
         ResultList resultList = new ResultList();
         if(error != null && error.length > 0) {
@@ -238,6 +249,7 @@ public class ResponseData {
         resultList.setFacets(facets);
         resultList.setExcludedImNames(excludedImNames);
         resultList.setSetInfoList(setInfoList);
+        resultList.setGroupResults(groupResults);
 
         return resultList;
     }

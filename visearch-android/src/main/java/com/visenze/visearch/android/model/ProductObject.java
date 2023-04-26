@@ -8,6 +8,9 @@ public class ProductObject extends ProductType {
     @SerializedName("result")
     private List<Product> result;
 
+    @SerializedName("group_results")
+    private List<GroupProductResult> groupResults;
+
     @SerializedName("total")
     private Integer total;
 
@@ -80,5 +83,13 @@ public class ProductObject extends ProductType {
 
     public void setFacets(List<Facet> facets) {
         this.facets = facets;
+    }
+
+    public List<GroupProductResult> getGroupResults() {
+        return groupResults;
+    }
+
+    public void setGroupResults(List<GroupProductResult> groupResults) {
+        this.groupResults = groupResults;
     }
 }
