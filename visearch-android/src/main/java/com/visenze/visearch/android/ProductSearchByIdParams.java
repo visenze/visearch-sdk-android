@@ -3,6 +3,8 @@ package com.visenze.visearch.android;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class ProductSearchByIdParams extends BaseProductSearchParams {
 
     @Expose(deserialize = false, serialize = false)
@@ -28,6 +30,10 @@ public class ProductSearchByIdParams extends BaseProductSearchParams {
 
     @SerializedName("show_best_product_images")
     private Boolean showBestProductImages;
+
+    @SerializedName("box")
+    @Expose(deserialize = false, serialize = false)
+    private List<String> box;
 
     public String getProductId() {
         return productId;
@@ -91,6 +97,14 @@ public class ProductSearchByIdParams extends BaseProductSearchParams {
 
     public void setShowBestProductImages(Boolean showBestProductImages) {
         this.showBestProductImages = showBestProductImages;
+    }
+
+    public List<String> getBox() {
+        return box;
+    }
+
+    public void setBox(List<String> box) {
+        this.box = box;
     }
 
     public ProductSearchByIdParams(String productId) {

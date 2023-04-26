@@ -1,6 +1,7 @@
 package com.visenze.visearch.android;
 
 import com.visenze.visearch.android.model.Facet;
+import com.visenze.visearch.android.model.GroupSearchResult;
 import com.visenze.visearch.android.model.ImageResult;
 import com.visenze.visearch.android.model.ObjectResult;
 import com.visenze.visearch.android.model.ProductType;
@@ -57,6 +58,8 @@ public class ResultList {
     private List<String> excludedImNames;
 
     private List<SetInfo> setInfoList;
+
+    private List<GroupSearchResult> groupResults;
 
     public ResultList() {
         imageResult = new ArrayList<ImageResult>();
@@ -251,5 +254,13 @@ public class ResultList {
 
     public void setSetInfoList(List<SetInfo> setInfoList) {
         this.setInfoList = setInfoList;
+    }
+
+    public List<GroupSearchResult> getGroupResults() {
+        return groupResults;
+    }
+
+    public void setGroupResults(List<GroupSearchResult> groupResults) {
+        this.groupResults = groupResults;
     }
 }

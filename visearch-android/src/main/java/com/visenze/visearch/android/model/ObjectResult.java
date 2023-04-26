@@ -26,6 +26,9 @@ public class ObjectResult extends ProductType {
     @SerializedName("facets")
     private List<Facet> facets;
 
+    @SerializedName("group_results")
+    private List<GroupSearchResult> groupResults;
+
     public List<ImageResult> getResult() {
         return result;
     }
@@ -80,5 +83,13 @@ public class ObjectResult extends ProductType {
 
     public void setFacets(List<Facet> facets) {
         this.facets = facets;
+    }
+
+    public List<GroupSearchResult> getGroupResults() {
+        return groupResults;
+    }
+
+    public void setGroupResults(List<GroupSearchResult> groupResults) {
+        this.groupResults = groupResults;
     }
 }

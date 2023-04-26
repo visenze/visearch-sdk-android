@@ -38,6 +38,8 @@ public class BaseSearchParams {
 
     private String sortBy;
 
+    private String strategyId;
+
     /**
      * The default sets limit at 10 and page at 1, other basic parameters are set as null
      */
@@ -171,6 +173,10 @@ public class BaseSearchParams {
         return this;
     }
 
+    public BaseSearchParams setStrategyId(String strategyId) {
+        this.strategyId = strategyId;
+        return this;
+    }
 
     /**
      * Get the sortBy value
@@ -317,6 +323,10 @@ public class BaseSearchParams {
         return facetsLimit;
     }
 
+    public String getStrategyId() {
+        return strategyId;
+    }
+
     public Map<String, List<String> > toMap() {
         Map<String, List<String> > map = new HashMap<String, List<String> >();
 
@@ -350,6 +360,10 @@ public class BaseSearchParams {
 
         if (sortBy != null) {
             putStringInMap(map, "sort_by", sortBy);
+        }
+
+        if (strategyId != null) {
+            putStringInMap(map, "strategy_id", strategyId);
         }
 
         if (custom != null && custom.size() > 0) {

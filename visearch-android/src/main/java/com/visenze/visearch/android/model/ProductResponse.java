@@ -25,6 +25,9 @@ public class ProductResponse {
     @SerializedName("result")
     private List<Product> products;
 
+    @SerializedName("group_results")
+    private List<GroupProductResult> groupResults;
+
     @SerializedName("objects")
     private List<ProductObject> objects;
 
@@ -211,5 +214,13 @@ public class ProductResponse {
 
     public void setSetInfoList(List<SetInfo> setInfoList) {
         this.setInfoList = setInfoList;
+    }
+
+    public List<GroupProductResult> getGroupResults() {
+        return groupResults;
+    }
+
+    public void setGroupResults(List<GroupProductResult> groupResults) {
+        this.groupResults = groupResults;
     }
 }
