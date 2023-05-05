@@ -16,6 +16,9 @@ public class ProductSearchByIdParams extends BaseProductSearchParams {
     @SerializedName("strategy_id")
     private Integer strategyId;
 
+    @SerializedName("return_product_info")
+    private Boolean returnProductInfo;
+
     @SerializedName("show_pinned_pids")
     private Boolean showPinnedPids;
 
@@ -73,6 +76,14 @@ public class ProductSearchByIdParams extends BaseProductSearchParams {
 
     public void setShowExcludedPids(Boolean showExcludedPids) {
         this.showExcludedPids = showExcludedPids;
+    }
+
+    public Boolean getReturnProductInfo() {
+        return returnProductInfo;
+    }
+
+    public void setReturnProductInfo(Boolean returnProductInfo) {
+        this.returnProductInfo = returnProductInfo;
     }
 
     public Integer getSetLimit() {
