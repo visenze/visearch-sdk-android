@@ -22,6 +22,10 @@ public class ProductResponse {
     @SerializedName("product_types")
     private List<ProductType> productTypes;
 
+    // query product
+    @SerializedName("product_info")
+    Product productInfo;
+
     @SerializedName("result")
     private List<Product> products;
 
@@ -222,5 +226,13 @@ public class ProductResponse {
 
     public void setGroupResults(List<GroupProductResult> groupResults) {
         this.groupResults = groupResults;
+    }
+
+    public Product getProductInfo() {
+        return productInfo;
+    }
+
+    public void setProductInfo(Product productInfo) {
+        this.productInfo = productInfo;
     }
 }
