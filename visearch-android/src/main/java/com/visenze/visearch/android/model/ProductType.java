@@ -15,6 +15,9 @@ public class ProductType {
     @SerializedName("box")
     private int[] boxArray;
 
+    @SerializedName("box_type")
+    private String boxType;
+
     @SerializedName("type")
     private String type;
 
@@ -75,6 +78,13 @@ public class ProductType {
         this.attributeList = attributeList;
     }
 
+    public String getBoxType() {
+        return boxType;
+    }
+
+    public void setBoxType(String boxType) {
+        this.boxType = boxType;
+    }
 
     private Box parseBox(int[] boxData) {
 
