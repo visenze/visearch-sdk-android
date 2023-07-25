@@ -25,6 +25,7 @@ public class IdSearchParams extends SearchParams {
     private Integer setLimit;
     private Boolean useSetBasedCtl;
     private Boolean showBestProductImages;
+    private Boolean nonProductBasedRecs;
 
     private List<String> box;
 
@@ -102,6 +103,14 @@ public class IdSearchParams extends SearchParams {
         this.showExcludedImNames = showExcludedImNames;
     }
 
+    public Boolean getNonProductBasedRecs() {
+        return nonProductBasedRecs;
+    }
+
+    public void setNonProductBasedRecs(Boolean nonProductBasedRecs) {
+        this.nonProductBasedRecs = nonProductBasedRecs;
+    }
+
     public Integer getSetLimit() {
         return setLimit;
     }
@@ -169,6 +178,10 @@ public class IdSearchParams extends SearchParams {
 
         if (showBestProductImages != null) {
             putStringInMap(map, "show_best_product_images", showBestProductImages.toString());
+        }
+
+        if (nonProductBasedRecs != null) {
+            putStringInMap(map, "non_product_based_recs", nonProductBasedRecs.toString());
         }
 
         if (box != null && box.size() > 0) {
