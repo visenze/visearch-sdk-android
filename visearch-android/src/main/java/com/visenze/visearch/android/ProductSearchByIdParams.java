@@ -34,6 +34,9 @@ public class ProductSearchByIdParams extends BaseProductSearchParams {
     @SerializedName("show_best_product_images")
     private Boolean showBestProductImages;
 
+    @SerializedName("non_product_based_recs")
+    private Boolean nonProductBasedRecs;
+
     @SerializedName("box")
     @Expose(deserialize = false, serialize = false)
     private List<String> box;
@@ -76,6 +79,14 @@ public class ProductSearchByIdParams extends BaseProductSearchParams {
 
     public void setShowExcludedPids(Boolean showExcludedPids) {
         this.showExcludedPids = showExcludedPids;
+    }
+
+    public Boolean getNonProductBasedRecs() {
+        return nonProductBasedRecs;
+    }
+
+    public void setNonProductBasedRecs(Boolean nonProductBasedRecs) {
+        this.nonProductBasedRecs = nonProductBasedRecs;
     }
 
     public Boolean getReturnProductInfo() {
