@@ -30,6 +30,8 @@ public class UploadSearchParams extends SearchParams {
 
     private Integer resultLimit;
 
+    private String q;
+
     public UploadSearchParams() {
         super();
     }
@@ -118,6 +120,16 @@ public class UploadSearchParams extends SearchParams {
     }
 
     /**
+     *
+     * @param q text query
+     * @return this instance.
+     */
+    public UploadSearchParams setQ(String q) {
+        this.q = q;
+        return this;
+    }
+
+    /**
      * Get {@link Image Image} that is set to search
      *
      * @return {@link Image Image} instance
@@ -151,6 +163,15 @@ public class UploadSearchParams extends SearchParams {
      */
     public String getDetection() {
         return detection;
+    }
+
+    /**
+     * Get text query
+     *
+     * @return text query.
+     */
+    public String getQ() {
+        return q;
     }
 
     @Override
@@ -201,6 +222,10 @@ public class UploadSearchParams extends SearchParams {
 
         if (resultLimit != null) {
             putStringInMap(map, "result_limit", resultLimit.toString());
+        }
+
+        if (q != null) {
+            putStringInMap(map,"q", q);
         }
 
         return map;

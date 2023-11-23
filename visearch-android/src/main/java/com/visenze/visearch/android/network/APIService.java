@@ -52,4 +52,13 @@ public interface APIService {
     @POST("discoversearch")
     Call<ResponseData> discoverSearch(@HeaderMap Map<String, String> headers, @Part MultipartBody.Part image, @QueryMap RetrofitQueryMap query);
 
+    @Retry
+    @GET("multisearch")
+    Call<ResponseData> multiSearch(@HeaderMap Map<String, String> headers, @QueryMap RetrofitQueryMap query);
+
+    @Retry
+    @Multipart
+    @POST("multisearch")
+    Call<ResponseData> multiSearch(@HeaderMap Map<String, String> headers, @Part MultipartBody.Part image, @QueryMap RetrofitQueryMap query);
+
 }

@@ -41,7 +41,7 @@ public interface SearchOperations {
      * Upload Search (POST /uploadsearch)
      * Searching against the image collection with an uploading image.
      *
-     * @param uploadSearchParams the index search parameter setting
+     * @param uploadSearchParams request params
      * @param resultListener result listener
      */
     public void uploadSearch(UploadSearchParams uploadSearchParams, final ViSearch.ResultListener resultListener);
@@ -50,11 +50,19 @@ public interface SearchOperations {
      * Discover Search (POST /discoversearch)
      * Multiple Products Search
      *
-     * @param uploadSearchParams the index search parameter setting
+     * @param uploadSearchParams request params
      * @param resultListener result listener
      */
     public void discoverSearch(UploadSearchParams uploadSearchParams, final ViSearch.ResultListener resultListener);
 
+    /**
+     * Multi Search (POST /multisearch)
+     * Multi-search (image and text query)
+     *
+     * @param uploadSearchParams request params (image and text query)
+     * @param resultListener result listener
+     */
+    public void multiSearch(UploadSearchParams uploadSearchParams, final ViSearch.ResultListener resultListener);
 
     public void cancelSearch(ViSearch.ResultListener resultListener);
 }
