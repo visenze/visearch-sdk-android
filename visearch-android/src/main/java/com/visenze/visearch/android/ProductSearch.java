@@ -39,6 +39,11 @@ public class ProductSearch {
         productSearchService.searchById(visualSimilarParams, listener);
     }
 
+    public void multisearcch(ProductSearchByImageParams imageSearchParams, ResultListener listener) {
+        addAnalyticsParams(imageSearchParams);
+        productSearchService.searchByImage(imageSearchParams, listener, true);
+    }
+
     public void recommendations(ProductSearchByIdParams visualSimilarParams, ResultListener listener) {
         searchById(visualSimilarParams, listener);
     }

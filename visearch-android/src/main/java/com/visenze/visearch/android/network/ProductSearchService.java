@@ -39,8 +39,11 @@ public class ProductSearchService {
         handleCallback(call, listener);
     }
 
-
     public void searchByImage(ProductSearchByImageParams imageSearchParams, final ProductSearch.ResultListener listener) {
+        searchByImage(imageSearchParams, listener, false);
+    }
+
+    public void searchByImage(ProductSearchByImageParams imageSearchParams, final ProductSearch.ResultListener listener, boolean multiSearch) {
         byte[] imageBytes = null;
 
         if (imageSearchParams.getImage() != null) {
@@ -50,8 +53,11 @@ public class ProductSearchService {
         String imageUrl = imageSearchParams.getImUrl();
         String imId = imageSearchParams.getImId();
 
-        if (imageBytes == null && (imageUrl == null || imageUrl.isEmpty()) && (imId == null || imId.isEmpty())) {
-            throw new IllegalArgumentException("Please provide imUrl , imId or image parameter");
+        // image is optional for multisearch
+        if (!multiSearch) {
+            if (imageBytes == null && (imageUrl == null || imageUrl.isEmpty()) && (imId == null || imId.isEmpty())) {
+                throw new IllegalArgumentException("Please provide imUrl , imId or image parameter");
+            }
         }
 
         RetrofitQueryMap params = buildQueryMap(imageSearchParams);
@@ -60,13 +66,28 @@ public class ProductSearchService {
         if(imageBytes != null) {
             RequestBody imageBody = RequestBody.create(MediaType.parse("image/*"), imageBytes);
             MultipartBody.Part image = MultipartBody.Part.createFormData("image", "image", imageBody);
-            call = apiService.searchByImage(image, params);
+            call = getProductResponseCall(params, image, multiSearch);
         } else {
-            call = apiService.searchByImage(params);
+            call = getProductResponseCall(params, null, multiSearch);
         }
         handleCallback(call, listener);
     }
 
+    private Call<ProductResponse> getProductResponseCall(RetrofitQueryMap params, MultipartBody.Part image, boolean multiSearch) {
+        if (multiSearch) {
+            if (image == null) {
+                return  apiService.multisearch(params);
+            }
+
+            return apiService.multisearch(image, params);
+        } else {
+            if (image == null) {
+                return  apiService.searchByImage(params);
+            }
+
+            return apiService.searchByImage(image, params);
+        }
+    }
 
 
     private RetrofitQueryMap buildQueryMap(BaseProductSearchParams params) {

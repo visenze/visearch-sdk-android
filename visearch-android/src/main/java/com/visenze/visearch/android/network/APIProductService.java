@@ -28,5 +28,12 @@ public interface APIProductService {
     @POST("product/search_by_image")
     Call<ProductResponse> searchByImage(@Part MultipartBody.Part image, @QueryMap RetrofitQueryMap query);
 
+    @Retry
+    @POST("product/multisearch")
+    Call<ProductResponse> multisearch(@QueryMap RetrofitQueryMap query);
 
+    @Retry
+    @Multipart
+    @POST("product/multisearch")
+    Call<ProductResponse> multisearch(@Part MultipartBody.Part image, @QueryMap RetrofitQueryMap query);
 }
