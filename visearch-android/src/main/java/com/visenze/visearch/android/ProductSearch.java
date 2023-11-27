@@ -45,6 +45,11 @@ public class ProductSearch {
         productSearchService.searchByImage(imageSearchParams, listener, true);
     }
 
+    public void multisearchAutocomplete(ProductSearchByImageParams imageSearchParams, AutoCompleteResultListener listener) {
+        addAnalyticsParams(imageSearchParams);
+        productSearchService.multisearchAutocomplete(imageSearchParams, listener);
+    }
+
     public void recommendations(ProductSearchByIdParams visualSimilarParams, ResultListener listener) {
         searchById(visualSimilarParams, listener);
     }
