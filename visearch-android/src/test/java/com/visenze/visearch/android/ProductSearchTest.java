@@ -6,6 +6,8 @@ import android.os.Build;
 import com.google.common.base.Joiner;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.visenze.visearch.android.model.AutoCompleteResponse;
+import com.visenze.visearch.android.model.AutoCompleteResultItem;
 import com.visenze.visearch.android.model.BestImage;
 import com.visenze.visearch.android.model.Box;
 import com.visenze.visearch.android.model.ErrorData;
@@ -1009,6 +1011,55 @@ public class ProductSearchTest {
                 assertEquals(1, facet.getItems().size());
                 assertEquals("Women > Women's Sunglasses", facet.getItems().get(0).getValue());
 
+            }
+        });
+
+    }
+
+    @Test
+    public void testAutocompleteResponse() {
+        String json =
+                "{\n" +
+                        "    \"result\": [\n" +
+                        "        {\n" +
+                        "            \"text\": \"red1\",\n" +
+                        "            \"score\": 898.0\n" +
+                        "        },\n" +
+                        "        {\n" +
+                        "            \"text\": \"red valentino\",\n" +
+                        "            \"score\": 188.0\n" +
+                        "        },\n" +
+                        "        {\n" +
+                        "            \"text\": \"oscar de la renta\",\n" +
+                        "            \"score\": 46.0\n" +
+                        "        }\n" +
+                        "    ],\n" +
+                        "    \"method\": \"multisearch/autocomplete\",\n" +
+                        "    \"status\": \"OK\",\n" +
+                        "    \"page\": 1,\n" +
+                        "    \"reqid\": \"14952330933117065212\"\n" +
+                        "}";
+
+        AutoCompleteResponse response = gson.fromJson(json, AutoCompleteResponse.class);
+        searchService.handleAutoCompleteResponse(response, new ProductSearch.AutoCompleteResultListener() {
+            @Override
+            public void onResult(AutoCompleteResponse response, ErrorData error) {
+                assertNull(error);
+
+                assertEquals(1, response.getPage());
+                assertEquals("14952330933117065212", response.getReqId());
+
+                AutoCompleteResultItem item = response.getResult().get(0);
+                assertEquals("red1", item.getText());
+                assertTrue(898.0 == item.getScore());
+
+                AutoCompleteResultItem item2 = response.getResult().get(1);
+                assertEquals("red valentino", item2.getText());
+                assertTrue(188.0 == item2.getScore());
+
+                AutoCompleteResultItem item3 = response.getResult().get(2);
+                assertEquals("oscar de la renta", item3.getText());
+                assertTrue(46.0 == item3.getScore());
             }
         });
 

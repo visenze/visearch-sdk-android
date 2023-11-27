@@ -6,6 +6,7 @@ import com.visenze.datatracking.SessionManager;
 import com.visenze.datatracking.Tracker;
 import com.visenze.datatracking.VisenzeAnalytics;
 import com.visenze.datatracking.data.DataCollection;
+import com.visenze.visearch.android.model.AutoCompleteResponse;
 import com.visenze.visearch.android.model.ErrorData;
 import com.visenze.visearch.android.model.ProductResponse;
 import com.visenze.visearch.android.network.ProductSearchService;
@@ -37,6 +38,16 @@ public class ProductSearch {
     public void searchById(ProductSearchByIdParams visualSimilarParams, ResultListener listener) {
         addAnalyticsParams(visualSimilarParams);
         productSearchService.searchById(visualSimilarParams, listener);
+    }
+
+    public void multisearch(ProductSearchByImageParams imageSearchParams, ResultListener listener) {
+        addAnalyticsParams(imageSearchParams);
+        productSearchService.searchByImage(imageSearchParams, listener, true);
+    }
+
+    public void multisearchAutocomplete(ProductSearchByImageParams imageSearchParams, AutoCompleteResultListener listener) {
+        addAnalyticsParams(imageSearchParams);
+        productSearchService.multisearchAutocomplete(imageSearchParams, listener);
     }
 
     public void recommendations(ProductSearchByIdParams visualSimilarParams, ResultListener listener) {
@@ -160,9 +171,12 @@ public class ProductSearch {
         }
     }
 
-    public static interface ResultListener {
-        public void onSearchResult(final ProductResponse response, ErrorData error);
+    public interface ResultListener {
+        void onSearchResult(final ProductResponse response, ErrorData error);
+    }
 
+    public interface AutoCompleteResultListener {
+        void onResult(final AutoCompleteResponse response, ErrorData error);
     }
 
 }

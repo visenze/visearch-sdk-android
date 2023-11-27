@@ -34,6 +34,9 @@ public class ProductSearchByImageParams extends BaseProductSearchParams {
     // internal serialization
     @SerializedName("box")
     private String boxParam;
+
+    @SerializedName("q")
+    private String q;
     
     public Boolean getSearchAllObjects() {
         return searchAllObjects;
@@ -102,6 +105,14 @@ public class ProductSearchByImageParams extends BaseProductSearchParams {
 
     public String getBoxParam() {
         return boxParam;
+    }
+
+    public String getQ() {
+        return q;
+    }
+
+    public void setQ(String q) {
+        this.q = q;
     }
 
     public ProductSearchByImageParams() {

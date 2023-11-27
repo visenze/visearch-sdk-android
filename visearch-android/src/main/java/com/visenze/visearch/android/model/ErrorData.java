@@ -27,5 +27,10 @@ public class ErrorData {
         this.message = message;
     }
 
-
+    public static ErrorData unknownError(String msg) {
+        ErrorData error = new ErrorData();
+        error.setMessage(msg);
+        error.setCode(-1);
+        return error;
+    }
 }

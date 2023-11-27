@@ -26,6 +26,7 @@ public class SearchService {
     public final static String COLOR_SEARCH = "colorsearch";
     public final static String UPLOAD_SEARCH = "uploadsearch";
     public final static String DISCOVER_SEARCH = "discoversearch";
+    public final static String MULTI_SEARCH = "multisearch";
 
     private final static String ACCESS_KEY = "access_key";
     private String appKey;
@@ -77,8 +78,11 @@ public class SearchService {
         String imageUrl = uploadSearchParams.getImageUrl();
         String imId = uploadSearchParams.getImId();
 
-        if (imageBytes == null && (imageUrl == null || imageUrl.isEmpty()) && (imId == null || imId.isEmpty())) {
-            throw new ViSearchException("Missing parameter, image empty");
+        // image is optional for multi-search
+        if (!SearchService.MULTI_SEARCH.equals(endPoint)) {
+            if (imageBytes == null && (imageUrl == null || imageUrl.isEmpty()) && (imId == null || imId.isEmpty())) {
+                throw new ViSearchException("Missing parameter, image empty");
+            }
         }
 
         Map<String, String> headers = getHeaders();
@@ -95,23 +99,28 @@ public class SearchService {
     }
 
     private Call<ResponseData> getCall(String endPoint, Map<String, String> headers, RetrofitQueryMap params, MultipartBody.Part image) {
-        Call<ResponseData> call;
         if(UPLOAD_SEARCH.equals(endPoint)) {
             if(image == null) {
-                call = apiService.uploadSearch(headers, params);
-            } else {
-                call = apiService.uploadSearch(headers, image, params);
+                return apiService.uploadSearch(headers, params);
             }
-        } else if(DISCOVER_SEARCH.equals(endPoint)) {
-            if(image == null) {
-                call = apiService.discoverSearch(headers, params);
-            } else {
-                call = apiService.discoverSearch(headers, image, params);
-            }
-        } else {
-            throw new ViSearchException("wrong API method");
+            return apiService.uploadSearch(headers, image, params);
         }
-        return call;
+
+        if(DISCOVER_SEARCH.equals(endPoint)) {
+            if(image == null) {
+                return apiService.discoverSearch(headers, params);
+            }
+            return apiService.discoverSearch(headers, image, params);
+        }
+
+        if(MULTI_SEARCH.equals(endPoint)) {
+            if(image == null) {
+                return apiService.multiSearch(headers, params);
+            }
+            return apiService.multiSearch(headers, image, params);
+        }
+
+        throw new ViSearchException("wrong API method");
     }
 
     private void handleCallback(Call<ResponseData> call, final ViSearch.ResultListener resultListener) {

@@ -43,6 +43,11 @@ public class SearchOperationsImp implements SearchOperations {
     }
 
     @Override
+    public void multiSearch(UploadSearchParams uploadSearchParams, ViSearch.ResultListener resultListener) {
+        searchService.uploadSearch(SearchService.MULTI_SEARCH, uploadSearchParams, resultListener);
+    }
+
+    @Override
     public void cancelSearch(ViSearch.ResultListener resultListener) {
         resultListener.onSearchCanceled();
     }
