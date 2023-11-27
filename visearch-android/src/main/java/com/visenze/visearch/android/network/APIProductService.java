@@ -1,5 +1,6 @@
 package com.visenze.visearch.android.network;
 
+import com.visenze.visearch.android.model.AutoCompleteResponse;
 import com.visenze.visearch.android.model.ProductResponse;
 import com.visenze.visearch.android.network.retry.Retry;
 
@@ -36,4 +37,13 @@ public interface APIProductService {
     @Multipart
     @POST("product/multisearch")
     Call<ProductResponse> multisearch(@Part MultipartBody.Part image, @QueryMap RetrofitQueryMap query);
+
+    @Retry
+    @POST("product/multisearch/autocomplete")
+    Call<AutoCompleteResponse> multisearchAutocomplete(@QueryMap RetrofitQueryMap query);
+
+    @Retry
+    @Multipart
+    @POST("product/multisearch/autocomplete")
+    Call<AutoCompleteResponse> multisearchAutocomplete(@Part MultipartBody.Part image, @QueryMap RetrofitQueryMap query);
 }

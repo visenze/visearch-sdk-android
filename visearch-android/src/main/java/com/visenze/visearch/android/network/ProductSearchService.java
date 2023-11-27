@@ -5,6 +5,7 @@ import com.visenze.visearch.android.BaseProductSearchParams;
 import com.visenze.visearch.android.ProductSearchByImageParams;
 import com.visenze.visearch.android.ProductSearch;
 import com.visenze.visearch.android.ProductSearchByIdParams;
+import com.visenze.visearch.android.model.AutoCompleteResponse;
 import com.visenze.visearch.android.model.ErrorData;
 import com.visenze.visearch.android.model.ProductResponse;
 
@@ -44,6 +45,46 @@ public class ProductSearchService {
     }
 
     public void searchByImage(ProductSearchByImageParams imageSearchParams, final ProductSearch.ResultListener listener, boolean multiSearch) {
+        byte[] imageBytes = validateImageParams(imageSearchParams, multiSearch);
+
+        RetrofitQueryMap params = buildQueryMap(imageSearchParams);
+
+        Call<ProductResponse> call;
+        if(imageBytes != null) {
+            RequestBody imageBody = RequestBody.create(MediaType.parse("image/*"), imageBytes);
+            MultipartBody.Part image = MultipartBody.Part.createFormData("image", "image", imageBody);
+            call = getProductResponseCall(params, image, multiSearch);
+        } else {
+            call = getProductResponseCall(params, null, multiSearch);
+        }
+        handleCallback(call, listener);
+    }
+
+    public void multisearchAutocomplete(ProductSearchByImageParams imageSearchParams,
+                                        final ProductSearch.AutoCompleteResultListener listener) {
+        byte[] imageBytes = validateImageParams(imageSearchParams, true);
+
+        RetrofitQueryMap params = buildQueryMap(imageSearchParams);
+
+        Call<AutoCompleteResponse> call;
+        if(imageBytes != null) {
+            RequestBody imageBody = RequestBody.create(MediaType.parse("image/*"), imageBytes);
+            MultipartBody.Part image = MultipartBody.Part.createFormData("image", "image", imageBody);
+            call = getAutoCompleteResponseCall(params, image);
+        } else {
+            call = getAutoCompleteResponseCall(params, null);
+        }
+        handleCallback(call, listener);
+    }
+
+    /**
+     * If not multi-search, 1 of image, im_url or im_id must be provided, throw Exception if missing
+     *
+     * @param imageSearchParams request params
+     * @param multiSearch whether this is multisearch related API or normal SBI
+     * @return image file bytes if provided
+     */
+    private byte[] validateImageParams(ProductSearchByImageParams imageSearchParams, boolean multiSearch) {
         byte[] imageBytes = null;
 
         if (imageSearchParams.getImage() != null) {
@@ -59,18 +100,7 @@ public class ProductSearchService {
                 throw new IllegalArgumentException("Please provide imUrl , imId or image parameter");
             }
         }
-
-        RetrofitQueryMap params = buildQueryMap(imageSearchParams);
-
-        Call<ProductResponse> call;
-        if(imageBytes != null) {
-            RequestBody imageBody = RequestBody.create(MediaType.parse("image/*"), imageBytes);
-            MultipartBody.Part image = MultipartBody.Part.createFormData("image", "image", imageBody);
-            call = getProductResponseCall(params, image, multiSearch);
-        } else {
-            call = getProductResponseCall(params, null, multiSearch);
-        }
-        handleCallback(call, listener);
+        return imageBytes;
     }
 
     private Call<ProductResponse> getProductResponseCall(RetrofitQueryMap params, MultipartBody.Part image, boolean multiSearch) {
@@ -89,6 +119,14 @@ public class ProductSearchService {
         }
     }
 
+    private Call<AutoCompleteResponse> getAutoCompleteResponseCall(RetrofitQueryMap params, MultipartBody.Part image) {
+        if (image == null) {
+            return  apiService.multisearchAutocomplete(params);
+        }
+
+        return apiService.multisearchAutocomplete(image, params);
+    }
+
 
     private RetrofitQueryMap buildQueryMap(BaseProductSearchParams params) {
         RetrofitQueryMap map = params.getQueryMap();
@@ -101,32 +139,28 @@ public class ProductSearchService {
         call.enqueue(new Callback<ProductResponse>() {
             @Override
             public void onResponse(Call<ProductResponse> call, Response<ProductResponse> response) {
-                if(response.isSuccessful() && response.body() !=null) {
+                if(response.isSuccessful() && response.body() != null) {
                     ProductResponse data = response.body();
                     handleResponse(data, resultListener);
-                } else {
-                    if (response.errorBody() != null) {
-                        Gson gson = new Gson();
-                        ProductResponse resp = gson.fromJson(response.errorBody().charStream(), ProductResponse.class);
-                        if (resp != null && resp.getError()!= null) {
-                            resultListener.onSearchResult(null, resp.getError());
-                            return;
-                        }
-                    }
-                    ErrorData error = new ErrorData();
-                    error.setMessage("api failed");
-                    error.setCode(-1);
-                    resultListener.onSearchResult(null, error);
+                    return;
                 }
+
+                if (response.errorBody() != null) {
+                    Gson gson = new Gson();
+                    ProductResponse resp = gson.fromJson(response.errorBody().charStream(), ProductResponse.class);
+                    if (resp != null && resp.getError() != null) {
+                        resultListener.onSearchResult(null, resp.getError());
+                        return;
+                    }
+                }
+
+                resultListener.onSearchResult(null, ErrorData.unknownError("api failed"));
+
             }
 
             @Override
             public void onFailure(Call<ProductResponse> call, Throwable t) {
-
-                ErrorData error = new ErrorData();
-                error.setMessage(t.getMessage());
-                error.setCode(-1);
-                resultListener.onSearchResult(null, error);
+                resultListener.onSearchResult(null, ErrorData.unknownError(t.getMessage()));
             }
 
         });
@@ -139,6 +173,46 @@ public class ProductSearchService {
             resultListener.onSearchResult(null, error);
         } else {
             resultListener.onSearchResult(response, null);
+        }
+    }
+
+    private void handleCallback(Call<AutoCompleteResponse> call, final ProductSearch.AutoCompleteResultListener resultListener) {
+        call.enqueue(new Callback<AutoCompleteResponse>() {
+
+            @Override
+            public void onResponse(Call<AutoCompleteResponse> call, Response<AutoCompleteResponse> response) {
+                if(response.isSuccessful() && response.body() != null) {
+                    AutoCompleteResponse data = response.body();
+                    handleAutoCompleteResponse(data, resultListener);
+                    return;
+                }
+
+                if (response.errorBody() != null) {
+                    Gson gson = new Gson();
+                    AutoCompleteResponse resp = gson.fromJson(response.errorBody().charStream(), AutoCompleteResponse.class);
+                    if (resp != null && resp.getError() != null) {
+                        resultListener.onResult(null, resp.getError());
+                        return;
+                    }
+                }
+
+                resultListener.onResult(null, ErrorData.unknownError("api failed"));
+            }
+
+            @Override
+            public void onFailure(Call<AutoCompleteResponse> call, Throwable t) {
+                resultListener.onResult(null, ErrorData.unknownError(t.getMessage()));
+            }
+
+        });
+    }
+
+    public void handleAutoCompleteResponse(AutoCompleteResponse response, final ProductSearch.AutoCompleteResultListener listener) {
+        ErrorData error = response.getError();
+        if(error != null) {
+            listener.onResult(null, error);
+        } else {
+            listener.onResult(response, null);
         }
     }
 
