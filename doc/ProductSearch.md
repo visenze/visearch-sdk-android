@@ -483,7 +483,7 @@ Facet for value range filtering.
 | status | String | The request status, either `OK` or `fail` |
 | method | String |  |
 | error | ErrorData | Error message and code if the request was not successful i.e. when status is `fail` |
-| result | [AutoCompleteResultItem] (#5.9.1-autocompleteresultitem) |  |
+| result | [AutoCompleteResultItem] (#591-autocompleteresultitem) |  |
 | page | int | The result page number |
 | limit | int | The number of results per page |
 | total | int | Total number of search result |
