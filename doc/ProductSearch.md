@@ -6,40 +6,45 @@ With the release of ViSenze's Catalog system, ViSearch Android SDK will now incl
 - Aggregate search results on a product level instead of image level
 - Consistent data type in API response with Catalog’s schema
 
-> Current stable version: 2.3.5
-
+> Current stable version: 2.4.0
 > Minimum Android SDK Version: API 9, Android 2.3
 
 ---
 
 ## Table of Contents
 
-1. [Setup](#1-setup)
-    - 1.1 [Running the Demo](#11-running-the-demo)
-    - 1.2 [Installing the SDK](#12-installing-the-sdk)
-    - 1.3 [Add User Permissions](#13-add-user-permissions)
-2. [Initialization](#2-initialization)
-3. [Solution APIs](#3-solution-apis)
-     - 3.1 [Search by Image](#31-search-by-image)
-     - 3.2 [Recommendation](#32-recommendations)
-4. [Search Parameters](#4-search-parameters)
-    - 4.1 [BaseProductSearchParams](#41-baseproductsearchparams)
-    - 4.2 [ProductSearchByImageParams](#42-productsearchbyimageparams)
-    - 4.3 [ProductSearchByIdParams](#43-productsearchbyidparams)
-5. [Search Results](#5-search-results)
-    - 5.1 [ProductResponse](#51-productresponse)
-    - 5.2 [ErrorData](#52-errordata)
-    - 5.3 [ProductType](#53-producttype)
-    - 5.4 [Product](#54-product)
-      - 5.4.1 [Data](#541-data)
-    - 5.5 [ProductObject](#55-productobject)
-    - 5.6 [Facet](#56-facet)
-    - 5.7 [FacetItem](#57-facetitem)
-    - 5.8 [FacetRange](#58-facetrange)
-6. [Search Examples](#6-search-examples)
-7. [Event Tracking](#7-event-tracking)
-    - 7.1 [Setup Tracking](#71-setup-tracking)
-    - 7.2 [Send Events](#72-send-events)
+- [ProductSearch](#productsearch)
+  - [Table of Contents](#table-of-contents)
+  - [1. Setup](#1-setup)
+    - [1.1 Running the Demo](#11-running-the-demo)
+    - [1.2 Installing the SDK](#12-installing-the-sdk)
+    - [1.3 Add User Permissions](#13-add-user-permissions)
+  - [2. Initialization](#2-initialization)
+  - [3. Solution APIs](#3-solution-apis)
+    - [3.1 Search By Image](#31-search-by-image)
+    - [3.2 Recommendations](#32-recommendations)
+    - [3.3 Multisearch](#33-multisearch)
+    - [3.4 Multisearch autocomplete](#34-multisearch-autocomplete)
+  - [4. Search Parameters](#4-search-parameters)
+    - [4.1 BaseProductSearchParams](#41-baseproductsearchparams)
+    - [4.2 ProductSearchByImageParams](#42-productsearchbyimageparams)
+    - [4.3 ProductSearchByIdParams](#43-productsearchbyidparams)
+  - [5. Search Results](#5-search-results)
+    - [5.1 ProductResponse](#51-productresponse)
+    - [5.2 ErrorData](#52-errordata)
+    - [5.3 ProductType](#53-producttype)
+    - [5.4 Product](#54-product)
+      - [5.4.1 Data](#541-data)
+    - [5.5 ProductObject](#55-productobject)
+    - [5.6 Facet](#56-facet)
+    - [5.7 FacetItem](#57-facetitem)
+    - [5.8 FacetRange](#58-facetrange)
+    - [5.9 AutoCompleteResponse](#59-autocompleteresponse)
+      - [5.9.1 AutoCompleteResultItem](#591-autocompleteresultitem)
+  - [6. Search Examples](#6-search-examples)
+  - [7. Event Tracking](#7-event-tracking)
+    - [7.1 Setup Tracking](#71-setup-tracking)
+    - [7.2 Send Events](#72-send-events)
 
 ---
 
@@ -52,12 +57,13 @@ The source code of a demo application is provided together with the SDK ([demo](
 ### 1.2 Installing the SDK
 
 As bintray has expired. we have moved our repository to jitpack. Add repository in your root build.gradle
+
 ```gradle
 allprojects {
-	repositories {
-		...
-		maven { url 'https://jitpack.io' }
-	}
+ repositories {
+  ...
+  maven { url 'https://jitpack.io' }
+ }
 }
 ```
 
@@ -65,7 +71,7 @@ include the dependency in your project using gradle. Please change the version t
 
 ```gradle
 implementation 'com.github.visenze:visenze-tracking-android:0.2.3'
-implementation 'com.github.visenze:visearch-sdk-android:2.3.2'
+implementation 'com.github.visenze:visearch-sdk-android:2.4.0'
 ```
 
 ### 1.3 Add User Permissions
@@ -121,20 +127,20 @@ For searches in China, please change the endpoint to `https://search.visenze.com
 
 ## 3. Solution APIs
 
-There are two main APIs provided in this suite, one allows searching for products based on an image input, the other searches using a product's ID (Recommendations API). A product's ID can be retrieved from a [Search Result](#4-search-results).
+There are two main APIs provided in this suite, one allows searching for products based on an image input, the other searches using a product's ID (Recommendations API). A product's ID can be retrieved from a [Search Result](#5-search-results).
 
 ### 3.1 Search By Image
 
 POST /v1/product/search_by_image
 
-Searching by Image can happen in three different ways - by url, id or File. Assuming that you have initialized the SDK according to section [2](#2-initialization):
+Searching by Image can happen in three different ways - by url, id or File. Assuming that you have initialized the SDK according to section [Initialization](#2-initialization):
 
 - Example of image URL:
 
 ```java
 String imageUrl = "https://some_website.com/some_image.jpg";
 ProductSearchByImageParams params = new ProductSearchByImageParams(imageUrl);
-ProductSeach ps = SearchAPI.getProductSearchInstance();
+ProductSearch ps = SearchAPI.getProductSearchInstance();
 ps.searchByImage(params, new ProductSearch.ResultListener() {
     @Override
     public void onSearchResult(ProductResponse response, ErrorData error) {
@@ -150,7 +156,7 @@ public void yourFunction(ProductResponse yourPriorResponse)
 {
     String imageID = yourPriorResponse.getImId();
     ProductSearchByImageParams params = new ProductSearchByImageParams(imageID);
-    ProductSeach ps = SearchAPI.getProductSearchInstance();
+    ProductSearch ps = SearchAPI.getProductSearchInstance();
     ps.searchByImage(params, new ProductSearch.ResultListener() {
         @Override
         public void onSearchResult(ProductResponse response, ErrorData error) {
@@ -168,7 +174,7 @@ public void yourFunction(ProductResponse yourPriorResponse)
 @Override
 public void OnImageCaptured(Image image, String imagePath) {
     ProductSearchByImageParams params = new ProductSearchByImageParams(image);
-    ProductSeach ps = SearchAPI.getProductSearchInstance();
+    ProductSearch ps = SearchAPI.getProductSearchInstance();
     ps.searchByImage(params, new ProductSearch.ResultListener() {
         @Override
         public void onSearchResult(ProductResponse response, ErrorData error) {
@@ -213,7 +219,7 @@ public void yourFunction(ProductResponse yourPriorResponse)
 {
     String productID = yourPriorResponse.getProducts().get(0).getProductId();
     ProductSearchByIdParams params = new ProductSearchByIdParams(productID);
-    ProductSeach ps = SearchAPI.getProductSearchInstance();
+    ProductSearch ps = SearchAPI.getProductSearchInstance();
     ps.recommendations(params, new ProductSearch.ResultListener()) {
         @Override
         public void onSearchResult(ProductResponse response, ErrorData error) {
@@ -232,12 +238,62 @@ The example above assumes that you have stored a prior successful ProductRespons
 > - store the search results (contains the list of products)
 > - use the product ID of one of these products in the next search
 
+### 3.3 Multisearch
+
+POST /v1/product/multisearch
+
+Multisearch can happen in four different ways - by text, url, id or File. Assuming that you have initialized the SDK according to section [Initialization](#2-initialization):
+
+For url, id or File example, you can refer to [Search by image](#31-search-by-image)
+
+Sample code for searching with text query:
+
+```java
+String imageUrl = "https://some_website.com/some_image.jpg";
+ProductSearchByImageParams params = new ProductSearchByImageParams(imageUrl);
+params.setQ("your-text-query");
+
+ProductSearch ps = SearchAPI.getProductSearchInstance();
+ps.multisearch(params, new ProductSearch.ResultListener() {
+    @Override
+    public void onSearchResult(ProductResponse response, ErrorData error) {
+        // LOGIC HERE
+    }
+});
+```
+
+### 3.4 Multisearch autocomplete
+
+POST /v1/product/multisearch/autocomplete
+
+Multisearch autocomplete can happen in four different ways - by text, url, id or File. Assuming that you have initialized the SDK according to section [Initialization](#2-initialization):
+
+For url, id or File example, you can refer to [Search by image](#31-search-by-image)
+
+Sample code for searching with a partial text query:
+
+```java
+String imageUrl = "https://some_website.com/some_image.jpg";
+ProductSearchByImageParams params = new ProductSearchByImageParams(imageUrl);
+params.setQ("your-partial-text-query");
+
+ProductSearch ps = SearchAPI.getProductSearchInstance();
+ps.multisearchAutocomplete(params, new ProductSearch.AutoCompleteResultListener() {
+    @Override
+    public void onResult(AutoCompleteResponse response, ErrorData error) {
+        // LOGIC HERE
+    }
+});
+```
+
 ## 4. Search Parameters
 
 Depending on which API function you call, it requires their own parameters both of which is extends off the [BaseProductSearchParams](#41-baseproductsearchparams) class:
 
 - [Search by Image](#31-search-by-image) uses [ProductSearchByImageParams](#42-productsearchbyimageparams)
 - [Recommendations](#32-recommendations) uses [ProductSearchByIdParams](#43-productsearchbyidparams)
+- [Multisearch](#33-multisearch) uses [ProductSearchByImageParams](#42-productsearchbyimageparams)
+- [Multisearch autocomplete](#34-multisearch-autocomplete) uses [ProductSearchByImageParams](#42-productsearchbyimageparams)
 
 ### 4.1 BaseProductSearchParams
 
@@ -420,6 +476,26 @@ Facet for value range filtering.
 | min | Number |  |
 | max | Number |  |
 
+### 5.9 AutoCompleteResponse
+
+| Name | Type | Description |
+|:---|:---|:---|
+| status | String | The request status, either `OK` or `fail` |
+| method | String |  |
+| error | ErrorData | Error message and code if the request was not successful i.e. when status is `fail` |
+| result | [AutoCompleteResultItem] (#5.9.1-autocompleteresultitem) |  |
+| page | int | The result page number |
+| limit | int | The number of results per page |
+| total | int | Total number of search result |
+| reqId | String | ID assigned to the request made |
+
+#### 5.9.1 AutoCompleteResultItem
+
+| Name | Type | Description |
+|:---|:---|:---|
+| text | String |  |
+| score | double |  |
+
 ## 6. Search Examples
 
 Here are a set of complex search examples that makes use of the other search parameters and how their response works. Lets start off by ensuring that you know what attributes/ fields are available to your app key (Attributes are set using the Dashboard when creating the App).
@@ -527,7 +603,7 @@ In addition, to improve subsequent search quality, it is recommended to send use
 You can initialize ViSenze Analytics tracker for sending analytics events as follow.
 
 ```java
-ProductSeach productSearch = SearchAPI.getProductSearchInstance();
+ProductSearch productSearch = SearchAPI.getProductSearchInstance();
 Tracker tracker = productSearch.newTracker();
 ```
 
