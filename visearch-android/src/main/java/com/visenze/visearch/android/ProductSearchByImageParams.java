@@ -28,7 +28,7 @@ public class ProductSearchByImageParams extends BaseProductSearchParams {
     @SerializedName("detection_sensitivity")
     private String detectionSensitivity;
 
-    @SerializedName("search_all_object")
+    @SerializedName("search_all_objects")
     private Boolean searchAllObjects;
 
     // internal serialization
