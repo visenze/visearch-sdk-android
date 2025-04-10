@@ -97,6 +97,9 @@ public class BaseProductSearchParams {
     @SerializedName("color_rel_weight")
     private Double colorRelWeight;
 
+    @SerializedName("locale")
+    private String locale;
+
     @SerializedName("va_aaid")
     private String vaAaid;
 
@@ -388,6 +391,14 @@ public class BaseProductSearchParams {
 
     public void setVaS2(String vaS2) {
         this.vaS2 = vaS2;
+    }
+
+    public String getLocale() {
+        return locale;
+    }
+
+    public void setLocale(String locale) {
+        this.locale = locale;
     }
 
     @SerializedName("facets")
