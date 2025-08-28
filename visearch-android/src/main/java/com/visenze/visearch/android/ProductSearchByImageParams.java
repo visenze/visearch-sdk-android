@@ -37,7 +37,25 @@ public class ProductSearchByImageParams extends BaseProductSearchParams {
 
     @SerializedName("q")
     private String q;
-    
+
+    @SerializedName("pid")
+    private String pid;
+
+    @SerializedName("similar_score_min")
+    private Float similarScoreMin;
+
+    @SerializedName("sayt")
+    private Boolean sayt;
+
+    @SerializedName("spell_correction")
+    private Boolean spellCorrection;
+
+    @SerializedName("boosts")
+    private String boosts;
+
+    @SerializedName("global_filter")
+    private String globalFilter;
+
     public Boolean getSearchAllObjects() {
         return searchAllObjects;
     }
@@ -113,6 +131,54 @@ public class ProductSearchByImageParams extends BaseProductSearchParams {
 
     public void setQ(String q) {
         this.q = q;
+    }
+
+    public String getPid() {
+        return pid;
+    }
+
+    public void setPid(String pid) {
+        this.pid = pid;
+    }
+
+    public Float getSimilarScoreMin() {
+        return similarScoreMin;
+    }
+
+    public void setSimilarScoreMin(Float similarScoreMin) {
+        this.similarScoreMin = similarScoreMin;
+    }
+
+    public Boolean getSayt() {
+        return sayt;
+    }
+
+    public void setSayt(Boolean sayt) {
+        this.sayt = sayt;
+    }
+
+    public Boolean getSpellCorrection() {
+        return spellCorrection;
+    }
+
+    public void setSpellCorrection(Boolean spellCorrection) {
+        this.spellCorrection = spellCorrection;
+    }
+
+    public String getBoosts() {
+        return boosts;
+    }
+
+    public void setBoosts(String boosts) {
+        this.boosts = boosts;
+    }
+
+    public String getGlobalFilter() {
+        return globalFilter;
+    }
+
+    public void setGlobalFilter(String globalFilter) {
+        this.globalFilter = globalFilter;
     }
 
     public ProductSearchByImageParams() {
