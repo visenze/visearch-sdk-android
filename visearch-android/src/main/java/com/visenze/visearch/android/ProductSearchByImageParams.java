@@ -4,6 +4,8 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.visenze.visearch.android.model.Image;
 
+import java.util.List;
+
 public class ProductSearchByImageParams extends BaseProductSearchParams {
 
     @SerializedName("im_url")
@@ -55,6 +57,13 @@ public class ProductSearchByImageParams extends BaseProductSearchParams {
 
     @SerializedName("global_filter")
     private String globalFilter;
+
+    @SerializedName("qinfo")
+    private Boolean qinfo;
+
+    @SerializedName("sys_attrs_to_get")
+    @Expose(deserialize = false, serialize = false)
+    private List<String> sysAttrsToGet;
 
     public Boolean getSearchAllObjects() {
         return searchAllObjects;
@@ -179,6 +188,22 @@ public class ProductSearchByImageParams extends BaseProductSearchParams {
 
     public void setGlobalFilter(String globalFilter) {
         this.globalFilter = globalFilter;
+    }
+
+    public List<String> getSysAttrsToGet() {
+        return sysAttrsToGet;
+    }
+
+    public void setSysAttrsToGet(List<String> sysAttrsToGet) {
+        this.sysAttrsToGet = sysAttrsToGet;
+    }
+
+    public Boolean getQinfo() {
+        return qinfo;
+    }
+
+    public void setQinfo(Boolean qinfo) {
+        this.qinfo = qinfo;
     }
 
     public ProductSearchByImageParams() {
