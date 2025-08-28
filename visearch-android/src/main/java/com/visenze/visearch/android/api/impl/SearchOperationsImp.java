@@ -1,7 +1,5 @@
 package com.visenze.visearch.android.api.impl;
 
-import android.content.Context;
-
 import com.visenze.visearch.android.ColorSearchParams;
 import com.visenze.visearch.android.IdSearchParams;
 import com.visenze.visearch.android.UploadSearchParams;
