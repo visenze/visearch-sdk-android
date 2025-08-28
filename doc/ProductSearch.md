@@ -26,7 +26,7 @@ With the release of ViSenze's Catalog system, ViSearch Android SDK will now incl
     - [3.3 Multisearch](#33-multisearch)
     - [3.4 Multisearch Autocomplete](#34-multisearch-autocomplete)
     - [3.5 Multisearch Complementary](#35-multisearch-complementary)
-    - [3.6 Multisearch Outfit Recommendations](#35-multisearch-outfit-recommendations)
+    - [3.6 Multisearch Outfit Recommendations](#36-multisearch-outfit-recommendations)
   - [4. Search Parameters](#4-search-parameters)
     - [4.1 BaseProductSearchParams](#41-baseproductsearchparams)
     - [4.2 ProductSearchByImageParams](#42-productsearchbyimageparams)
