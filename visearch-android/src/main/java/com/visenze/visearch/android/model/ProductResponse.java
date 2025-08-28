@@ -26,6 +26,10 @@ public class ProductResponse {
     @SerializedName("product_info")
     Product productInfo;
 
+    // only applicable for MS (query product's info)
+    @SerializedName("qinfo")
+    private Product queryInfo;
+
     @SerializedName("result")
     private List<Product> products;
 
@@ -234,5 +238,13 @@ public class ProductResponse {
 
     public void setProductInfo(Product productInfo) {
         this.productInfo = productInfo;
+    }
+
+    public Product getQueryInfo() {
+        return queryInfo;
+    }
+
+    public void setQueryInfo(Product queryInfo) {
+        this.queryInfo = queryInfo;
     }
 }

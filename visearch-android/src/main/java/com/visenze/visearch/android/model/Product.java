@@ -20,6 +20,10 @@ public class Product {
     @SerializedName("vs_data")
     private Map<String, Object> vsData;
 
+    // only for multisearch
+    @SerializedName("sys")
+    private Map<String, Object> sysData;
+
     @SerializedName("score")
     private Float score;
 
@@ -81,6 +85,14 @@ public class Product {
 
     public void setVsData(Map<String, Object> vsData) {
         this.vsData = vsData;
+    }
+
+    public Map<String, Object> getSysData() {
+        return sysData;
+    }
+
+    public void setSysData(Map<String, Object> sysData) {
+        this.sysData = sysData;
     }
 
     public Float getScore() {

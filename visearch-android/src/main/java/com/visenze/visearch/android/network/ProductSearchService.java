@@ -8,6 +8,7 @@ import com.visenze.visearch.android.ProductSearchByIdParams;
 import com.visenze.visearch.android.model.AutoCompleteResponse;
 import com.visenze.visearch.android.model.ErrorData;
 import com.visenze.visearch.android.model.ProductResponse;
+import com.visenze.visearch.android.model.ProductSearchApi;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -41,11 +42,11 @@ public class ProductSearchService {
     }
 
     public void searchByImage(ProductSearchByImageParams imageSearchParams, final ProductSearch.ResultListener listener) {
-        searchByImage(imageSearchParams, listener, false);
+        searchByImage(imageSearchParams, listener, ProductSearchApi.SBI);
     }
 
-    public void searchByImage(ProductSearchByImageParams imageSearchParams, final ProductSearch.ResultListener listener, boolean multiSearch) {
-        byte[] imageBytes = validateImageParams(imageSearchParams, multiSearch);
+    public void searchByImage(ProductSearchByImageParams imageSearchParams, final ProductSearch.ResultListener listener, ProductSearchApi api) {
+        byte[] imageBytes = validateImageParams(imageSearchParams, api.isMultisearchRelated());
 
         RetrofitQueryMap params = buildQueryMap(imageSearchParams);
 
@@ -53,9 +54,9 @@ public class ProductSearchService {
         if(imageBytes != null) {
             RequestBody imageBody = RequestBody.create(MediaType.parse("image/*"), imageBytes);
             MultipartBody.Part image = MultipartBody.Part.createFormData("image", "image", imageBody);
-            call = getProductResponseCall(params, image, multiSearch);
+            call = getProductResponseCall(params, image, api);
         } else {
-            call = getProductResponseCall(params, null, multiSearch);
+            call = getProductResponseCall(params, null, api);
         }
         handleCallback(call, listener);
     }
@@ -103,20 +104,49 @@ public class ProductSearchService {
         return imageBytes;
     }
 
-    private Call<ProductResponse> getProductResponseCall(RetrofitQueryMap params, MultipartBody.Part image, boolean multiSearch) {
-        if (multiSearch) {
-            if (image == null) {
-                return  apiService.multisearch(params);
-            }
-
-            return apiService.multisearch(image, params);
-        } else {
-            if (image == null) {
-                return  apiService.searchByImage(params);
-            }
-
-            return apiService.searchByImage(image, params);
+    private Call<ProductResponse> getProductResponseCall(RetrofitQueryMap params, MultipartBody.Part image, ProductSearchApi api) {
+        if (ProductSearchApi.SBI.equals(api)) {
+            return getSbiResponseCall(params, image);
         }
+
+        if (ProductSearchApi.MS_OUTFIT_REC.equals(api)) {
+            return getOutfitRecResponseCall(params, image);
+        }
+
+        if (ProductSearchApi.MS_COMPLEMENTARY.equals(api)) {
+            return getMsCtlResponseCall(params, image);
+        }
+
+        // default, call multisearch API
+        if (image == null) {
+            return  apiService.multisearch(params);
+        }
+
+        return apiService.multisearch(image, params);
+    }
+
+    private Call<ProductResponse> getSbiResponseCall(RetrofitQueryMap params, MultipartBody.Part image) {
+        if (image == null) {
+            return  apiService.searchByImage(params);
+        }
+
+        return apiService.searchByImage(image, params);
+    }
+
+    private Call<ProductResponse> getMsCtlResponseCall(RetrofitQueryMap params, MultipartBody.Part image) {
+        if (image == null) {
+            return  apiService.multisearchComplementary(params);
+        }
+
+        return apiService.multisearchComplementary(image, params);
+    }
+
+    private Call<ProductResponse> getOutfitRecResponseCall(RetrofitQueryMap params, MultipartBody.Part image) {
+        if (image == null) {
+            return  apiService.multisearchOutfitRec(params);
+        }
+
+        return apiService.multisearchOutfitRec(image, params);
     }
 
     private Call<AutoCompleteResponse> getAutoCompleteResponseCall(RetrofitQueryMap params, MultipartBody.Part image) {

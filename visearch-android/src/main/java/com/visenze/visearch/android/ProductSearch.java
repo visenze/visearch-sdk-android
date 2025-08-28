@@ -9,6 +9,7 @@ import com.visenze.datatracking.data.DataCollection;
 import com.visenze.visearch.android.model.AutoCompleteResponse;
 import com.visenze.visearch.android.model.ErrorData;
 import com.visenze.visearch.android.model.ProductResponse;
+import com.visenze.visearch.android.model.ProductSearchApi;
 import com.visenze.visearch.android.network.ProductSearchService;
 
 import java.net.URL;
@@ -42,7 +43,17 @@ public class ProductSearch {
 
     public void multisearch(ProductSearchByImageParams imageSearchParams, ResultListener listener) {
         addAnalyticsParams(imageSearchParams);
-        productSearchService.searchByImage(imageSearchParams, listener, true);
+        productSearchService.searchByImage(imageSearchParams, listener, ProductSearchApi.MS);
+    }
+
+    public void multisearchOutfitRec(ProductSearchByImageParams imageSearchParams, ResultListener listener) {
+        addAnalyticsParams(imageSearchParams);
+        productSearchService.searchByImage(imageSearchParams, listener, ProductSearchApi.MS_OUTFIT_REC);
+    }
+
+    public void multisearchComplementary(ProductSearchByImageParams imageSearchParams, ResultListener listener) {
+        addAnalyticsParams(imageSearchParams);
+        productSearchService.searchByImage(imageSearchParams, listener, ProductSearchApi.MS_COMPLEMENTARY);
     }
 
     public void multisearchAutocomplete(ProductSearchByImageParams imageSearchParams, AutoCompleteResultListener listener) {

@@ -46,4 +46,22 @@ public interface APIProductService {
     @Multipart
     @POST("product/multisearch/autocomplete")
     Call<AutoCompleteResponse> multisearchAutocomplete(@Part MultipartBody.Part image, @QueryMap RetrofitQueryMap query);
+
+    @Retry
+    @POST("product/multisearch/complementary")
+    Call<ProductResponse> multisearchComplementary(@QueryMap RetrofitQueryMap query);
+
+    @Retry
+    @Multipart
+    @POST("product/multisearch/complementary")
+    Call<ProductResponse> multisearchComplementary(@Part MultipartBody.Part image, @QueryMap RetrofitQueryMap query);
+
+    @Retry
+    @POST("product/multisearch/outfit-recommendations")
+    Call<ProductResponse> multisearchOutfitRec(@QueryMap RetrofitQueryMap query);
+
+    @Retry
+    @Multipart
+    @POST("product/multisearch/outfit-recommendations")
+    Call<ProductResponse> multisearchOutfitRec(@Part MultipartBody.Part image, @QueryMap RetrofitQueryMap query);
 }

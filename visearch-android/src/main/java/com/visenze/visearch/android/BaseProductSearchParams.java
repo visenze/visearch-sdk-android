@@ -486,7 +486,6 @@ public class BaseProductSearchParams {
         Map<String, Object> map = new HashMap<String, Object>();
         RetrofitQueryMap ret = new RetrofitQueryMap(map);
 
-
         String jsonStr = gson.toJson(this);
 
         JsonObject jsonObj = gson.fromJson(jsonStr, JsonObject.class);

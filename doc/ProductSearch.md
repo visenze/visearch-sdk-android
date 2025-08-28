@@ -24,7 +24,9 @@ With the release of ViSenze's Catalog system, ViSearch Android SDK will now incl
     - [3.1 Search By Image](#31-search-by-image)
     - [3.2 Recommendations](#32-recommendations)
     - [3.3 Multisearch](#33-multisearch)
-    - [3.4 Multisearch autocomplete](#34-multisearch-autocomplete)
+    - [3.4 Multisearch Autocomplete](#34-multisearch-autocomplete)
+    - [3.5 Multisearch Complementary](#35-multisearch-complementary)
+    - [3.6 Multisearch Outfit Recommendations](#36-multisearch-outfit-recommendations)
   - [4. Search Parameters](#4-search-parameters)
     - [4.1 BaseProductSearchParams](#41-baseproductsearchparams)
     - [4.2 ProductSearchByImageParams](#42-productsearchbyimageparams)
@@ -71,7 +73,7 @@ include the dependency in your project using gradle. Please change the version t
 
 ```gradle
 implementation 'com.github.visenze:visenze-tracking-android:0.2.3'
-implementation 'com.github.visenze:visearch-sdk-android:2.4.1'
+implementation 'com.github.visenze:visearch-sdk-android:2.5.0'
 ```
 
 ### 1.3 Add User Permissions
@@ -242,9 +244,9 @@ The example above assumes that you have stored a prior successful ProductRespons
 
 POST /v1/product/multisearch
 
-Multisearch can happen in four different ways - by text, url, id or File. Assuming that you have initialized the SDK according to section [Initialization](#2-initialization):
+Multimodal Search API: given an input text and/or input image and/or product ID finds all the products matching the inputs.
 
-For url, id or File example, you can refer to [Search by image](#31-search-by-image)
+The API requires 1 of the following params: product ID, text query, or image (via url, file or image ID). Assuming that you have initialized the SDK according to section [Initialization](#2-initialization).
 
 Sample code for searching with text query:
 
@@ -285,6 +287,74 @@ ps.multisearchAutocomplete(params, new ProductSearch.AutoCompleteResultListener(
     }
 });
 ```
+
+### 3.5 Multisearch Complementary
+
+POST /v1/product/multisearch/complementary
+
+Multimodal Complemetary Search API: given an input product id or input image finds all the products matching the styles that complements the user's query.
+
+The API requires 1 of the following params: product ID or image (via url, file or image ID). Assuming that you have initialized the SDK according to section [Initialization](#2-initialization).
+
+For image search with url, image id or file example, you can refer to [Search by image](#31-search-by-image)
+
+Sample code for search:
+
+```java
+// search with image URL
+String imageUrl = "https://some_website.com/some_image.jpg";
+ProductSearchByImageParams params = new ProductSearchByImageParams(imageUrl);
+
+// search with product ID
+ProductSearchByImageParams params = new ProductSearchByImageParams();
+params.setPid("your-product-id");
+
+// optional text query
+params.setQ("your-text-query");
+
+
+ProductSearch ps = SearchAPI.getProductSearchInstance();
+ps.multisearchComplementary(params, new ProductSearch.ResultListener() {
+    @Override
+    public void onSearchResult(ProductResponse response, ErrorData error) {
+        // LOGIC HERE
+    }
+});
+```
+
+### 3.6 Multisearch Outfit Recommendations
+
+POST /v1/product/multisearch/outfit-recommendations
+
+Multimodal Outfit Recommendations Search API: given an input product id or input image finds all the products matching the outfit in the user's query.
+
+The API requires 1 of the following params: product ID or image (via url, file or image ID). Assuming that you have initialized the SDK according to section [Initialization](#2-initialization).
+
+For image search with url, image id or file example, you can refer to [Search by image](#31-search-by-image)
+
+Sample code for search:
+
+```java
+// search with image URL
+String imageUrl = "https://some_website.com/some_image.jpg";
+ProductSearchByImageParams params = new ProductSearchByImageParams(imageUrl);
+
+// search with product ID
+ProductSearchByImageParams params = new ProductSearchByImageParams();
+params.setPid("your-product-id");
+
+// optional text query
+params.setQ("your-text-query");
+
+ProductSearch ps = SearchAPI.getProductSearchInstance();
+ps.multisearchOutfitRec(params, new ProductSearch.ResultListener() {
+    @Override
+    public void onSearchResult(ProductResponse response, ErrorData error) {
+        // LOGIC HERE
+    }
+});
+```
+
 
 ## 4. Search Parameters
 
