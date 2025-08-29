@@ -101,6 +101,8 @@ Our SDK additionally needs these user permissions to work. Add the following dec
 
 `ProductSearch` must be initialized with an app key and a placement id before it can be used. In order for it to be notified of the search result, `ProductSearch.ResultListener` callback must be provided when making the actual API call.
 
+You can refer to [SearchAPI.java](https://github.com/visenze/visearch-sdk-android/blob/master/doc/SearchAPI.java.txt) for sample client singleton implementation.
+
 ```java
 public class MyActivity extends Activity {
     private static final String appKey = "YOUR_APP_KEY";
