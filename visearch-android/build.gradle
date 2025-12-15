@@ -5,12 +5,12 @@ plugins {
 
 def versionMajor = 2
 def versionMinor = 5
-def versionPatch = 0
-version = '2.5.0'
+def versionPatch = 1
+version = '2.5.1'
 
 android {
     compileSdkVersion 32
-    buildToolsVersion "30.0.2"
+    buildToolsVersion "30.0.3"
 
     defaultConfig {
         minSdkVersion 19
@@ -38,7 +38,7 @@ android {
 
 
 dependencies {
-    implementation 'com.github.visenze:visenze-tracking-android:0.2.2'
+    implementation 'com.github.visenze:visenze-tracking-android:0.2.4'
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
 
