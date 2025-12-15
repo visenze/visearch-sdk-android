@@ -31,7 +31,7 @@ import static org.mockito.Mockito.times;
 /**
  * Created by visenze on 30/11/15.
  */
-@Config(constants = BuildConfig.class, sdk = Build.VERSION_CODES.LOLLIPOP, manifest = Config.NONE)
+@Config(sdk = Build.VERSION_CODES.LOLLIPOP, manifest = Config.NONE)
 @RunWith(RobolectricTestRunner.class)
 public class ViSearchTest {
 

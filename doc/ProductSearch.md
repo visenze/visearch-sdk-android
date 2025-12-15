@@ -6,8 +6,8 @@ With the release of ViSenze's Catalog system, ViSearch Android SDK will now incl
 - Aggregate search results on a product level instead of image level
 - Consistent data type in API response with Catalog’s schema
 
-> Current stable version: 2.4.1
-> Minimum Android SDK Version: API 9, Android 2.3
+> Current stable version: 2.5.1
+> Minimum Android SDK Version: API level 19, Android 4.4
 
 ---
 
@@ -118,16 +118,15 @@ public class MyActivity extends Activity {
 }
 ```
 
-Please init ProductSearch client with the following if there is a need for changing the default endpoint `https://search.visenze.com`.
+Please init ProductSearch client with the following if there is a need for changing the default endpoint `https://multimodal.search.rezolve.com`.
 
 ```java
 ProductSearch productSearch = new ProductSearch
                             .Builder(appKey, placementId)
-                            .setApiEndPoint("https://custom-visearch.yourdomain.com")
+                            .setApiEndPoint("https://custom-search.yourdomain.com")
                             .build(context);
 ```
 
-For searches in China, please change the endpoint to `https://search.visenze.com.cn`.
 
 ## 3. Solution APIs
 
