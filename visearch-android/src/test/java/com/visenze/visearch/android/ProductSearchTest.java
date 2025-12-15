@@ -36,7 +36,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
-@Config(constants = BuildConfig.class, sdk = Build.VERSION_CODES.LOLLIPOP, manifest = Config.NONE)
+@Config(sdk = Build.VERSION_CODES.LOLLIPOP, manifest = Config.NONE)
 @RunWith(RobolectricTestRunner.class)
 public class ProductSearchTest {
     ProductSearchService searchService = new ProductSearchService("https://search.visenze.com", "123", 456, "visearch-test");
