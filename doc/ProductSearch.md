@@ -506,7 +506,7 @@ To better explain what the `data` field is, take a look at the table below (data
 
 The table is a representation of how Rezolve's Catalog name its fields vs how Client X's database name its fields - both fields essentially mean the same thing just named differently.
 
-> i.e. visenze_database["product_id"] == client_x_database["sku"]
+> i.e. catalog_database["product_id"] == client_x_database["sku"]
 
 You can find the schema mapping of Rezolve and the Client's in the `catalogFieldsMapping` variable found in [ProductResponse](#51-productresponse) - if the [ProductSearchByImageParams](#42-productsearchbyimageparams) have its `returnFieldsMapping` variable set to `true` when the search was called.
 
@@ -584,7 +584,7 @@ Here are a set of complex search examples that makes use of the other search par
         @Override
         public void onSearchResult(ProductResponse response, ErrorData error) {
             // This mapping represents how Rezolve's fields are mapped to a Client's fields
-            // Visenze Field -> Client Field
+            // Catalog Field -> Client Field
             Map<String, String> mappings = response.getCatalogFieldsMapping();
 
             // The data field will contain minimal information as we did not set any attributes to get
