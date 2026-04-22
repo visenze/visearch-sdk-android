@@ -73,7 +73,7 @@ include the dependency in your project using gradle. Please change the version t
 
 ```gradle
 implementation 'com.github.visenze:visenze-tracking-android:0.2.3'
-implementation 'com.github.visenze:visearch-sdk-android:2.5.0'
+implementation 'com.github.visenze:visearch-sdk-android:2.6.0'
 ```
 
 ### 1.3 Add User Permissions
