@@ -6,7 +6,7 @@ With the release of Rezolve's Catalog system, ViSearch Android SDK will now incl
 - Aggregate search results on a product level instead of image level
 - Consistent data type in API response with Catalog’s schema
 
-> Current stable version: 2.5.1
+> Current stable version: 2.6.0
 > Minimum Android SDK Version: API level 19, Android 4.4
 
 ---
@@ -118,13 +118,29 @@ public class MyActivity extends Activity {
 }
 ```
 
-Please init ProductSearch client with the following if there is a need for changing the default endpoint `https://multimodal.search.rezolve.com`.
+To use one of the new cloud-specific domains, use `setCloud()`:
+
+```java
+// AWS cloud
+ProductSearch productSearch = new ProductSearch
+    .Builder(appKey, placementId)
+    .setCloud(ProductSearch.Cloud.AWS)
+    .build(context);
+
+// Azure cloud
+ProductSearch productSearch = new ProductSearch
+    .Builder(appKey, placementId)
+    .setCloud(ProductSearch.Cloud.AZURE)
+    .build(context);
+```
+
+To specify a fully custom endpoint:
 
 ```java
 ProductSearch productSearch = new ProductSearch
-                            .Builder(appKey, placementId)
-                            .setApiEndPoint("https://custom-search.yourdomain.com")
-                            .build(context);
+    .Builder(appKey, placementId)
+    .setApiEndPoint(new URL("https://custom-search.yourdomain.com/"))
+    .build(context);
 ```
 
 
@@ -134,7 +150,8 @@ There are two main APIs provided in this suite, one allows searching for product
 
 ### 3.1 Search By Image
 
-POST /v1/product/search_by_image
+Legacy domain: `POST /v1/product/search_by_image`
+New cloud domains: `POST /v1/visearch/search_by_image`
 
 Searching by Image can happen in three different ways - by url, id or File. Assuming that you have initialized the SDK according to section [Initialization](#2-initialization):
 
@@ -212,7 +229,8 @@ public void onPictureTaken(byte[] bytes, Camera camera) {
 
 ### 3.2 Recommendations
 
-GET /v1/product/recommendations/{product_id}
+Legacy domain: `GET /v1/product/recommendations/{product_id}`
+New cloud domains: `GET /v1/visearch/recommendations/{product_id}`
 
 Sample code for calling Recommendations:
 
@@ -243,7 +261,8 @@ The example above assumes that you have stored a prior successful ProductRespons
 
 ### 3.3 Multisearch
 
-POST /v1/product/multisearch
+Legacy domain: `POST /v1/product/multisearch`
+New cloud domains: `POST /v1/search`
 
 Multimodal Search API: given an input text and/or input image and/or product ID finds all the products matching the inputs.
 
@@ -267,7 +286,8 @@ ps.multisearch(params, new ProductSearch.ResultListener() {
 
 ### 3.4 Multisearch autocomplete
 
-POST /v1/product/multisearch/autocomplete
+Legacy domain: `POST /v1/product/multisearch/autocomplete`
+New cloud domains: `POST /v1/autocomplete`
 
 Multisearch autocomplete can happen in four different ways - by text, url, id or File. Assuming that you have initialized the SDK according to section [Initialization](#2-initialization):
 
@@ -291,7 +311,8 @@ ps.multisearchAutocomplete(params, new ProductSearch.AutoCompleteResultListener(
 
 ### 3.5 Multisearch Complementary
 
-POST /v1/product/multisearch/complementary
+Legacy domain: `POST /v1/product/multisearch/complementary`
+New cloud domains: `POST /v1/search/complementary`
 
 Multimodal Complemetary Search API: given an input product id or input image finds all the products matching the styles that complements the user's query.
 
@@ -325,7 +346,8 @@ ps.multisearchComplementary(params, new ProductSearch.ResultListener() {
 
 ### 3.6 Multisearch Outfit Recommendations
 
-POST /v1/product/multisearch/outfit-recommendations
+Legacy domain: `POST /v1/product/multisearch/outfit-recommendations`
+New cloud domains: `POST /v1/search/outfit-recommendations`
 
 Multimodal Outfit Recommendations Search API: given an input product id or input image finds all the products matching the outfit in the user's query.
 

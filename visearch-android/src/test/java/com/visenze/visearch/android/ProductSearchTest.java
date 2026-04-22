@@ -27,6 +27,10 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
+import com.visenze.visearch.android.network.APIProductService;
+import com.visenze.visearch.android.network.APIProductServiceV2;
+
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -1063,6 +1067,68 @@ public class ProductSearchTest {
             }
         });
 
+    }
+
+    @Test
+    public void testLegacyDomainUsesLegacyApi() throws Exception {
+        ProductSearchService legacyService = new ProductSearchService(
+                "https://multimodal.search.rezolve.com/", "key", 1, "agent");
+
+        Field legacyApiField = ProductSearchService.class.getDeclaredField("legacyApi");
+        Field newApiField = ProductSearchService.class.getDeclaredField("newApi");
+        legacyApiField.setAccessible(true);
+        newApiField.setAccessible(true);
+
+        assertFalse("legacyApi should be non-null for legacy domain",
+                legacyApiField.get(legacyService) == null);
+        assertTrue("newApi should be null for legacy domain",
+                newApiField.get(legacyService) == null);
+
+        Object legacyApi = legacyApiField.get(legacyService);
+        assertTrue("legacyApi should implement APIProductService",
+                legacyApi instanceof APIProductService);
+    }
+
+    @Test
+    public void testNewDomainAwsUsesNewApi() throws Exception {
+        ProductSearchService awsService = new ProductSearchService(
+                "https://multisearch-aw.rezolve.com/", "key", 1, "agent");
+
+        Field legacyApiField = ProductSearchService.class.getDeclaredField("legacyApi");
+        Field newApiField = ProductSearchService.class.getDeclaredField("newApi");
+        legacyApiField.setAccessible(true);
+        newApiField.setAccessible(true);
+
+        assertTrue("legacyApi should be null for new AWS domain",
+                legacyApiField.get(awsService) == null);
+        assertFalse("newApi should be non-null for new AWS domain",
+                newApiField.get(awsService) == null);
+
+        Object newApi = newApiField.get(awsService);
+        assertTrue("newApi should implement APIProductServiceV2",
+                newApi instanceof APIProductServiceV2);
+    }
+
+    @Test
+    public void testNewDomainAzureUsesNewApi() throws Exception {
+        ProductSearchService azureService = new ProductSearchService(
+                "https://multisearch-az.rezolve.com/", "key", 1, "agent");
+
+        Field legacyApiField = ProductSearchService.class.getDeclaredField("legacyApi");
+        Field newApiField = ProductSearchService.class.getDeclaredField("newApi");
+        legacyApiField.setAccessible(true);
+        newApiField.setAccessible(true);
+
+        assertTrue("legacyApi should be null for new Azure domain",
+                legacyApiField.get(azureService) == null);
+        assertFalse("newApi should be non-null for new Azure domain",
+                newApiField.get(azureService) == null);
+    }
+
+    @Test
+    public void testCloudEnumEndpoints() {
+        assertEquals("https://multisearch-aw.rezolve.com/", ProductSearch.Cloud.AWS.endPoint);
+        assertEquals("https://multisearch-az.rezolve.com/", ProductSearch.Cloud.AZURE.endPoint);
     }
 
     private String getBoxString(Box box) {

@@ -16,7 +16,7 @@ import java.net.URL;
 
 public class ProductSearch {
     private static final String USER_AGENT = "productsearch-android-sdk";
-    private static final String SEARCH_URL = "https://multimodal.search.rezolve.com/v1/";
+    private static final String SEARCH_URL = "https://multimodal.search.rezolve.com/";
 
     private String uid;
     private String trackCode;
@@ -136,6 +136,14 @@ public class ProductSearch {
         return visenzeAnalytics.newTracker(code, useCnEndpoint);
     }
 
+    public enum Cloud {
+        AWS("https://multisearch-aw.rezolve.com/"),
+        AZURE("https://multisearch-az.rezolve.com/");
+
+        public final String endPoint;
+        Cloud(String endPoint) { this.endPoint = endPoint; }
+    }
+
     public static class Builder {
         private String mAppKey;
         private int mPlacement;
@@ -155,6 +163,10 @@ public class ProductSearch {
             searchApiEndPoint = endPoint.toString();
         }
 
+        public Builder setCloud(Cloud cloud) {
+            searchApiEndPoint = cloud.endPoint;
+            return this;
+        }
 
         public Builder setApiEndPoint(URL endPoint) {
             searchApiEndPoint = endPoint.toString();
