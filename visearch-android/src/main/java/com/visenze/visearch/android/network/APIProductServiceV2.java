@@ -13,55 +13,54 @@ import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.QueryMap;
 
-public interface APIProductService {
+public interface APIProductServiceV2 {
 
     @Retry
-    @GET("v1/product/recommendations/{product_id}")
+    @GET("v1/visearch/recommendations/{product_id}")
     Call<ProductResponse> searchById(@Path("product_id") String productId, @QueryMap RetrofitQueryMap query);
 
-
     @Retry
-    @POST("v1/product/search_by_image")
+    @POST("v1/visearch/search_by_image")
     Call<ProductResponse> searchByImage(@QueryMap RetrofitQueryMap query);
 
     @Retry
     @Multipart
-    @POST("v1/product/search_by_image")
+    @POST("v1/visearch/search_by_image")
     Call<ProductResponse> searchByImage(@Part MultipartBody.Part image, @QueryMap RetrofitQueryMap query);
 
     @Retry
-    @POST("v1/product/multisearch")
+    @POST("v1/search")
     Call<ProductResponse> multisearch(@QueryMap RetrofitQueryMap query);
 
     @Retry
     @Multipart
-    @POST("v1/product/multisearch")
+    @POST("v1/search")
     Call<ProductResponse> multisearch(@Part MultipartBody.Part image, @QueryMap RetrofitQueryMap query);
 
     @Retry
-    @POST("v1/product/multisearch/autocomplete")
+    @POST("v1/autocomplete")
     Call<AutoCompleteResponse> multisearchAutocomplete(@QueryMap RetrofitQueryMap query);
 
     @Retry
     @Multipart
-    @POST("v1/product/multisearch/autocomplete")
+    @POST("v1/autocomplete")
     Call<AutoCompleteResponse> multisearchAutocomplete(@Part MultipartBody.Part image, @QueryMap RetrofitQueryMap query);
 
     @Retry
-    @POST("v1/product/multisearch/complementary")
+    @POST("v1/search/complementary")
     Call<ProductResponse> multisearchComplementary(@QueryMap RetrofitQueryMap query);
 
     @Retry
     @Multipart
-    @POST("v1/product/multisearch/complementary")
+    @POST("v1/search/complementary")
     Call<ProductResponse> multisearchComplementary(@Part MultipartBody.Part image, @QueryMap RetrofitQueryMap query);
 
     @Retry
-    @POST("v1/product/multisearch/outfit-recommendations")
+    @POST("v1/search/outfit-recommendations")
     Call<ProductResponse> multisearchOutfitRec(@QueryMap RetrofitQueryMap query);
 
     @Retry
     @Multipart
-    @POST("v1/product/multisearch/outfit-recommendations")
+    @POST("v1/search/outfit-recommendations")
     Call<ProductResponse> multisearchOutfitRec(@Part MultipartBody.Part image, @QueryMap RetrofitQueryMap query);
 }

@@ -10,34 +10,59 @@ import com.visenze.visearch.android.model.ErrorData;
 import com.visenze.visearch.android.model.ProductResponse;
 import com.visenze.visearch.android.model.ProductSearchApi;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class ProductSearchService {
     private final static String APP_KEY = "app_key";
     private final static String PLACEMENT_ID = "placement_id";
+
+    private static final Set<String> NEW_DOMAIN_PREFIXES = new HashSet<>(Arrays.asList(
+            "https://multisearch-aw.rezolve.com",
+            "https://multisearch-az.rezolve.com"
+    ));
+
     private String appKey;
     private int placementId;
     private String userAgent;
 
-    private APIProductService apiService;
+    private final APIProductService legacyApi;
+    private final APIProductServiceV2 newApi;
 
     public ProductSearchService(String endPoint, String appKey, int placementId, String userAgent) {
-        apiService = Http.getRetrofitInstance(endPoint).create(APIProductService.class);
+        Retrofit retrofit = Http.getRetrofitInstance(endPoint);
+        boolean isNew = isNewDomain(endPoint);
+
+        this.legacyApi = isNew ? null : retrofit.create(APIProductService.class);
+        this.newApi    = isNew ? retrofit.create(APIProductServiceV2.class) : null;
 
         this.appKey = appKey;
         this.placementId = placementId;
         this.userAgent = userAgent;
     }
 
+    private static boolean isNewDomain(String endPoint) {
+        for (String prefix : NEW_DOMAIN_PREFIXES) {
+            if (endPoint.startsWith(prefix)) return true;
+        }
+        return false;
+    }
+
     public void searchById(ProductSearchByIdParams visualSimilarParams, final ProductSearch.ResultListener listener) {
         String productId = visualSimilarParams.getProductId();
         RetrofitQueryMap params = buildQueryMap(visualSimilarParams);
-        Call<ProductResponse> call = apiService.searchById(productId, params);
+        Call<ProductResponse> call = newApi != null
+                ? newApi.searchById(productId, params)
+                : legacyApi.searchById(productId, params);
         handleCallback(call, listener);
     }
 
@@ -51,7 +76,7 @@ public class ProductSearchService {
         RetrofitQueryMap params = buildQueryMap(imageSearchParams);
 
         Call<ProductResponse> call;
-        if(imageBytes != null) {
+        if (imageBytes != null) {
             RequestBody imageBody = RequestBody.create(MediaType.parse("image/*"), imageBytes);
             MultipartBody.Part image = MultipartBody.Part.createFormData("image", "image", imageBody);
             call = getProductResponseCall(params, image, api);
@@ -68,7 +93,7 @@ public class ProductSearchService {
         RetrofitQueryMap params = buildQueryMap(imageSearchParams);
 
         Call<AutoCompleteResponse> call;
-        if(imageBytes != null) {
+        if (imageBytes != null) {
             RequestBody imageBody = RequestBody.create(MediaType.parse("image/*"), imageBytes);
             MultipartBody.Part image = MultipartBody.Part.createFormData("image", "image", imageBody);
             call = getAutoCompleteResponseCall(params, image);
@@ -117,46 +142,40 @@ public class ProductSearchService {
             return getMsCtlResponseCall(params, image);
         }
 
-        // default, call multisearch API
-        if (image == null) {
-            return  apiService.multisearch(params);
+        // default: multisearch
+        if (newApi != null) {
+            return image == null ? newApi.multisearch(params) : newApi.multisearch(image, params);
         }
-
-        return apiService.multisearch(image, params);
+        return image == null ? legacyApi.multisearch(params) : legacyApi.multisearch(image, params);
     }
 
     private Call<ProductResponse> getSbiResponseCall(RetrofitQueryMap params, MultipartBody.Part image) {
-        if (image == null) {
-            return  apiService.searchByImage(params);
+        if (newApi != null) {
+            return image == null ? newApi.searchByImage(params) : newApi.searchByImage(image, params);
         }
-
-        return apiService.searchByImage(image, params);
+        return image == null ? legacyApi.searchByImage(params) : legacyApi.searchByImage(image, params);
     }
 
     private Call<ProductResponse> getMsCtlResponseCall(RetrofitQueryMap params, MultipartBody.Part image) {
-        if (image == null) {
-            return  apiService.multisearchComplementary(params);
+        if (newApi != null) {
+            return image == null ? newApi.multisearchComplementary(params) : newApi.multisearchComplementary(image, params);
         }
-
-        return apiService.multisearchComplementary(image, params);
+        return image == null ? legacyApi.multisearchComplementary(params) : legacyApi.multisearchComplementary(image, params);
     }
 
     private Call<ProductResponse> getOutfitRecResponseCall(RetrofitQueryMap params, MultipartBody.Part image) {
-        if (image == null) {
-            return  apiService.multisearchOutfitRec(params);
+        if (newApi != null) {
+            return image == null ? newApi.multisearchOutfitRec(params) : newApi.multisearchOutfitRec(image, params);
         }
-
-        return apiService.multisearchOutfitRec(image, params);
+        return image == null ? legacyApi.multisearchOutfitRec(params) : legacyApi.multisearchOutfitRec(image, params);
     }
 
     private Call<AutoCompleteResponse> getAutoCompleteResponseCall(RetrofitQueryMap params, MultipartBody.Part image) {
-        if (image == null) {
-            return  apiService.multisearchAutocomplete(params);
+        if (newApi != null) {
+            return image == null ? newApi.multisearchAutocomplete(params) : newApi.multisearchAutocomplete(image, params);
         }
-
-        return apiService.multisearchAutocomplete(image, params);
+        return image == null ? legacyApi.multisearchAutocomplete(params) : legacyApi.multisearchAutocomplete(image, params);
     }
-
 
     private RetrofitQueryMap buildQueryMap(BaseProductSearchParams params) {
         RetrofitQueryMap map = params.getQueryMap();
@@ -169,9 +188,8 @@ public class ProductSearchService {
         call.enqueue(new Callback<ProductResponse>() {
             @Override
             public void onResponse(Call<ProductResponse> call, Response<ProductResponse> response) {
-                if(response.isSuccessful() && response.body() != null) {
-                    ProductResponse data = response.body();
-                    handleResponse(data, resultListener);
+                if (response.isSuccessful() && response.body() != null) {
+                    handleResponse(response.body(), resultListener);
                     return;
                 }
 
@@ -185,21 +203,18 @@ public class ProductSearchService {
                 }
 
                 resultListener.onSearchResult(null, ErrorData.unknownError("api failed"));
-
             }
 
             @Override
             public void onFailure(Call<ProductResponse> call, Throwable t) {
                 resultListener.onSearchResult(null, ErrorData.unknownError(t.getMessage()));
             }
-
         });
     }
 
-
     public void handleResponse(ProductResponse response, final ProductSearch.ResultListener resultListener) {
         ErrorData error = response.getError();
-        if(error != null) {
+        if (error != null) {
             resultListener.onSearchResult(null, error);
         } else {
             resultListener.onSearchResult(response, null);
@@ -208,12 +223,10 @@ public class ProductSearchService {
 
     private void handleCallback(Call<AutoCompleteResponse> call, final ProductSearch.AutoCompleteResultListener resultListener) {
         call.enqueue(new Callback<AutoCompleteResponse>() {
-
             @Override
             public void onResponse(Call<AutoCompleteResponse> call, Response<AutoCompleteResponse> response) {
-                if(response.isSuccessful() && response.body() != null) {
-                    AutoCompleteResponse data = response.body();
-                    handleAutoCompleteResponse(data, resultListener);
+                if (response.isSuccessful() && response.body() != null) {
+                    handleAutoCompleteResponse(response.body(), resultListener);
                     return;
                 }
 
@@ -233,17 +246,15 @@ public class ProductSearchService {
             public void onFailure(Call<AutoCompleteResponse> call, Throwable t) {
                 resultListener.onResult(null, ErrorData.unknownError(t.getMessage()));
             }
-
         });
     }
 
     public void handleAutoCompleteResponse(AutoCompleteResponse response, final ProductSearch.AutoCompleteResultListener listener) {
         ErrorData error = response.getError();
-        if(error != null) {
+        if (error != null) {
             listener.onResult(null, error);
         } else {
             listener.onResult(response, null);
         }
     }
-
 }
