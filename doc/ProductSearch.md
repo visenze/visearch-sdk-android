@@ -143,10 +143,13 @@ ProductSearch productSearch = new ProductSearch
     .build(context);
 ```
 
+> **Note:** The cloud-specific domains (`AWS` and `AZURE`) use updated API paths that differ from the legacy domain. For a full comparison of old vs. new host paths, see [rezolve-domains-update.md](rezolve-domains-update.md).
+
 
 ## 3. Solution APIs
 
 There are two main APIs provided in this suite, one allows searching for products based on an image input, the other searches using a product's ID (Recommendations API). A product's ID can be retrieved from a [Search Result](#5-search-results).
+
 
 ### 3.1 Search By Image
 
